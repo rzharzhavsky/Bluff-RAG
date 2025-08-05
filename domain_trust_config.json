@@ -1,0 +1,57 @@
+{
+  "public_health": {
+    "trusted": [
+      "mayoclinic.org",
+      "clevelandclinic.org",
+      "pubmed.ncbi.nlm.nih.gov",
+      "cdc.gov",
+      "sciencedirect.com"
+    ]
+  },
+  "current_events_sports": {
+    "trusted": [
+      "bbc.com",
+      "reuters.com",
+      "nytimes.com",
+      "pbs.org",
+      "npr.org",
+      "apnews.com",
+      "abcnews.go.com",
+      "nbcnews.com",
+      "cbs.com"
+    ]
+  },
+  "finance": {
+    "trusted": [
+      "bloomberg.com",
+      "wsj.com",
+      "cnbc.com",
+      "finance.yahoo.com"
+    ]
+  },
+  "historic_events": {
+    "trusted": [
+      "archives.gov",
+      "catalog.loc.gov",
+      "jstor.org",
+      "britannica.com"
+    ]
+  },
+  "climate_nature": {
+    "trusted": [
+      "education.nationalgeographic.org",
+      "noaa.gov",
+      "epa.gov",
+      "nature.com",
+      "sciencedirect.com"
+    ]
+  },
+  "ambiguous": [
+    "reddit.com",
+    "quora.com",
+    "x.com",
+    "nypost.com",
+    "newsmax.com",
+    "huffpost.com"
+  ]
+}
