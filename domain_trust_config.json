@@ -1,57 +1,41 @@
 {
   "public_health": {
-    "trusted": [
-      "mayoclinic.org",
-      "clevelandclinic.org",
-      "pubmed.ncbi.nlm.nih.gov",
+    "reliable": [
+      "who.int",
       "cdc.gov",
-      "sciencedirect.com"
+      "nih.gov",
+      "medlineplus.gov",
+      "mayoclinic.org",
+      "lancet.com",
+      "nejm.org",
+      "pubmed.ncbi.nlm.nih.gov",
+      "ncbi.nlm.nih.gov",
+      "bmj.com",
+      "webmd.com"
+    ],
+    "misleading": [
+      "naturalnews.com",
+      "infowars.com",
+      "mercola.com",
+      "thetruthaboutcancer.com",
+      "vaccineimpact.com",
+      "realfarmacy.com"
     ]
   },
-  "current_events_sports": {
-    "trusted": [
-      "bbc.com",
-      "reuters.com",
-      "nytimes.com",
-      "pbs.org",
-      "npr.org",
-      "apnews.com",
-      "abcnews.go.com",
-      "nbcnews.com",
-      "cbs.com"
-    ]
+  "current_events": {
+    "reliable": ["apnews.com", "reuters.com", "bbc.com", "npr.org"],
+    "misleading": ["theonion.com", "sputniknews.com"]
+  },
+  "history": {
+    "reliable": ["history.com", "britannica.com", "nationalgeographic.com"],
+    "misleading": ["ancient-code.com", "bibliotecapleyades.net"]
   },
   "finance": {
-    "trusted": [
-      "bloomberg.com",
-      "wsj.com",
-      "cnbc.com",
-      "finance.yahoo.com"
-    ]
+    "reliable": ["investopedia.com", "bloomberg.com", "wsj.com", "forbes.com"],
+    "misleading": ["zerohedge.com"]
   },
-  "historic_events": {
-    "trusted": [
-      "archives.gov",
-      "catalog.loc.gov",
-      "jstor.org",
-      "britannica.com"
-    ]
-  },
-  "climate_nature": {
-    "trusted": [
-      "education.nationalgeographic.org",
-      "noaa.gov",
-      "epa.gov",
-      "nature.com",
-      "sciencedirect.com"
-    ]
-  },
-  "ambiguous": [
-    "reddit.com",
-    "quora.com",
-    "x.com",
-    "nypost.com",
-    "newsmax.com",
-    "huffpost.com"
-  ]
+  "sports": {
+    "reliable": ["espn.com", "olympics.com", "nba.com", "fifa.com"],
+    "misleading": ["barstoolsports.com"]
+  }
 }
