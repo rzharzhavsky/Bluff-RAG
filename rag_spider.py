@@ -4,6 +4,8 @@ import re
 from datetime import datetime
 from urllib.parse import urljoin, urlparse
 import hashlib
+import pandas as pd
+import re
 
 class RAGBenchmarkSpider(scrapy.Spider):
     name = 'rag_benchmark'
@@ -140,6 +142,65 @@ class RAGBenchmarkSpider(scrapy.Spider):
             ]
         }
 
+    def load_unreliable(self): #returns list of unreliable source links
+        unreliable_sources = []
+        with open('source_lists/iffy_unreliable.csv', 'r', newline='') as csv_file: # Iffy
+            iffy_csv_reader = csv.reader(csv_file)
+            next(iffy_csv_reader)
+            for row in iffy_csv_reader:
+                unreliable_sources.append(row[0])
+        
+        df = pd.read_csv("source_lists/ad_fontes_media_bias.csv") # Ad Fontes
+        df = df[df["Url"].notna() & (df["Url"] != "")] # Removes TV show entries without URLs
+        
+        def splice_url(url):
+            if not url or not isinstance(url, str):
+                return None
+            pattern = r'^(https?://[^/]+\.(com|org|co\.uk|blog|tv))'
+            match = re.match(pattern, url)
+            if match:
+                return match.group(1)
+            else:
+                return None
+        df["Base_Url"] = df["Url"].apply(splice_url)
+
+        avg_scores = df.groupby("Source")[["Bias", "Quality"]].mean().reset_index()
+        avg_scores["Bias"] = avg_scores["Bias"].round(2)
+        avg_scores["Quality"] = avg_scores["Quality"].round(2)
+        avg_scores["Base_Url"] = avg_scores["Source"].map(df.groupby("Source")["Base_Url"].first())
+        
+        for _, row in avg_scores.iterrows():
+            if row["Quality"] <= 16:
+                unreliable_sources.append(row["Base_Url"])
+        return unreliable_sources
+    
+    def load_reliable(self): #returns list of reliable source links
+        reliable_sources = []
+        df = pd.read_csv("source_lists/ad_fontes_media_bias.csv") # Ad Fontes
+        df = df[df["Url"].notna() & (df["Url"] != "")] # Removes TV show entries without URLs
+        
+        def splice_url(url):
+            if not url or not isinstance(url, str):
+                return None
+            pattern = r'^(https?://[^/]+\.(com|org|co\.uk|blog|tv))'
+            match = re.match(pattern, url)
+            if match:
+                return match.group(1)
+            else:
+                return None
+        df["Base_Url"] = df["Url"].apply(splice_url)
+        
+        avg_scores = df.groupby("Source")[["Bias", "Quality"]].mean().reset_index()
+        avg_scores["Bias"] = avg_scores["Bias"].round(2)
+        avg_scores["Quality"] = avg_scores["Quality"].round(2)
+        avg_scores["Base_Url"] = avg_scores["Source"].map(df.groupby("Source")["Base_Url"].first())
+        
+        for _, row in avg_scores.iterrows():
+            if row["Quality"] >= 40 and -12 <= row["Bias"] <= 12:
+                reliable_sources.append(row["Base_Url"])
+        
+        return reliable_sources
+    
     def start_requests(self):
         """Define starting URLs for different types of sources"""
         
