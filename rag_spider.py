@@ -606,6 +606,5 @@ if __name__ == "__main__":
 
 
 
-obj = RAGBenchmarkSpider()
-print(obj.load_ambiguous())
+
 
