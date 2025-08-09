@@ -1,4 +1,5 @@
 import scrapy
+from scrapy.exceptions import CloseSpider
 import json
 import random
 from urllib.parse import urlparse
@@ -26,6 +27,9 @@ class SourceSpider(scrapy.Spider):
         self.gold_url = gold_url
         self.topic = topic.lower() if topic else ""
         self.start_urls = [gold_url] if gold_url else []
+        self.results_for_calmrag = {"clear_set": [], "ambigous_set": []}
+        self.targets = {"reliable": 2, "unreliable": 1}#Temporary for testing
+
         
         # Track seen domains to avoid duplicates
         self.seen_domains = set()
@@ -89,7 +93,7 @@ class SourceSpider(scrapy.Spider):
         
         # Check if we've reached our targets
         if self._collection_complete():
-            return
+            raise CloseSpider('targets_met')
         
         domain = urlparse(response.url).netloc.replace("www.", "")
         
@@ -97,6 +101,14 @@ class SourceSpider(scrapy.Spider):
         if domain in self.seen_domains:
             return
         self.seen_domains.add(domain)
+
+        # Skip the gold URL itself
+        if response.url.rstrip('/') == self.gold_url.rstrip('/'):
+            # Still follow its links to find other sources
+            for href in response.css("a::attr(href)").getall():
+                if href and self._should_follow_link(href, response.url):
+                    yield response.follow(href, callback=self.parse)
+            return
 
         # Extract content
         title = self._extract_title(response)
@@ -122,6 +134,9 @@ class SourceSpider(scrapy.Spider):
             
             self.articles[category].append(article)
             self.logger.info(f"Added {category} source: {domain} (Total: {len(self.articles[category])})")
+            yield article
+            if self._collection_complete():
+                raise CloseSpider('targets_met')
 
         # Continue crawling if we need more sources
         if not self._collection_complete():
@@ -159,6 +174,9 @@ class SourceSpider(scrapy.Spider):
         text = re.sub(r'\s+', ' ', text).strip()
         return text
 
+    def _domain_matches(self, domain: str, candidates: set) -> bool:
+        # exact match or subdomain-of
+        return any(domain == d or domain.endswith("." + d) for d in candidates)
     def _categorize_source(self, domain, title, text):
         """Categorize source as reliable, unreliable, or offtopic"""
         
@@ -169,9 +187,9 @@ class SourceSpider(scrapy.Spider):
             return 'offtopic'
         
         # Check domain-based reliability
-        if domain in self.reliable_domains:
+        if self._domain_matches(domain, self.reliable_domains):
             return 'reliable'
-        elif domain in self.unreliable_domains:
+        elif self._domain_matches(domain, self.unreliable_domains):
             return 'unreliable'
         
         # Check content-based reliability indicators
@@ -212,11 +230,7 @@ class SourceSpider(scrapy.Spider):
 
     def _collection_complete(self):
         """Check if we have enough sources in each category"""
-        for category, articles in self.articles.items():
-            if len(articles) < self.target_per_category:
-                return False
-        return True
-
+        return all(len(self.articles[k]) >= v for k, v in self.targets.items())
     def closed(self, reason):
         """Called when spider closes - save results"""
         
@@ -244,12 +258,17 @@ class SourceSpider(scrapy.Spider):
             json.dump(scraped_data, f, indent=2)
         
         # Create paired sets as specified
-        self._create_paired_sets()
+        paired = self._create_paired_sets()
+        if paired:
+            self.results_for_calmrag["clear_set"] = paired["clear_set"]["sources"]
+            self.results_for_calmrag["ambigous_set"] = paired["ambigous_set"]["sources"]
         
         # Print summary
         self.logger.info(f"Collection complete. Reliable: {len(self.articles['reliable'])}, "
                         f"Unreliable: {len(self.articles['unreliable'])}, "
                         f"Offtopic: {len(self.articles['offtopic'])}")
+        
+        
 
     def _create_paired_sets(self):
         """Create the two specific sets as required by specifications"""
@@ -288,10 +307,14 @@ class SourceSpider(scrapy.Spider):
             "created_at": datetime.now().isoformat()
         }
         
+
+        
         with open("paired_sets.json", "w") as f:
             json.dump(paired_sets, f, indent=2)
         
         self.logger.info("Paired sets created successfully")
+
+        return paired_sets
 
 
 # Example domain_trust_config.json structure:

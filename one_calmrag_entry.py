@@ -8,6 +8,9 @@ from dotenv import load_dotenv
 from googleapiclient.discovery import build
 import trafilatura
 import openai
+from scrapy.crawler import CrawlerProcess
+from scrapy import signals
+from source_spider import SourceSpider
 
 
 #API keys
@@ -49,7 +52,7 @@ def extract_article_text(url):
 
 # Generate QA from gold passage
 def generate_qa_from_passage(passage):
-   prompt = prompt = f"""
+   prompt = f"""
 You're helping build a dataset that tests how well AI systems can reason over conflicting or nuanced information.
 
 
@@ -117,75 +120,6 @@ def google_search(query, num_results=100):
    return results
 
 
-def fill_sets(credible_urls, misleading_urls, distraction_url, distraction_text):
-   #check if we have enough urls
-   clear_set = []
-   ambiguous_set = []
-   if len(credible_urls) < 5:
-       print("Not enough credible URLs (need at least 5)")
-       return None
-   if len(misleading_urls) < 4:
-       print("Not enough misleading URLs (need at least 4)")
-       return None
-
-
-   #fill clear set
-   for url in credible_urls[:4]:
-       text = extract_article_text(url)
-       if text:
-           clear_set.append({
-               "title": urlparse(url).netloc,
-               "url": url,
-               "date": str(datetime.today().date()),
-               "text": text[:2000],
-               "type": "credible"
-           })
-   text = extract_article_text(misleading_urls[0])
-   if text:
-       clear_set.append({
-           "title": urlparse(misleading_urls[0]).netloc,
-           "url": misleading_urls[0],
-           "date": str(datetime.today().date()),
-           "text": text[:2000],
-           "type": "misleading"
-       })
-   #fill ambiguous set
-   text = extract_article_text(credible_urls[4])
-   if text:
-       ambiguous_set.append({
-           "title": urlparse(credible_urls[4]).netloc,
-           "url": credible_urls[4],
-           "date": str(datetime.today().date()),
-           "text": text[:2000],
-           "type": "credible"
-       })
-   for url in misleading_urls[1:4]:
-       text = extract_article_text(url)
-       if text:
-           ambiguous_set.append({
-               "title": urlparse(url).netloc,
-               "url": url,
-               "date": str(datetime.today().date()),
-               "text": text[:2000],
-               "type": "misleading"
-       })
-
-
-   if distraction_text:
-       ambiguous_set.append({
-       "title": urlparse(distraction_url).netloc,
-       "url": distraction_url,
-       "date": str(datetime.today().date()),
-       "text": distraction_text[:2000],
-       "type": "distraction"
-   })
-
-
-   return clear_set, ambiguous_set
-
-
-
-
 def generate_gold_query(domain="public health"):
    prompt = f"""
 You are helping build a dataset to evaluate factual question-answering in the domain of "{domain}".
@@ -204,9 +138,19 @@ Only return the question on one line.
    )
    return response.choices[0].message.content.strip().strip('"')
 
+def get_paired_sets(gold_url: str, topic: str):
+    process = CrawlerProcess(settings={"LOG_LEVEL": "WARNING"})
+    results_box = {}
 
+    def on_closed(spider, reason):
+        results_box["clear_set"] = spider.results_for_calmrag.get("clear_set", [])
+        results_box["unclear_set"] = spider.results_for_calmrag.get("unclear_set", [])
 
-
+    crawler = process.create_crawler(SourceSpider)
+    crawler.signals.connect(on_closed, signal=signals.spider_closed)
+    process.crawl(crawler, gold_url=gold_url, topic=topic)
+    process.start() 
+    return results_box
 
 
 class CalmRagEntry:
@@ -218,7 +162,8 @@ class CalmRagEntry:
    def build(self):   
        potential_gold_urls = google_search(self.gold_query)
        gold_passage = None
-       gold_url = None
+       gold_url=None    
+       
 
 
        for url in potential_gold_urls:
@@ -262,15 +207,23 @@ class CalmRagEntry:
            return None
 
 
-       #credible_urls, misleading_urls = scrapy.parse()
-       credible_urls, misleading_urls = [], []
-       filled = fill_sets(credible_urls, misleading_urls, distraction_url, distraction_text)
-       if not filled:
-           print("insufficient sources.")
-           return None
-       clear_set, ambiguous_set = filled
-       if not clear_set or not ambiguous_set:
-           return None
+       
+       paired = get_paired_sets(gold_url=gold_url, topic=self.domain)
+       clear_set = paired.get("clear_set", [])
+       ambiguous_set = paired.get("ambigous_set", [])
+
+       if len(clear_set) == 0 or len(ambiguous_set) == 0:
+            print("Spider did not return paired sets (clear/unclear).")
+            return None
+       if distraction_text:
+            ambiguous_set.append({
+                "url": distraction_url,
+                "domain": urlparse(distraction_url).netloc.replace("www.", ""),
+                "category": "distraction",
+                "title": urlparse(distraction_url).netloc,
+                "text": distraction_text[:1000],        
+                "timestamp": datetime.now().isoformat() 
+            }) 
           
        return {
            "id": self.entry_id,
@@ -294,9 +247,9 @@ class CalmRagEntry:
 
 # Run one entry
 if __name__ == "__main__":
-   entry = CalmRagEntry(1, "public_health")
-   result = entry.build()
-   if result:
+    entry = CalmRagEntry(1, "health")
+    result = entry.build()
+    if result:
        with open("one_calmrag_entry.json", "w") as f:
            json.dump(result, f, indent=2)
        print("Saved: one_calmrag_entry.json")
