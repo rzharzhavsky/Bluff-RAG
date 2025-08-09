@@ -6,6 +6,7 @@ from urllib.parse import urljoin, urlparse
 import hashlib
 import pandas as pd
 import re
+import csv
 
 class RAGBenchmarkSpider(scrapy.Spider):
     name = 'rag_benchmark'
@@ -141,9 +142,21 @@ class RAGBenchmarkSpider(scrapy.Spider):
                 'athletes are clones', 'steroids in water supply'
             ]
         }
+    def splice_url(self, url):
+            if not url or not isinstance(url, str):
+                return None
+            
+            pattern = r'^(https?://[^/]+\.(com|org|co\.uk|blog|tv|net|us))'
+            match = re.match(pattern, url)
+            
+            if match:
+                return match.group(1)
+            else:
+                return None
 
-    def load_unreliable(self): #returns list of unreliable source links
+    def load_unreliable(self): # returns list of unreliable source links
         unreliable_sources = []
+        
         with open('source_lists/iffy_unreliable.csv', 'r', newline='') as csv_file: # Iffy
             iffy_csv_reader = csv.reader(csv_file)
             next(iffy_csv_reader)
@@ -151,44 +164,27 @@ class RAGBenchmarkSpider(scrapy.Spider):
                 unreliable_sources.append(row[0])
         
         df = pd.read_csv("source_lists/ad_fontes_media_bias.csv") # Ad Fontes
+
         df = df[df["Url"].notna() & (df["Url"] != "")] # Removes TV show entries without URLs
-        
-        def splice_url(url):
-            if not url or not isinstance(url, str):
-                return None
-            pattern = r'^(https?://[^/]+\.(com|org|co\.uk|blog|tv))'
-            match = re.match(pattern, url)
-            if match:
-                return match.group(1)
-            else:
-                return None
-        df["Base_Url"] = df["Url"].apply(splice_url)
+        df["Base_Url"] = df["Url"].apply(self.splice_url) # Takes cols of article links and changes to homepage links
 
         avg_scores = df.groupby("Source")[["Bias", "Quality"]].mean().reset_index()
         avg_scores["Bias"] = avg_scores["Bias"].round(2)
         avg_scores["Quality"] = avg_scores["Quality"].round(2)
-        avg_scores["Base_Url"] = avg_scores["Source"].map(df.groupby("Source")["Base_Url"].first())
+        avg_scores["Base_Url"] = avg_scores["Source"].map(df.groupby("Source")["Base_Url"].first()) # Takes first link
         
         for _, row in avg_scores.iterrows():
-            if row["Quality"] <= 16:
+            if row["Quality"] <= 16: # Quality of information is poor, bias is irrelevant in this scenario
                 unreliable_sources.append(row["Base_Url"])
         return unreliable_sources
     
-    def load_reliable(self): #returns list of reliable source links
+    def load_reliable(self): # returns list of reliable source links
         reliable_sources = []
+
         df = pd.read_csv("source_lists/ad_fontes_media_bias.csv") # Ad Fontes
+
         df = df[df["Url"].notna() & (df["Url"] != "")] # Removes TV show entries without URLs
-        
-        def splice_url(url):
-            if not url or not isinstance(url, str):
-                return None
-            pattern = r'^(https?://[^/]+\.(com|org|co\.uk|blog|tv))'
-            match = re.match(pattern, url)
-            if match:
-                return match.group(1)
-            else:
-                return None
-        df["Base_Url"] = df["Url"].apply(splice_url)
+        df["Base_Url"] = df["Url"].apply(self.splice_url)
         
         avg_scores = df.groupby("Source")[["Bias", "Quality"]].mean().reset_index()
         avg_scores["Bias"] = avg_scores["Bias"].round(2)
@@ -196,11 +192,28 @@ class RAGBenchmarkSpider(scrapy.Spider):
         avg_scores["Base_Url"] = avg_scores["Source"].map(df.groupby("Source")["Base_Url"].first())
         
         for _, row in avg_scores.iterrows():
-            if row["Quality"] >= 40 and -12 <= row["Bias"] <= 12:
+            if row["Quality"] >= 40 and -10 <= row["Bias"] <= 10: # Quality of information is high, balanced or slightly skewed bias
                 reliable_sources.append(row["Base_Url"])
-        
         return reliable_sources
     
+    def load_ambiguous(self): # list of ambiguous source links
+        ambiguous_sources = []
+
+        df = pd.read_csv("source_lists/ad_fontes_media_bias.csv") # Ad Fontes
+
+        df = df[df["Url"].notna() & (df["Url"] != "")] # Removes TV show entries without URLs
+        df["Base_Url"] = df["Url"].apply(self.splice_url)
+        
+        avg_scores = df.groupby("Source")[["Bias", "Quality"]].mean().reset_index()
+        avg_scores["Bias"] = avg_scores["Bias"].round(2)
+        avg_scores["Quality"] = avg_scores["Quality"].round(2)
+        avg_scores["Base_Url"] = avg_scores["Source"].map(df.groupby("Source")["Base_Url"].first())
+        
+        for _, row in avg_scores.iterrows():
+            if 24 <= row["Quality"] < 40 and -24 <= row["Bias"] <= 24: # Quality of information varies, opinion-based writing, may be biased
+                ambiguous_sources.append(row["Base_Url"])
+        return ambiguous_sources
+
     def start_requests(self):
         """Define starting URLs for different types of sources"""
         
@@ -264,8 +277,7 @@ class RAGBenchmarkSpider(scrapy.Spider):
             
             # Note: Intentionally not including unreliable/wrong sources
             # Add them manually if needed for benchmarking purposes
-        ]
-        
+        ] + self.load_reliable() + self.load_ambiguous()
         for url in start_urls:
             yield scrapy.Request(url=url, callback=self.parse)
 
@@ -591,3 +603,9 @@ if __name__ == "__main__":
             "text": " ".join(response.xpath("//p//text()").getall()).strip(),
             "trust_level": trust_level
         }
+
+
+
+obj = RAGBenchmarkSpider()
+print(obj.load_ambiguous())
+
