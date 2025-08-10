@@ -732,5 +732,4 @@ if __name__ == "__main__":
 
 
 
-obj = RAGBenchmarkSpider()
-obj.fill_trust_config()
+
