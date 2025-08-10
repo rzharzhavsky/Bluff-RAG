@@ -7,6 +7,11 @@ import hashlib
 import pandas as pd
 import re
 import csv
+from openai import OpenAI
+from urllib.parse import urlparse
+import os
+from dotenv import load_dotenv
+
 
 class RAGBenchmarkSpider(scrapy.Spider):
     name = 'rag_benchmark'
@@ -210,7 +215,7 @@ class RAGBenchmarkSpider(scrapy.Spider):
         avg_scores["Base_Url"] = avg_scores["Source"].map(df.groupby("Source")["Base_Url"].first())
         
         for _, row in avg_scores.iterrows():
-            if 24 <= row["Quality"] < 40 and -24 <= row["Bias"] <= 24: # Quality of information varies, opinion-based writing, may be biased
+            if 24 <= row["Quality"] < 40 and -18 <= row["Bias"] <= 18: # Quality of information varies, opinion-based writing, slight bias
                 ambiguous_sources.append(row["Base_Url"])
         return ambiguous_sources
 
@@ -502,6 +507,159 @@ class RAGBenchmarkSpider(scrapy.Spider):
         print(f"Total pages processed: {self.pages_processed}")
         print(f"Final data saved to: rag_benchmark_data.json")
         print(f"Progress backups saved to: rag_benchmark_progress.json")
+  
+        
+    def fill_trust_config(self,model="gpt-4o-mini", temperature=0.0,):
+        reliable_sources = self.load_reliable()
+        #split up unreliable sources to run in increments last index - 2033
+        unreliable_sources1 = self.load_unreliable()[0:550] #0 - 549
+        unreliable_sources2 = self.load_unreliable()[550:1100] #550 - 1099
+        unreliable_sources3 = self.load_unreliable()[1100:1650] #1100 - 1649
+        unreliable_sources4 = self.load_unreliable()[1650-2034] #1650 - 2033
+
+        all_sources = [reliable_sources,unreliable_sources1,unreliable_sources2,unreliable_sources3,unreliable_sources4]
+
+        with open('domain_trust_config.json', 'r') as file:
+            data_dict = json.load(file)
+        
+        """
+        Ask the LLM to classify each sources into one or more allowed categories.
+        Returns a list of dicts: [{"sources": "example.com", "categories": ["public_health"]}, ...]
+        """
+        load_dotenv()
+        OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+        client = OpenAI(api_key=OPENAI_API_KEY)
+        print(os.getenv("OPENAI_API_KEY"))
+        
+        def llm_completion(source):
+            sources = list(set(source))
+            prompt = f"""
+                You are a helpful assistant. For each source in the list below, assign it to one or more of these categories:
+                - public_health
+                - current_events
+                - climate
+                - finance
+                - history
+                - sports
+
+                **ONLY** return a JSON array (no extra commentary) with objects exactly in this form:
+                [
+                {{"source": "example.com", "categories": ["public_health", "finance"]}},
+                ...
+                ]
+
+                - "categories" must be an array (can be empty if you truly cannot decide).
+                - Only use the categories listed above (no other keys/fields).
+                - If you're unsure, return an empty "categories" array for that source.
+                - If a source can be assigned to multiple categories, the categories list can hold more than one category
+
+                sources = {sources}
+
+                """
+            resp = client.chat.completions.create(
+                model=model,
+                messages=[
+                    {"role": "system", "content": "You are an expert classifier who only outputs JSON."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=temperature,
+                timeout=200
+            )
+
+            text = resp.choices[0].message.content
+            match = re.search(r'\[.*\]', text, re.S) # Skips over uneeded text
+            if not match:
+                raise ValueError(f"No JSON array found in model output: {text}")
+            
+            text = match.group(0)
+
+            classified_dict = json.loads(text)
+            if source == reliable_sources:
+                print("R")
+                for entry in classified_dict:
+                    entry['type']= 'reliable'
+            elif source == unreliable_sources1 or source == unreliable_sources2 or source == unreliable_sources3 or source == unreliable_sources4:
+                print('U')
+                for entry in classified_dict:
+                    entry['type'] = 'misleading'
+            elif source == example:
+                for entry in classified_dict:
+                    entry['type'] = 'reliable'
+            return classified_dict
+
+        #formatting llm response into format of domain_trust_config.json
+        new_dict = {
+            "public_health": {
+                "reliable": [],
+                "misleading": []
+            },"current_events":{
+                "reliable": [],
+                "misleading": []
+            },"history": {
+                "reliable": [],
+                "misleading": []
+            },"finance": {
+                "reliable": [],
+                "misleading": []
+            },"sports": {
+                "reliable": [],
+                "misleading": []
+            }}
+        
+        def change_json(source):
+            for item in llm_completion(source):
+                src = item['source']
+                src_type = item['type']
+                for cat in item['categories']:
+                    if cat in new_dict:
+                        new_dict[cat][src_type].append(src)
+            
+            for category, subdict in new_dict.items(): # Combines old data with LLM-generated responses
+                for trust_type, items in subdict.items():
+                    data_dict.setdefault(category, {}).setdefault(trust_type, []).extend(items)
+            
+            
+            with open('domain_trust_config.json', 'w') as f: # Writes into domain_trust_config.json
+                json.dump(data_dict, f, indent=4)
+        
+        for source in all_sources:
+            change_json(source)
+        
+        
+
+    def load_trust_config(self, config_file="domain_trust_config.json"):
+        with open(config_file, "r") as f:
+            config = json.load(f)
+        self.trusted_domains = set()
+        self.ambiguous_domains = set(config.get("ambiguous", []))
+        for topic, domains in config.items():
+            if topic == "ambiguous":
+                continue
+            self.trusted_domains.update(domains.get("trusted", []))
+
+
+    def start_requests(self):
+        self.load_trust_config("domain_trust_config.json")
+        for url in self.start_urls:
+            yield scrapy.Request(url=url, callback=self.parse)
+
+
+    def parse(self, response):
+        domain = urlparse(response.url).netloc.replace("www.", "")
+        if domain in self.trusted_domains:
+            trust_level = "credible"
+        elif domain in self.ambiguous_domains:
+            trust_level = "ambiguous"
+        else:
+            trust_level = "unknown"
+
+        yield {
+            "url": response.url,
+            "title": response.xpath("//title/text()").get(),
+            "text": " ".join(response.xpath("//p//text()").getall()).strip(),
+            "trust_level": trust_level
+        }    
+
 
 
 # Custom settings for the spider
@@ -571,41 +729,8 @@ if __name__ == "__main__":
     
     print(json.dumps(example_output, indent=2))
 
-    def load_trust_config(self, config_file="domain_trust_config.json"):
-        with open(config_file, "r") as f:
-            config = json.load(f)
-        self.trusted_domains = set()
-        self.ambiguous_domains = set(config.get("ambiguous", []))
-        for topic, domains in config.items():
-            if topic == "ambiguous":
-                continue
-            self.trusted_domains.update(domains.get("trusted", []))
-
-
-    def start_requests(self):
-        self.load_trust_config("domain_trust_config.json")
-        for url in self.start_urls:
-            yield scrapy.Request(url=url, callback=self.parse)
-
-
-    def parse(self, response):
-        domain = urlparse(response.url).netloc.replace("www.", "")
-        if domain in self.trusted_domains:
-            trust_level = "credible"
-        elif domain in self.ambiguous_domains:
-            trust_level = "ambiguous"
-        else:
-            trust_level = "unknown"
-
-        yield {
-            "url": response.url,
-            "title": response.xpath("//title/text()").get(),
-            "text": " ".join(response.xpath("//p//text()").getall()).strip(),
-            "trust_level": trust_level
-        }
 
 
 
 obj = RAGBenchmarkSpider()
-print(obj.load_ambiguous())
-
+obj.fill_trust_config()
