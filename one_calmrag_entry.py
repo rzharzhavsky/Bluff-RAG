@@ -139,12 +139,16 @@ Only return the question on one line.
    return response.choices[0].message.content.strip().strip('"')
 
 def get_paired_sets(gold_url: str, topic: str):
-    process = CrawlerProcess(settings={"LOG_LEVEL": "WARNING"})
+    print(f"Starting spider for topic: {topic}, gold_url: {gold_url}")
+    process = CrawlerProcess(settings={"LOG_LEVEL": "INFO"})
     results_box = {}
 
     def on_closed(spider, reason):
+        print(f"Spider closed with reason: {reason}")
+        print(f"Spider results: {spider.results_for_calmrag}")
         results_box["clear_set"] = spider.results_for_calmrag.get("clear_set", [])
-        results_box["unclear_set"] = spider.results_for_calmrag.get("unclear_set", [])
+        results_box["unclear_set"] = spider.results_for_calmrag.get("ambigous_set", [])
+        print(f"Results box: {results_box}")
 
     crawler = process.create_crawler(SourceSpider)
     crawler.signals.connect(on_closed, signal=signals.spider_closed)
@@ -247,7 +251,7 @@ class CalmRagEntry:
 
 # Run one entry
 if __name__ == "__main__":
-    entry = CalmRagEntry(1, "health")
+    entry = CalmRagEntry(1, "public_health")
     result = entry.build()
     if result:
        with open("one_calmrag_entry.json", "w") as f:
