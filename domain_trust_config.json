@@ -11,6 +11,9 @@
       "pubmed.ncbi.nlm.nih.gov",
       "ncbi.nlm.nih.gov",
       "bmj.com",
+      "msu.edu",
+      "harvard.edu",
+      "oregonstate.edu",
       "webmd.com",
       "livestrong.com",
       "pbs.org",
@@ -23,7 +26,11 @@
       "sciencetimes.com",
       "medicaldaily.com",
       "patientdaily.com",
-      "sciencevibe.com"
+      "sciencevibe.com",
+      "nap.nationalacademies.org",
+      "nam.edu",
+      "nae.edu",
+      "healthline.com"
     ],
     "misleading": [
       "naturalnews.com",
@@ -165,8 +172,25 @@
       "fdahealthnews.com",
       "americanpharmacynews.com",
       "aapsonline.org",
-      "acpeds.org",
-      "autismspeaks.org"
+      "reddit.com",
+      "quora.com",
+      "twitter.com",
+      "wellwisp.com",
+      "saveourbones.com",
+      "optimunity.com",
+      "firstday.com",
+      "solgar.co.uk",
+      "bubsnaturals.com",
+      "dryoho.com",
+      "basmati.com",
+      "chemicalfreebody.com",
+      "divinitynutra.com",
+      "rfitness.in",
+      "nutritionvalueinsights.com",
+      "vitaminreviewer.com",
+      "lovelunakai.com",
+      "auvonhealth.com",
+      "torontofunctionalmedicine.com"
     ]
   },
   "current_events": {

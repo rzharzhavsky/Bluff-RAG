@@ -1,0 +1,110 @@
+{
+  "id": 1,
+  "domain": "public_health",
+  "question": "How does vitamin C play a role in immune function according to the passage?",
+  "gold_answer": "Vitamin C plays an important role in immune function by acting as an antioxidant, helping to limit the damaging effects of free radicals.",
+  "gold_passage": {
+    "title": "ods.od.nih.gov",
+    "url": "https://ods.od.nih.gov/factsheets/VitaminC-HealthProfessional/",
+    "date": "2025-08-13",
+    "text": "This is a fact sheet intended for health professionals. For a general overview, see our consumer fact sheet.\nFor information on vitamin C and COVID-19, see Dietary Supplements in the Time of COVID-19.\nIntroduction\nVitamin C, also known as L-ascorbic acid, is a water-soluble vitamin that is naturally present in some foods, added to others, and available as a dietary supplement. Humans, unlike most animals, are unable to synthesize vitamin C endogenously, so it is an essential dietary component [1].\nVitamin C is required for the biosynthesis of collagen, L-carnitine, and certain neurotransmitters; vitamin C is also involved in protein metabolism [1,2]. Collagen is an essential component of connective tissue, which plays a vital role in wound healing. Vitamin C is also an important physiological antioxidant [3] and has been shown to regenerate other antioxidants within the body, including alpha-tocopherol (vitamin E) [4]. Because vitamin C can limit the damaging effects of free radicals through its antioxidant activity, researchers are examining whether it might help prevent or delay the development of diseases in which oxidative stress plays a role, such as certain cancers and cardiovascular disease (CVD). In addition to its biosynthetic and antioxidant functions, vitamin C plays an important role in immune function [4] and improves the absorption of nonheme iron [5], the form of iron that is present in plant-based foods. Insufficient vitamin C intake causes scurvy, which is characterized by fatigue or lassitude, widespread connective tissue weakness, and capillary fragility [1,2,4,6-9].\nThe intestinal absorption of vitamin C is regulated by at least one specific dose-dependent, active transporter [4]. Cells accumulate vitamin C via a second specific transport protein. In vitro studies have found that oxidized vitamin C, or dehydroascorbic acid, enters cells via some facilitated glucose transporters and is then reduced internally to ascorbic acid. The physiologic impo"
+  },
+  "source_sets": {
+    "clear": [
+      {
+        "url": "https://www.livestrong.com/article/380506-the-best-vitamin-c-dosage-for-adults/",
+        "domain": "livestrong.com",
+        "category": "reliable",
+        "title": "Vitamin C : Benefits, Sources and Daily Dosage | livestrong",
+        "text": "You may already double down on vitamin C-rich foods when you want to give your immune system a kick, but this powerful vitamin is responsible for far more than helping you avoid a cold (and spoiler: There are better sources of it than oranges!).\nVitamin C is an antioxidant you can easily get from a variety of foods or from supplements. Because vitamin C is water-soluble, your body can't store it, and you need enough of it daily to prevent deficiency, per the National Institutes of Health (NIH).\nWhen you get enough vitamin C, your body will be able to function better overall. This antioxidant can help reduce how long you feel sick with the common cold, boost your skin health and much more.\nWhat Is Vitamin C?\nVitamin C is a water-soluble vitamin. Your body needs vitamin C to form collagen, which makes up the connective tissues in the body and helps heal wounds.\nVitamin C also contributes to the overall health of your bones, cartilage and teeth.\nIt also plays a role in your body's absorpt",
+        "timestamp": "2025-08-13T22:18:39.595845",
+        "score": 0.8704545454545455
+      },
+      {
+        "url": "https://www.livestrong.com/article/380506-the-best-vitamin-c-dosage-for-adults/",
+        "domain": "livestrong.com",
+        "category": "reliable",
+        "title": "Vitamin C : Benefits, Sources and Daily Dosage | livestrong",
+        "text": "You may already double down on vitamin C-rich foods when you want to give your immune system a kick, but this powerful vitamin is responsible for far more than helping you avoid a cold (and spoiler: There are better sources of it than oranges!).\nVitamin C is an antioxidant you can easily get from a variety of foods or from supplements. Because vitamin C is water-soluble, your body can't store it, and you need enough of it daily to prevent deficiency, per the National Institutes of Health (NIH).\nWhen you get enough vitamin C, your body will be able to function better overall. This antioxidant can help reduce how long you feel sick with the common cold, boost your skin health and much more.\nWhat Is Vitamin C?\nVitamin C is a water-soluble vitamin. Your body needs vitamin C to form collagen, which makes up the connective tissues in the body and helps heal wounds.\nVitamin C also contributes to the overall health of your bones, cartilage and teeth.\nIt also plays a role in your body's absorpt",
+        "timestamp": "2025-08-13T22:18:39.595850",
+        "score": 0.8704545454545455
+      },
+      {
+        "url": "https://www.livestrong.com/article/380506-the-best-vitamin-c-dosage-for-adults/",
+        "domain": "livestrong.com",
+        "category": "reliable",
+        "title": "Vitamin C : Benefits, Sources and Daily Dosage | livestrong",
+        "text": "You may already double down on vitamin C-rich foods when you want to give your immune system a kick, but this powerful vitamin is responsible for far more than helping you avoid a cold (and spoiler: There are better sources of it than oranges!).\nVitamin C is an antioxidant you can easily get from a variety of foods or from supplements. Because vitamin C is water-soluble, your body can't store it, and you need enough of it daily to prevent deficiency, per the National Institutes of Health (NIH).\nWhen you get enough vitamin C, your body will be able to function better overall. This antioxidant can help reduce how long you feel sick with the common cold, boost your skin health and much more.\nWhat Is Vitamin C?\nVitamin C is a water-soluble vitamin. Your body needs vitamin C to form collagen, which makes up the connective tissues in the body and helps heal wounds.\nVitamin C also contributes to the overall health of your bones, cartilage and teeth.\nIt also plays a role in your body's absorpt",
+        "timestamp": "2025-08-13T22:18:39.595852",
+        "score": 0.8704545454545455
+      },
+      {
+        "url": "https://www.livestrong.com/article/380506-the-best-vitamin-c-dosage-for-adults/",
+        "domain": "livestrong.com",
+        "category": "reliable",
+        "title": "Vitamin C : Benefits, Sources and Daily Dosage | livestrong",
+        "text": "You may already double down on vitamin C-rich foods when you want to give your immune system a kick, but this powerful vitamin is responsible for far more than helping you avoid a cold (and spoiler: There are better sources of it than oranges!).\nVitamin C is an antioxidant you can easily get from a variety of foods or from supplements. Because vitamin C is water-soluble, your body can't store it, and you need enough of it daily to prevent deficiency, per the National Institutes of Health (NIH).\nWhen you get enough vitamin C, your body will be able to function better overall. This antioxidant can help reduce how long you feel sick with the common cold, boost your skin health and much more.\nWhat Is Vitamin C?\nVitamin C is a water-soluble vitamin. Your body needs vitamin C to form collagen, which makes up the connective tissues in the body and helps heal wounds.\nVitamin C also contributes to the overall health of your bones, cartilage and teeth.\nIt also plays a role in your body's absorpt",
+        "timestamp": "2025-08-13T22:18:39.595854",
+        "score": 0.8704545454545455
+      },
+      {
+        "url": "https://wellwisp.com/how-does-vitamin-c-help-a-cold/",
+        "domain": "wellwisp.com",
+        "category": "unreliable",
+        "title": "How Does Vitamin C Help A Cold? | Immune Boosting Secrets",
+        "text": "Vitamin C is known to boost the immune system, potentially reducing the duration and severity of cold symptoms.\nUnderstanding Vitamin C\nVitamin C, also known as ascorbic acid, is a water-soluble vitamin that plays a crucial role in various bodily functions. It\u2019s renowned for its antioxidant properties, helping to protect cells from damage caused by free radicals. This vitamin is essential for the growth and repair of tissues in the body, aiding in wound healing and the maintenance of cartilage, bones, and teeth.\nMoreover, Vitamin C is vital for the immune system. It helps stimulate the production of white blood cells, which are essential for combating infections. The body cannot produce or store Vitamin C, making it necessary to obtain it through diet or supplements.\nSources of Vitamin C\nTo harness the benefits of Vitamin C, incorporating a variety of sources into your diet is vital. Here\u2019s a list of foods rich in Vitamin C:\n- Citrus fruits (oranges, lemons, limes)\n- Berries (strawberr",
+        "timestamp": "2025-08-13T22:18:39.595855",
+        "score": 0.8669847328244276
+      }
+    ],
+    "ambiguous": [
+      {
+        "url": "https://ods.od.nih.gov/factsheets/VitaminC-HealthProfessional/",
+        "domain": "ods.od.nih.gov",
+        "category": "reliable",
+        "title": "Vitamin C - Health Professional Fact Sheet",
+        "text": "This is a fact sheet intended for health professionals. For a general overview, see our consumer fact sheet.\nFor information on vitamin C and COVID-19, see Dietary Supplements in the Time of COVID-19.\nIntroduction\nVitamin C, also known as L-ascorbic acid, is a water-soluble vitamin that is naturally present in some foods, added to others, and available as a dietary supplement. Humans, unlike most animals, are unable to synthesize vitamin C endogenously, so it is an essential dietary component [1].\nVitamin C is required for the biosynthesis of collagen, L-carnitine, and certain neurotransmitters; vitamin C is also involved in protein metabolism [1,2]. Collagen is an essential component of connective tissue, which plays a vital role in wound healing. Vitamin C is also an important physiological antioxidant [3] and has been shown to regenerate other antioxidants within the body, including alpha-tocopherol (vitamin E) [4]. Because vitamin C can limit the damaging effects of free radicals t",
+        "timestamp": "2025-08-13T22:18:39.595857",
+        "score": 0.8121794871794872
+      },
+      {
+        "url": "https://torontofunctionalmedicine.com/the-iv-lounge/continues-to-praise-vitamin-c/",
+        "domain": "torontofunctionalmedicine.com",
+        "category": "unreliable",
+        "title": "IV Therapy Lounge In Toronto Continues To Praise Vitamin C",
+        "text": "At our IV therapy Toronto lounge, vitamin C is continuously celebrated as a powerful antioxidant!\nThis is because it\u2019s essential for several body functions, including immunity, cellular functioning, collagen synthesis, chronic disease prevention, cognition, and more. But there\u2019s a problem: the body cannot create vitamin C on its own, so we have to outsource it from dietary means or supplementation.\nSince it is already in our food consumption, a deficiency to this nutrient is rare. Though, \u201c\u2026[i]n countries with low rates of food insecurity, vitamin C deficiency can occur from a diet low in vitamin C, but severe deficiency (causing scurvy) is uncommon,\u201d the Merck Manual explains.\nNevertheless, these individuals are at risk of this deficiency: pregnant/breastfeeding women; those with inflammatory health conditions; patients with long-lasting diarrhea; those suffering from thyroid conditions (i.e. hyperthyroidism); people who recently underwent a surgical procedure; and nicotine smokers.\nT",
+        "timestamp": "2025-08-13T22:18:39.595858",
+        "score": 0.7190265486725664
+      },
+      {
+        "url": "https://www.bubsnaturals.com/blogs/all-about-vitamin-c/is-vitamin-c-good-for-the-immune-system-understanding-its-role-and-benefits",
+        "domain": "bubsnaturals.com",
+        "category": "unreliable",
+        "title": "Is Vitamin C Good for the Immune System? Understanding Its ...",
+        "text": "Table of Contents\n- Introduction\n- The Role of Vitamin C in Immune Function\n- Dietary Sources of Vitamin C\n- Recommended Daily Intake\n- The Effects of Vitamin C on Common Illnesses\n- Potential Risks of Vitamin C Supplementation\n- How BUBS Naturals Supports Your Wellness Journey\n- Conclusion\nIntroduction\nDid you know that the body cannot produce vitamin C on its own? This vital nutrient, also known as ascorbic acid, is essential for our overall health and well-being. It plays a crucial role in various bodily functions, particularly in supporting our immune system. As we navigate through our hectic lives, filled with stress and environmental challenges, understanding the significance of vitamin C becomes even more critical.\nVitamin C has long been associated with boosting immunity, but what does the science really say? In this blog post, we will explore the multifaceted role of vitamin C in immune function, its sources, recommended intake, and how it can support our health. By the end, y",
+        "timestamp": "2025-08-13T22:18:39.595859",
+        "score": 0.8669847328244276
+      },
+      {
+        "url": "https://vitaminreviewer.com/how-do-multivitamins-affect-the-immune-system/",
+        "domain": "vitaminreviewer.com",
+        "category": "unreliable",
+        "title": "How Do Multivitamins Affect the Immune System? - Vitamin Reviewer",
+        "text": "Enhancing your immune system, multivitamins provide vital nutrients to strengthen your body's defenses against illnesses. Vitamins like C and D play essential roles in immune response and fighting infections, while zinc supports white blood cell function. Selenium aids in immune regulation, and Vitamin E acts as a powerful antioxidant. Vitamin A boosts defense mechanisms, and B vitamins promote overall immune health. Multivitamins fill nutrient gaps, supporting your body's well-being. Consulting a healthcare provider can help tailor multivitamin choices to your needs. Learn more about how multivitamins bolster immune function and overall wellness.\nKey Takeaways\n- Multivitamins support immune function by providing essential nutrients.\n- Vitamin C and D in multivitamins enhance immune response and defense.\n- Zinc in multivitamins regulates white blood cells for better immunity.\n- Selenium in multivitamins boosts immune cell function against infections.\n- Multivitamins fill nutrient gaps,",
+        "timestamp": "2025-08-13T22:18:39.595861",
+        "score": 0.7581967213114753
+      },
+      {
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK218224/",
+        "domain": "ncbi.nlm.nih.gov",
+        "category": "distraction",
+        "title": "www.ncbi.nlm.nih.gov",
+        "text": "In Chapter 1, the committee found that the current public health system must play a critical role in handling major threats to the public health, but that this system is currently in disarray. Chapter 2 explained the committee's ideal for the public health system\u2014how it should be arranged for handling current and future threats to health. In this chapter the history of the existing public health system is briefly described. This history is intended to provide some perspective on how protection of citizens from health threats came to be a public responsibility and on how the public health system came to be in its current state.\nHistory\nDuring the past 150 years, two factors have shaped the modern public health system: first, the growth of scientific knowledge about sources and means of controlling disease; second, the growth of public acceptance of disease control as both a possibility and a public responsibility. In earlier centuries, when little was known about the causes of disease, ",
+        "timestamp": "2025-08-13T22:18:39.595960",
+        "score": "N/A"
+      }
+    ]
+  },
+  "human_confidence": null,
+  "human_hedge_label": null
+}

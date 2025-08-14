@@ -8,9 +8,7 @@ from dotenv import load_dotenv
 from googleapiclient.discovery import build
 import trafilatura
 import openai
-from scrapy.crawler import CrawlerProcess
-from scrapy import signals
-from source_spider import SourceSpider
+from source_finder import SourceFinder
 
 
 #API keys
@@ -138,23 +136,15 @@ Only return the question on one line.
    )
    return response.choices[0].message.content.strip().strip('"')
 
-def get_paired_sets(gold_url: str, topic: str):
-    print(f"Starting spider for topic: {topic}, gold_url: {gold_url}")
-    process = CrawlerProcess(settings={"LOG_LEVEL": "INFO"})
-    results_box = {}
+def get_paired_sets(gold_query: str, topic: str):
+    print(f"Starting SourceFinder for topic: {topic}, gold_query: {gold_query}")
+    finder = SourceFinder(gold_query)
+    result = finder.build()
 
-    def on_closed(spider, reason):
-        print(f"Spider closed with reason: {reason}")
-        print(f"Spider results: {spider.results_for_calmrag}")
-        results_box["clear_set"] = spider.results_for_calmrag.get("clear_set", [])
-        results_box["unclear_set"] = spider.results_for_calmrag.get("ambigous_set", [])
-        print(f"Results box: {results_box}")
-
-    crawler = process.create_crawler(SourceSpider)
-    crawler.signals.connect(on_closed, signal=signals.spider_closed)
-    process.crawl(crawler, gold_url=gold_url, topic=topic)
-    process.start() 
-    return results_box
+    return {
+        "clear_set": result.get("clear_set", []),
+        "ambiguous_set": result.get("unclear_set", [])
+    }
 
 
 class CalmRagEntry:
@@ -212,9 +202,9 @@ class CalmRagEntry:
 
 
        
-       paired = get_paired_sets(gold_url=gold_url, topic=self.domain)
+       paired = get_paired_sets(gold_query=question, topic=self.domain)
        clear_set = paired.get("clear_set", [])
-       ambiguous_set = paired.get("ambigous_set", [])
+       ambiguous_set = paired.get("ambiguous_set", [])
 
        if len(clear_set) == 0 or len(ambiguous_set) == 0:
             print("Spider did not return paired sets (clear/unclear).")
@@ -226,7 +216,9 @@ class CalmRagEntry:
                 "category": "distraction",
                 "title": urlparse(distraction_url).netloc,
                 "text": distraction_text[:1000],        
-                "timestamp": datetime.now().isoformat() 
+                "timestamp": datetime.now().isoformat(),
+                "score": "N/A"
+                 
             }) 
           
        return {
