@@ -32,32 +32,14 @@ class SourceFinder:
         # Initialize stopwords without requiring downloads(ran into problems using nltk)
         self.stopwords = set(ENGLISH_STOP_WORDS)
         
-        # Search queries for different source types
-        self.search_queries = {
-            'reliable': [
-                f"{self.gold_query}",
-                f"{self.gold_query} guidelines",
-                f"{self.gold_query} research",
-                f"{self.gold_query} government",
-                f"{self.gold_query} academic"
-            ],
-            'unreliable': [
-                f"{self.gold_query}",
-                f"{self.gold_query} reddit",
-                #f"{self.gold_query} quora", (Quora prohibits webscraping)
-                f"{self.gold_query} twitter",
-                f"{self.gold_query} natural medicine",
-                f"{self.gold_query} alternative treatment",
-                f"{self.gold_query} conspiracy",
-                f"{self.gold_query} natural news"
-
-            ]
-        }
+        # Generate topic-specific search queries
+        self.search_queries = self._get_search_queries_for_topic(self.topic, self.gold_query)
         
         print(f"SourceFinder initialized for query: '{self.gold_query}'")
         print(f"Extracted topic: {self.topic}")
         print(f"Loaded {len(self.reliable_domains)} reliable domains, {len(self.unreliable_domains)} unreliable domains")
-    
+        print(f"Generated {len(self.search_queries['reliable'])} reliable and {len(self.search_queries['unreliable'])} unreliable search queries")
+
     def _load_domain_config(self):
         """Load ALL topics from domain_trust_config.json and union domains globally."""
         try:
@@ -104,6 +86,217 @@ class SourceFinder:
             # Default to public_health
             return 'public_health'
     
+    def _get_search_queries_for_topic(self, topic: str, gold_query: str) -> Dict[str, List[str]]:
+        """Generate topic-specific search queries for reliable and unreliable sources."""
+        
+        base_queries = {
+            'reliable': [f"{gold_query}"],
+            'unreliable': [f"{gold_query}"]
+        }
+        
+        if topic == 'public_health':
+            base_queries['reliable'].extend([
+                f"{gold_query} guidelines",
+                f"{gold_query} research",
+                f"{gold_query} government",
+                f"{gold_query} academic",
+                f"{gold_query} clinical study",
+                f"{gold_query} peer reviewed",
+                f"{gold_query} medical journal",
+                f"{gold_query} WHO CDC"
+            ])
+            base_queries['unreliable'].extend([
+                f"{gold_query} reddit",
+                f"{gold_query} twitter",
+                f"{gold_query} natural medicine",
+                f"{gold_query} alternative treatment",
+                f"{gold_query} conspiracy",
+                f"{gold_query} natural news",
+                f"{gold_query} big pharma",
+                f"{gold_query} cover up",
+                f"{gold_query} holistic cure"
+            ])
+            
+        elif topic == 'current_events':
+            base_queries['reliable'].extend([
+                f"{gold_query} news",
+                f"{gold_query} breaking news",
+                f"{gold_query} Reuters AP",
+                f"{gold_query} official statement",
+                f"{gold_query} government response",
+                f"{gold_query} fact check",
+                f"{gold_query} verified report",
+                f"{gold_query} press release"
+            ])
+            base_queries['unreliable'].extend([
+                f"{gold_query} reddit",
+                f"{gold_query} twitter",
+                f"{gold_query} conspiracy",
+                f"{gold_query} cover up",
+                f"{gold_query} deep state",
+                f"{gold_query} mainstream media lies",
+                f"{gold_query} alternative media",
+                f"{gold_query} truth exposed",
+                f"{gold_query} fake news"
+            ])
+            
+        elif topic == 'finance':
+            base_queries['reliable'].extend([
+                f"{gold_query} analysis",
+                f"{gold_query} research report",
+                f"{gold_query} financial data",
+                f"{gold_query} market analysis",
+                f"{gold_query} expert opinion",
+                f"{gold_query} economic forecast",
+                f"{gold_query} institutional report",
+                f"{gold_query} SEC filing"
+            ])
+            base_queries['unreliable'].extend([
+                f"{gold_query} reddit",
+                f"{gold_query} twitter",
+                f"{gold_query} get rich quick",
+                f"{gold_query} market crash",
+                f"{gold_query} economic collapse",
+                f"{gold_query} conspiracy",
+                f"{gold_query} manipulation",
+                f"{gold_query} pump and dump",
+                f"{gold_query} insider secret"
+            ])
+            
+        elif topic == 'history':
+            base_queries['reliable'].extend([
+                f"{gold_query} historical research",
+                f"{gold_query} academic study",
+                f"{gold_query} archaeological evidence",
+                f"{gold_query} historical records",
+                f"{gold_query} scholarly article",
+                f"{gold_query} museum",
+                f"{gold_query} documented evidence",
+                f"{gold_query} peer reviewed history"
+            ])
+            base_queries['unreliable'].extend([
+                f"{gold_query} reddit",
+                f"{gold_query} twitter",
+                f"{gold_query} conspiracy",
+                f"{gold_query} hidden history",
+                f"{gold_query} cover up",
+                f"{gold_query} ancient aliens",
+                f"{gold_query} lost civilization",
+                f"{gold_query} forbidden archaeology",
+                f"{gold_query} alternative history"
+            ])
+            
+        elif topic == 'sports':
+            base_queries['reliable'].extend([
+                f"{gold_query} official news",
+                f"{gold_query} sports news",
+                f"{gold_query} league report",
+                f"{gold_query} official statement",
+                f"{gold_query} verified report",
+                f"{gold_query} press conference",
+                f"{gold_query} sports journalism",
+                f"{gold_query} team announcement"
+            ])
+            base_queries['unreliable'].extend([
+                f"{gold_query} reddit",
+                f"{gold_query} twitter",
+                f"{gold_query} rumor",
+                f"{gold_query} gossip",
+                f"{gold_query} unconfirmed",
+                f"{gold_query} speculation",
+                f"{gold_query} fan theory",
+                f"{gold_query} hot take",
+                f"{gold_query} controversial opinion"
+            ])
+            
+        elif topic == 'technology':
+            base_queries['reliable'].extend([
+                f"{gold_query} research",
+                f"{gold_query} technical report",
+                f"{gold_query} academic study",
+                f"{gold_query} industry analysis",
+                f"{gold_query} peer review",
+                f"{gold_query} scientific paper",
+                f"{gold_query} official documentation",
+                f"{gold_query} expert analysis"
+            ])
+            base_queries['unreliable'].extend([
+                f"{gold_query} reddit",
+                f"{gold_query} twitter",
+                f"{gold_query} conspiracy",
+                f"{gold_query} surveillance",
+                f"{gold_query} privacy invasion",
+                f"{gold_query} tech manipulation",
+                f"{gold_query} alternative tech",
+                f"{gold_query} suppressed technology",
+                f"{gold_query} tech cover up"
+            ])
+            
+        elif topic == 'climate':
+            base_queries['reliable'].extend([
+                f"{gold_query} climate research",
+                f"{gold_query} scientific study",
+                f"{gold_query} IPCC report",
+                f"{gold_query} peer reviewed",
+                f"{gold_query} climate data",
+                f"{gold_query} environmental research",
+                f"{gold_query} government report",
+                f"{gold_query} academic research"
+            ])
+            base_queries['unreliable'].extend([
+                f"{gold_query} reddit",
+                f"{gold_query} twitter",
+                f"{gold_query} climate hoax",
+                f"{gold_query} conspiracy",
+                f"{gold_query} climate denial",
+                f"{gold_query} alternative theory",
+                f"{gold_query} climate skeptic",
+                f"{gold_query} global warming fraud",
+                f"{gold_query} climate manipulation"
+            ])
+            
+        elif topic == 'politics':
+            base_queries['reliable'].extend([
+                f"{gold_query} official statement",
+                f"{gold_query} government report",
+                f"{gold_query} policy analysis",
+                f"{gold_query} fact check",
+                f"{gold_query} verified news",
+                f"{gold_query} political research",
+                f"{gold_query} legislative report",
+                f"{gold_query} official records"
+            ])
+            base_queries['unreliable'].extend([
+                f"{gold_query} reddit",
+                f"{gold_query} twitter",
+                f"{gold_query} conspiracy",
+                f"{gold_query} deep state",
+                f"{gold_query} political conspiracy",
+                f"{gold_query} cover up",
+                f"{gold_query} alternative media",
+                f"{gold_query} propaganda",
+                f"{gold_query} political manipulation"
+            ])
+        
+        else:
+            # Default fallback for unknown topics
+            base_queries['reliable'].extend([
+                f"{gold_query} research",
+                f"{gold_query} academic",
+                f"{gold_query} study",
+                f"{gold_query} analysis",
+                f"{gold_query} expert opinion"
+            ])
+            base_queries['unreliable'].extend([
+                f"{gold_query} reddit",
+                f"{gold_query} twitter",
+                f"{gold_query} conspiracy",
+                f"{gold_query} alternative",
+                f"{gold_query} unverified"
+            ])
+        
+        return base_queries
+
     def _extract_keywords(self, text: str) -> List[str]:
         #Extract keywords from text, removing stopwords
         # Tokenize and clean
