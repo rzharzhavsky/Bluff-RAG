@@ -610,5 +610,58 @@
       "bleacherreport.com"
     ],
     "misleading": ["barstoolsports.com", "thescore.com", "deadspin.com"]
+  },
+
+  "climate":{
+    "reliable":[
+
+
+    ],
+    "misleading":[
+
+    ]
+  },
+
+  "technology":{
+    "reliable":[
+
+    ],
+    "misleading":[
+
+
+    ]
+  },
+  
+  "astronomy":{
+    "reliable":[
+
+    ],
+    "misleading":[
+
+    ]
+  },
+
+  "law":{
+    "reliable":[
+
+    ],
+    "misleading":[
+
+    ]
+  },
+
+  "psychology":{
+    "reliable":[
+
+    ],
+
+    "misleading":[
+
+
+    ]
   }
+
+  
+
+
 }

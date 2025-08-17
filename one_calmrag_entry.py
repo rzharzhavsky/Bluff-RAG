@@ -136,10 +136,10 @@ Only return the question on one line.
    )
    return response.choices[0].message.content.strip().strip('"')
 
-def get_paired_sets(gold_query: str, topic: str):
+def get_paired_sets(gold_query: str, topic: str, exclude_url: str = None):
     print(f"Starting SourceFinder for topic: {topic}, gold_query: {gold_query}")
     finder = SourceFinder(gold_query)
-    result = finder.build()
+    result = finder.find_sources(exclude_url=exclude_url)
 
     return {
         "clear_set": result.get("clear_set", []),
@@ -202,7 +202,7 @@ class CalmRagEntry:
 
 
        
-       paired = get_paired_sets(gold_query=question, topic=self.domain)
+       paired = get_paired_sets(gold_query=question, topic=self.domain, exclude_url=gold_url)
        clear_set = paired.get("clear_set", [])
        ambiguous_set = paired.get("ambiguous_set", [])
 

@@ -80,8 +80,6 @@ class SourceFinder:
             return 'technology'
         elif any(topic in query_lower for topic in ['sports', 'game', 'athletic']):
             return 'sports'
-        elif any(topic in query_lower for topic in ['climate', 'environment', 'global warming']):
-            return 'climate'
         else:
             # Default to public_health
             return 'public_health'
@@ -159,7 +157,7 @@ class SourceFinder:
                 f"{gold_query} economic collapse",
                 f"{gold_query} conspiracy",
                 f"{gold_query} manipulation",
-                f"{gold_query} pump and dump",
+                f"{gold_query} meme coin",
                 f"{gold_query} insider secret"
             ])
             
@@ -391,7 +389,7 @@ class SourceFinder:
             print(f"    Text too short ({len(text)} chars), skipping")
         return None
     
-    def find_sources(self) -> Dict[str, List]:
+    def find_sources(self, exclude_url: str = None) -> Dict[str, List]:
         """
         Main method to find and categorize sources.
         Returns dict with clear_set and unclear_set.
@@ -447,6 +445,22 @@ class SourceFinder:
         
         print(f"\n=== Source discovery complete ===")
         print(f"Total sources found: {len(all_sources)}")
+        
+        # Exclude the gold_url
+        if exclude_url:
+            def normalize_url(url):
+                if not url:
+                    return None
+                parsed = urlparse(url)
+                return (parsed.scheme, parsed.netloc, parsed.path.rstrip('/'))
+            exclude_url_norm = normalize_url(exclude_url)
+            before_count = len(all_sources)
+            all_sources = [
+                s for s in all_sources
+                if normalize_url(s.get('url')) != exclude_url_norm
+            ]
+            after_count = len(all_sources)
+            print(f"Excluded gold_url from sources: {before_count - after_count} removed")
         
         # Dump all collected sources for debugging before pairing
         try:
