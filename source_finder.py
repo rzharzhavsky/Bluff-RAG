@@ -67,21 +67,21 @@ class SourceFinder:
     
     def _extract_topic_from_query(self, query: str) -> str:
         """Extract topic from gold query for domain config loading."""
-        # Simple topic extraction - look for common health topics
+        # Simple topic extraction - look for common topics
         query_lower = query.lower()
         
-        if any(topic in query_lower for topic in ['health', 'medical', 'medicine', 'disease', 'treatment']):
+        if any(topic in query_lower for topic in ['health', 'medical', 'medicine', 'disease', 'treatment', 'vaccine', 'doctor', 'hospital', 'drug', 'therapy']):
             return 'public_health'
-        elif any(topic in query_lower for topic in ['finance', 'money', 'investment', 'economy']):
+        elif any(topic in query_lower for topic in ['news', 'politics', 'government', 'election', 'policy', 'politician', 'congress', 'senate', 'president', 'breaking', 'current']):
+            return 'current_events'
+        elif any(topic in query_lower for topic in ['history', 'historical', 'ancient', 'war', 'civilization', 'archaeology', 'museum', 'artifact']):
+            return 'history'
+        elif any(topic in query_lower for topic in ['finance', 'money', 'investment', 'economy', 'stock', 'market', 'trading', 'crypto', 'bitcoin']):
             return 'finance'
-        elif any(topic in query_lower for topic in ['politics', 'government', 'election']):
-            return 'politics'
-        elif any(topic in query_lower for topic in ['technology', 'tech', 'software']):
-            return 'technology'
-        elif any(topic in query_lower for topic in ['sports', 'game', 'athletic']):
+        elif any(topic in query_lower for topic in ['sports', 'game', 'athletic', 'team', 'player', 'championship', 'league', 'tournament']):
             return 'sports'
         else:
-            # Default to public_health
+            # Default to public_health as it has the most comprehensive domain lists
             return 'public_health'
     
     def _get_search_queries_for_topic(self, topic: str, gold_query: str) -> Dict[str, List[str]]:
@@ -101,7 +101,9 @@ class SourceFinder:
                 f"{gold_query} clinical study",
                 f"{gold_query} peer reviewed",
                 f"{gold_query} medical journal",
-                f"{gold_query} WHO CDC"
+                f"{gold_query} WHO CDC",
+                f"{gold_query} NIH",
+                f"{gold_query} Mayo Clinic"
             ])
             base_queries['unreliable'].extend([
                 f"{gold_query} reddit",
@@ -112,7 +114,8 @@ class SourceFinder:
                 f"{gold_query} natural news",
                 f"{gold_query} big pharma",
                 f"{gold_query} cover up",
-                f"{gold_query} holistic cure"
+                f"{gold_query} holistic cure",
+                f"{gold_query} mercola"
             ])
             
         elif topic == 'current_events':
@@ -124,7 +127,9 @@ class SourceFinder:
                 f"{gold_query} government response",
                 f"{gold_query} fact check",
                 f"{gold_query} verified report",
-                f"{gold_query} press release"
+                f"{gold_query} press release",
+                f"{gold_query} BBC CNN",
+                f"{gold_query} NPR"
             ])
             base_queries['unreliable'].extend([
                 f"{gold_query} reddit",
@@ -135,30 +140,8 @@ class SourceFinder:
                 f"{gold_query} mainstream media lies",
                 f"{gold_query} alternative media",
                 f"{gold_query} truth exposed",
-                f"{gold_query} fake news"
-            ])
-            
-        elif topic == 'finance':
-            base_queries['reliable'].extend([
-                f"{gold_query} analysis",
-                f"{gold_query} research report",
-                f"{gold_query} financial data",
-                f"{gold_query} market analysis",
-                f"{gold_query} expert opinion",
-                f"{gold_query} economic forecast",
-                f"{gold_query} institutional report",
-                f"{gold_query} SEC filing"
-            ])
-            base_queries['unreliable'].extend([
-                f"{gold_query} reddit",
-                f"{gold_query} twitter",
-                f"{gold_query} get rich quick",
-                f"{gold_query} market crash",
-                f"{gold_query} economic collapse",
-                f"{gold_query} conspiracy",
-                f"{gold_query} manipulation",
-                f"{gold_query} meme coin",
-                f"{gold_query} insider secret"
+                f"{gold_query} fake news",
+                f"{gold_query} infowars"
             ])
             
         elif topic == 'history':
@@ -170,7 +153,9 @@ class SourceFinder:
                 f"{gold_query} scholarly article",
                 f"{gold_query} museum",
                 f"{gold_query} documented evidence",
-                f"{gold_query} peer reviewed history"
+                f"{gold_query} peer reviewed history",
+                f"{gold_query} Smithsonian",
+                f"{gold_query} National Geographic"
             ])
             base_queries['unreliable'].extend([
                 f"{gold_query} reddit",
@@ -181,7 +166,34 @@ class SourceFinder:
                 f"{gold_query} ancient aliens",
                 f"{gold_query} lost civilization",
                 f"{gold_query} forbidden archaeology",
-                f"{gold_query} alternative history"
+                f"{gold_query} alternative history",
+                f"{gold_query} ancient code"
+            ])
+            
+        elif topic == 'finance':
+            base_queries['reliable'].extend([
+                f"{gold_query} analysis",
+                f"{gold_query} research report",
+                f"{gold_query} financial data",
+                f"{gold_query} market analysis",
+                f"{gold_query} expert opinion",
+                f"{gold_query} economic forecast",
+                f"{gold_query} institutional report",
+                f"{gold_query} SEC filing",
+                f"{gold_query} Bloomberg",
+                f"{gold_query} Wall Street Journal"
+            ])
+            base_queries['unreliable'].extend([
+                f"{gold_query} reddit",
+                f"{gold_query} twitter",
+                f"{gold_query} get rich quick",
+                f"{gold_query} market crash",
+                f"{gold_query} economic collapse",
+                f"{gold_query} conspiracy",
+                f"{gold_query} manipulation",
+                f"{gold_query} pump and dump",
+                f"{gold_query} insider secret",
+                f"{gold_query} zero hedge"
             ])
             
         elif topic == 'sports':
@@ -193,7 +205,9 @@ class SourceFinder:
                 f"{gold_query} verified report",
                 f"{gold_query} press conference",
                 f"{gold_query} sports journalism",
-                f"{gold_query} team announcement"
+                f"{gold_query} team announcement",
+                f"{gold_query} ESPN",
+                f"{gold_query} official league"
             ])
             base_queries['unreliable'].extend([
                 f"{gold_query} reddit",
@@ -204,76 +218,8 @@ class SourceFinder:
                 f"{gold_query} speculation",
                 f"{gold_query} fan theory",
                 f"{gold_query} hot take",
-                f"{gold_query} controversial opinion"
-            ])
-            
-        elif topic == 'technology':
-            base_queries['reliable'].extend([
-                f"{gold_query} research",
-                f"{gold_query} technical report",
-                f"{gold_query} academic study",
-                f"{gold_query} industry analysis",
-                f"{gold_query} peer review",
-                f"{gold_query} scientific paper",
-                f"{gold_query} official documentation",
-                f"{gold_query} expert analysis"
-            ])
-            base_queries['unreliable'].extend([
-                f"{gold_query} reddit",
-                f"{gold_query} twitter",
-                f"{gold_query} conspiracy",
-                f"{gold_query} surveillance",
-                f"{gold_query} privacy invasion",
-                f"{gold_query} tech manipulation",
-                f"{gold_query} alternative tech",
-                f"{gold_query} suppressed technology",
-                f"{gold_query} tech cover up"
-            ])
-            
-        elif topic == 'climate':
-            base_queries['reliable'].extend([
-                f"{gold_query} climate research",
-                f"{gold_query} scientific study",
-                f"{gold_query} IPCC report",
-                f"{gold_query} peer reviewed",
-                f"{gold_query} climate data",
-                f"{gold_query} environmental research",
-                f"{gold_query} government report",
-                f"{gold_query} academic research"
-            ])
-            base_queries['unreliable'].extend([
-                f"{gold_query} reddit",
-                f"{gold_query} twitter",
-                f"{gold_query} climate hoax",
-                f"{gold_query} conspiracy",
-                f"{gold_query} climate denial",
-                f"{gold_query} alternative theory",
-                f"{gold_query} climate skeptic",
-                f"{gold_query} global warming fraud",
-                f"{gold_query} climate manipulation"
-            ])
-            
-        elif topic == 'politics':
-            base_queries['reliable'].extend([
-                f"{gold_query} official statement",
-                f"{gold_query} government report",
-                f"{gold_query} policy analysis",
-                f"{gold_query} fact check",
-                f"{gold_query} verified news",
-                f"{gold_query} political research",
-                f"{gold_query} legislative report",
-                f"{gold_query} official records"
-            ])
-            base_queries['unreliable'].extend([
-                f"{gold_query} reddit",
-                f"{gold_query} twitter",
-                f"{gold_query} conspiracy",
-                f"{gold_query} deep state",
-                f"{gold_query} political conspiracy",
-                f"{gold_query} cover up",
-                f"{gold_query} alternative media",
-                f"{gold_query} propaganda",
-                f"{gold_query} political manipulation"
+                f"{gold_query} controversial opinion",
+                f"{gold_query} barstool"
             ])
         
         else:
@@ -283,20 +229,24 @@ class SourceFinder:
                 f"{gold_query} academic",
                 f"{gold_query} study",
                 f"{gold_query} analysis",
-                f"{gold_query} expert opinion"
+                f"{gold_query} expert opinion",
+                f"{gold_query} official",
+                f"{gold_query} verified"
             ])
             base_queries['unreliable'].extend([
                 f"{gold_query} reddit",
                 f"{gold_query} twitter",
                 f"{gold_query} conspiracy",
                 f"{gold_query} alternative",
-                f"{gold_query} unverified"
+                f"{gold_query} unverified",
+                f"{gold_query} rumor",
+                f"{gold_query} speculation"
             ])
         
         return base_queries
 
     def _extract_keywords(self, text: str) -> List[str]:
-        #Extract keywords from text, removing stopwords
+        """Extract keywords from text, removing stopwords"""
         # Tokenize and clean
         words = re.findall(r'\b[a-zA-Z]+\b', text.lower())
         # Remove stopwords and short words
@@ -341,7 +291,7 @@ class SourceFinder:
             return "unknown"
     
     def _search_duckduckgo(self, query: str, max_results: int = 50) -> List[Dict]:
-        #Search Duck for urls (ddgs returns keys: href/title/body)
+        """Search Duck for urls (ddgs returns keys: href/title/body)"""
         results: List[Dict] = []
         try:
             with DDGS() as ddgs:
@@ -360,7 +310,7 @@ class SourceFinder:
         return results
     
     def _extract_text_from_url(self, url: str) -> Optional[str]:
-        #Extract text content from url using trafilatura with a hard timeout
+        """Extract text content from url using trafilatura with a hard timeout"""
         print(f"  Extracting text from: {url}")
 
         def _do_extract() -> Optional[str]:
@@ -389,7 +339,7 @@ class SourceFinder:
             print(f"    Text too short ({len(text)} chars), skipping")
         return None
     
-    def find_sources(self, exclude_url: str = None) -> Dict[str, List]:
+    def find_sources(self, exclude_url: Optional[str] = None) -> Dict[str, List]:
         """
         Main method to find and categorize sources.
         Returns dict with clear_set and unclear_set.
@@ -446,13 +396,14 @@ class SourceFinder:
         print(f"\n=== Source discovery complete ===")
         print(f"Total sources found: {len(all_sources)}")
         
-        # Exclude the gold_url
+        # Exclude the gold_url if provided
         if exclude_url:
             def normalize_url(url):
                 if not url:
                     return None
                 parsed = urlparse(url)
                 return (parsed.scheme, parsed.netloc, parsed.path.rstrip('/'))
+            
             exclude_url_norm = normalize_url(exclude_url)
             before_count = len(all_sources)
             all_sources = [
@@ -491,7 +442,7 @@ class SourceFinder:
         return paired_sets
     
     def _create_paired_sets(self, sources: List[Dict]) -> Dict[str, List]:
-        #Create clear_set and ambgious set from collected sources
+        """Create clear_set and ambiguous set from collected sources"""
         print(f"\n=== Creating paired sets ===")
         
         # Separate sources by category
@@ -561,9 +512,10 @@ class SourceFinder:
         return result
     
     def build(self) -> Dict[str, List]:
-        
-        #Main build method that integrates 
-        #Returns the same format as the old spider
+        """
+        Main build method that integrates 
+        Returns the same format as the old spider
+        """
         
         print(f"\n{'='*60}")
         print(f"SOURCE FINDER BUILD STARTING")
@@ -595,4 +547,3 @@ class SourceFinder:
                 'clear_set': [],
                 'unclear_set': []
             }
-
