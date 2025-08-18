@@ -5,7 +5,7 @@ import time
 from datetime import datetime
 from urllib.parse import urlparse
 from dotenv import load_dotenv
-from googleapiclient.discovery import build
+from ddgs import DDGS
 import trafilatura
 import openai
 from source_finder import SourceFinder
@@ -13,8 +13,6 @@ from source_finder import SourceFinder
 
 #API keys
 load_dotenv()
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-GOOGLE_CSE_ID = os.getenv("GOOGLE_CSE_ID")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 openai.api_key = OPENAI_API_KEY
 
@@ -96,37 +94,28 @@ Passage:
 
 
 
-def google_search(query, num_results=100):
-   service = build("customsearch", "v1", developerKey=GOOGLE_API_KEY)
+def duckduckgo_search(query, num_results=100):
    results = []
-
-
-   for start_index in range(1, num_results + 1, 10):
-       res = service.cse().list(
-           q=query,
-           cx=GOOGLE_CSE_ID,
-           num=min(10, num_results - len(results)),
-           start=start_index
-       ).execute()
-
-
-       items = res.get("items", [])
-       if not items:
-           break
-
-
-       results.extend([item["link"] for item in items])
+   try:
+       with DDGS() as ddgs:
+           for result in ddgs.text(query, region="wt-wt", safesearch="off", max_results=num_results):
+               url = result.get('href') or result.get('link') or result.get('url')
+               if url:
+                   results.append(url)
+   except Exception as e:
+       print(f"Error searching DuckDuckGo for '{query}': {e}")
+   
    return results
 
 #langchain
-def generate_gold_query(domain=str, sub_domains=[]):
+def generate_gold_query(topic=str, sub_domains=[]):
    prompt = f"""
-You are helping build a dataset to evaluate factual question-answering in the domain of "{domain}".
+You are helping build a dataset to evaluate factual question-answering in the domain of "{topic}".
 
 
-Generate a single, specific, factual question that could be answered by a reputable source (like a .gov or .edu website). Venture in {sub_domains}. Avoid vague or opinion-based questions. The question should be a good candidate for a single correct answer.
+Generate a single, specific, factual question that could be answered by a reputable source (like a .gov or .edu website). Venture in {sub_domains}. But pick randomly between these subdomains, and feel free to go outside of these subdomains if theres other topics that are relevant to the bigger topic.Avoid vague or opinion-based questions. The question should be a good candidate for a single correct answer.
 
-For example, 
+
 
 
 Only return the question on one line.
@@ -161,7 +150,9 @@ class CalmRagEntry:
             self.subdomains = [
                 "vaccines", "infectious_diseases", "nutrition_guidelines",
                 "mental_health", "maternal_and_child_health",
-                "chronic_diseases", "occupational_safety", "toxicology"
+                "chronic_diseases", "occupational_safety", "toxicology",
+                "emergency_medicine", "preventive_care", "healthcare_policy",
+                "medical_research", "public_health_education"
             ]
        elif self.topic == "current_events":
             self.subdomains = [
@@ -214,7 +205,7 @@ class CalmRagEntry:
        self.gold_query = generate_gold_query(self.topic, self.subdomains)
   
    def build(self):   
-       potential_gold_urls = google_search(self.gold_query)
+       potential_gold_urls = duckduckgo_search(self.gold_query)
        gold_passage = None
        gold_url=None    
        
@@ -222,7 +213,7 @@ class CalmRagEntry:
 
        for url in potential_gold_urls:
            time.sleep(1)
-           if "gov" in url or "org" in url or "edu" in url:
+           if "gov" in url or "edu" in url:
                article = extract_article_text(url)
                if article and len(article) > 300:
                    gold_passage = article[:2000]
@@ -244,7 +235,7 @@ class CalmRagEntry:
        print(f" Q: {question}\n A: {gold_answer}")
 
 
-       potential_distraction_urls = google_search(generate_distraction_query(self.topic, question))
+       potential_distraction_urls = duckduckgo_search(generate_distraction_query(self.topic, question))
        distraction_url = None
        distraction_text = None
        for url in potential_distraction_urls:
@@ -283,7 +274,7 @@ class CalmRagEntry:
           
        return {
            "id": self.entry_id,
-           "domain": self.topic,
+           "topic": self.topic,
            "question": question,
            "gold_answer": gold_answer,
            "gold_passage": {

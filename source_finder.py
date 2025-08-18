@@ -100,10 +100,12 @@ class SourceFinder:
                 f"{gold_query} academic",
                 f"{gold_query} clinical study",
                 f"{gold_query} peer reviewed",
+                """
                 f"{gold_query} medical journal",
                 f"{gold_query} WHO CDC",
                 f"{gold_query} NIH",
                 f"{gold_query} Mayo Clinic"
+                """
             ])
             base_queries['unreliable'].extend([
                 f"{gold_query} reddit",
@@ -290,7 +292,7 @@ class SourceFinder:
             print(f"Error classifying domain for {url}: {e}")
             return "unknown"
     
-    def _search_duckduckgo(self, query: str, max_results: int = 50) -> List[Dict]:
+    def _search_duckduckgo(self, query: str, max_results: int = 80) -> List[Dict]:
         """Search Duck for urls (ddgs returns keys: href/title/body)"""
         results: List[Dict] = []
         try:
