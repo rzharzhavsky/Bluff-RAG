@@ -1,106 +1,106 @@
 {
   "id": 1,
   "domain": "public_health",
-  "question": "How does vitamin C play a role in immune function according to the passage?",
-  "gold_answer": "Vitamin C plays an important role in immune function by acting as an antioxidant, helping to limit the damaging effects of free radicals.",
+  "question": "Can vitamin D be active immediately upon entering the body through sun exposure, foods, or supplements?",
+  "gold_answer": "No, vitamin D is biologically inert upon entering the body and must undergo two hydroxylations, first in the liver and then in the kidney, to be converted into its active form.",
   "gold_passage": {
     "title": "ods.od.nih.gov",
-    "url": "https://ods.od.nih.gov/factsheets/VitaminC-HealthProfessional/",
-    "date": "2025-08-13",
-    "text": "This is a fact sheet intended for health professionals. For a general overview, see our consumer fact sheet.\nFor information on vitamin C and COVID-19, see Dietary Supplements in the Time of COVID-19.\nIntroduction\nVitamin C, also known as L-ascorbic acid, is a water-soluble vitamin that is naturally present in some foods, added to others, and available as a dietary supplement. Humans, unlike most animals, are unable to synthesize vitamin C endogenously, so it is an essential dietary component [1].\nVitamin C is required for the biosynthesis of collagen, L-carnitine, and certain neurotransmitters; vitamin C is also involved in protein metabolism [1,2]. Collagen is an essential component of connective tissue, which plays a vital role in wound healing. Vitamin C is also an important physiological antioxidant [3] and has been shown to regenerate other antioxidants within the body, including alpha-tocopherol (vitamin E) [4]. Because vitamin C can limit the damaging effects of free radicals through its antioxidant activity, researchers are examining whether it might help prevent or delay the development of diseases in which oxidative stress plays a role, such as certain cancers and cardiovascular disease (CVD). In addition to its biosynthetic and antioxidant functions, vitamin C plays an important role in immune function [4] and improves the absorption of nonheme iron [5], the form of iron that is present in plant-based foods. Insufficient vitamin C intake causes scurvy, which is characterized by fatigue or lassitude, widespread connective tissue weakness, and capillary fragility [1,2,4,6-9].\nThe intestinal absorption of vitamin C is regulated by at least one specific dose-dependent, active transporter [4]. Cells accumulate vitamin C via a second specific transport protein. In vitro studies have found that oxidized vitamin C, or dehydroascorbic acid, enters cells via some facilitated glucose transporters and is then reduced internally to ascorbic acid. The physiologic impo"
+    "url": "https://ods.od.nih.gov/factsheets/VitaminD-HealthProfessional/",
+    "date": "2025-08-17",
+    "text": "This is a fact sheet intended for health professionals. For a general overview, see our consumer fact sheet.\nFor information on vitamin D and COVID-19, see Dietary Supplements in the Time of COVID-19.\nIntroduction\nVitamin D (also referred to as calciferol) is a fat-soluble vitamin that is naturally present in a few foods, added to others, and available as a dietary supplement. It is also produced endogenously when ultraviolet (UV) rays from sunlight strike the skin and trigger vitamin D synthesis.\nVitamin D obtained from sun exposure, foods, and supplements is biologically inert and must undergo two hydroxylations in the body for activation. The first hydroxylation, which occurs in the liver, converts vitamin D to 25-hydroxyvitamin D [25(OH)D], also known as calcidiol. The second hydroxylation occurs primarily in the kidney and forms the physiologically active 1,25-dihydroxyvitamin D [1,25(OH)2D], also known as calcitriol [1].\nVitamin D promotes calcium absorption in the gut and maintains adequate serum calcium and phosphate concentrations to enable normal bone mineralization and to prevent hypocalcemic tetany (involuntary contraction of muscles, leading to cramps and spasms). It is also needed for bone growth and bone remodeling by osteoblasts and osteoclasts [1-3]. Without sufficient vitamin D, bones can become thin, brittle, or misshapen. Vitamin D sufficiency prevents rickets in children and osteomalacia in adults. Together with calcium, vitamin D also helps protect older adults from osteoporosis.\nVitamin D has other roles in the body, including reduction of inflammation as well as modulation of such processes as cell growth, neuromuscular and immune function, and glucose metabolism [1-3]. Many genes encoding proteins that regulate cell proliferation, differentiation, and apoptosis are modulated in part by vitamin D. Many tissues have vitamin D receptors, and some convert 25(OH)D to 1,25(OH)2D.\nIn foods and dietary supplements, vitamin D has two main forms, D2 ("
   },
   "source_sets": {
     "clear": [
       {
-        "url": "https://www.livestrong.com/article/380506-the-best-vitamin-c-dosage-for-adults/",
-        "domain": "livestrong.com",
+        "url": "https://www.forbes.com/health/supplements/best-vitamin-d-supplements/",
+        "domain": "forbes.com",
         "category": "reliable",
-        "title": "Vitamin C : Benefits, Sources and Daily Dosage | livestrong",
-        "text": "You may already double down on vitamin C-rich foods when you want to give your immune system a kick, but this powerful vitamin is responsible for far more than helping you avoid a cold (and spoiler: There are better sources of it than oranges!).\nVitamin C is an antioxidant you can easily get from a variety of foods or from supplements. Because vitamin C is water-soluble, your body can't store it, and you need enough of it daily to prevent deficiency, per the National Institutes of Health (NIH).\nWhen you get enough vitamin C, your body will be able to function better overall. This antioxidant can help reduce how long you feel sick with the common cold, boost your skin health and much more.\nWhat Is Vitamin C?\nVitamin C is a water-soluble vitamin. Your body needs vitamin C to form collagen, which makes up the connective tissues in the body and helps heal wounds.\nVitamin C also contributes to the overall health of your bones, cartilage and teeth.\nIt also plays a role in your body's absorpt",
-        "timestamp": "2025-08-13T22:18:39.595845",
-        "score": 0.8704545454545455
+        "title": "Best Vitamin D Supplements : Reviewed In 2025 \u2013 Forbes Health",
+        "text": "Certain groups of people at risk of vitamin D deficiency could benefit from a supplement, says Acerra. These groups include:\n- Older adults, who may spend less time outdoors and also have a decreased ability to produce vitamin D from sun exposure due to aging\n- People with limited sun exposure, including individuals who are homebound and those who are fully covered up when outdoors\n- People with darker skin, due to the higher melanin pigment in the skin, which diminishes the skin\u2019s ability to produce vitamin D from sun exposure\n- People with fat malabsorption conditions such as liver disease and celiac disease, as fat is required for vitamin D absorption\n- People living with excess weight or obesity, as greater fat storage sequesters the vitamin\n- People who\u2019ve had gastric bypass surgery, as the procedure affects the area of the gut where vitamin D is absorbed\nSince vitamin D is naturally found in animal-based foods like fish and milk and requires fat for absorption, Acerra adds that s",
+        "timestamp": "2025-08-17T20:36:32.674223",
+        "score": 0.6156028368794326
       },
       {
-        "url": "https://www.livestrong.com/article/380506-the-best-vitamin-c-dosage-for-adults/",
-        "domain": "livestrong.com",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/",
+        "domain": "pmc.ncbi.nlm.nih.gov",
         "category": "reliable",
-        "title": "Vitamin C : Benefits, Sources and Daily Dosage | livestrong",
-        "text": "You may already double down on vitamin C-rich foods when you want to give your immune system a kick, but this powerful vitamin is responsible for far more than helping you avoid a cold (and spoiler: There are better sources of it than oranges!).\nVitamin C is an antioxidant you can easily get from a variety of foods or from supplements. Because vitamin C is water-soluble, your body can't store it, and you need enough of it daily to prevent deficiency, per the National Institutes of Health (NIH).\nWhen you get enough vitamin C, your body will be able to function better overall. This antioxidant can help reduce how long you feel sick with the common cold, boost your skin health and much more.\nWhat Is Vitamin C?\nVitamin C is a water-soluble vitamin. Your body needs vitamin C to form collagen, which makes up the connective tissues in the body and helps heal wounds.\nVitamin C also contributes to the overall health of your bones, cartilage and teeth.\nIt also plays a role in your body's absorpt",
-        "timestamp": "2025-08-13T22:18:39.595850",
-        "score": 0.8704545454545455
+        "title": "Sunlight and Vitamin D: A global perspective for health - PMC",
+        "text": "Abstract\nVitamin D is the sunshine vitamin that has been produced on this earth for more than 500 million years. During exposure to sunlight 7-dehydrocholesterol in the skin absorbs UV B radiation and is converted to previtamin D3 which in turn isomerizes into vitamin D3. Previtamin D3 and vitamin D3 also absorb UV B radiation and are converted into a variety of photoproducts some of which have unique biologic properties. Sun induced vitamin D synthesis is greatly influenced by season, time of day, latitude, altitude, air pollution, skin pigmentation, sunscreen use, passing through glass and plastic, and aging. Vitamin D is metabolized sequentially in the liver and kidneys into 25-hydroxyvitamin D which is a major circulating form and 1,25-dihydroxyvitamin D which is the biologically active form respectively. 1,25-dihydroxyvitamin D plays an important role in regulating calcium and phosphate metabolism for maintenance of metabolic functions and for skeletal health. Most cells and organ",
+        "timestamp": "2025-08-17T20:36:32.674227",
+        "score": 0.7571095571095572
       },
       {
-        "url": "https://www.livestrong.com/article/380506-the-best-vitamin-c-dosage-for-adults/",
-        "domain": "livestrong.com",
+        "url": "https://www.forbes.com/health/supplements/best-vitamin-d-supplements/",
+        "domain": "forbes.com",
         "category": "reliable",
-        "title": "Vitamin C : Benefits, Sources and Daily Dosage | livestrong",
-        "text": "You may already double down on vitamin C-rich foods when you want to give your immune system a kick, but this powerful vitamin is responsible for far more than helping you avoid a cold (and spoiler: There are better sources of it than oranges!).\nVitamin C is an antioxidant you can easily get from a variety of foods or from supplements. Because vitamin C is water-soluble, your body can't store it, and you need enough of it daily to prevent deficiency, per the National Institutes of Health (NIH).\nWhen you get enough vitamin C, your body will be able to function better overall. This antioxidant can help reduce how long you feel sick with the common cold, boost your skin health and much more.\nWhat Is Vitamin C?\nVitamin C is a water-soluble vitamin. Your body needs vitamin C to form collagen, which makes up the connective tissues in the body and helps heal wounds.\nVitamin C also contributes to the overall health of your bones, cartilage and teeth.\nIt also plays a role in your body's absorpt",
-        "timestamp": "2025-08-13T22:18:39.595852",
-        "score": 0.8704545454545455
+        "title": "Best Vitamin D Supplements : Reviewed In 2025 \u2013 Forbes Health",
+        "text": "Certain groups of people at risk of vitamin D deficiency could benefit from a supplement, says Acerra. These groups include:\n- Older adults, who may spend less time outdoors and also have a decreased ability to produce vitamin D from sun exposure due to aging\n- People with limited sun exposure, including individuals who are homebound and those who are fully covered up when outdoors\n- People with darker skin, due to the higher melanin pigment in the skin, which diminishes the skin\u2019s ability to produce vitamin D from sun exposure\n- People with fat malabsorption conditions such as liver disease and celiac disease, as fat is required for vitamin D absorption\n- People living with excess weight or obesity, as greater fat storage sequesters the vitamin\n- People who\u2019ve had gastric bypass surgery, as the procedure affects the area of the gut where vitamin D is absorbed\nSince vitamin D is naturally found in animal-based foods like fish and milk and requires fat for absorption, Acerra adds that s",
+        "timestamp": "2025-08-17T20:36:32.674229",
+        "score": 0.6156028368794326
       },
       {
-        "url": "https://www.livestrong.com/article/380506-the-best-vitamin-c-dosage-for-adults/",
-        "domain": "livestrong.com",
+        "url": "https://lpi.oregonstate.edu/mic/vitamins/vitamin-D",
+        "domain": "lpi.oregonstate.edu",
         "category": "reliable",
-        "title": "Vitamin C : Benefits, Sources and Daily Dosage | livestrong",
-        "text": "You may already double down on vitamin C-rich foods when you want to give your immune system a kick, but this powerful vitamin is responsible for far more than helping you avoid a cold (and spoiler: There are better sources of it than oranges!).\nVitamin C is an antioxidant you can easily get from a variety of foods or from supplements. Because vitamin C is water-soluble, your body can't store it, and you need enough of it daily to prevent deficiency, per the National Institutes of Health (NIH).\nWhen you get enough vitamin C, your body will be able to function better overall. This antioxidant can help reduce how long you feel sick with the common cold, boost your skin health and much more.\nWhat Is Vitamin C?\nVitamin C is a water-soluble vitamin. Your body needs vitamin C to form collagen, which makes up the connective tissues in the body and helps heal wounds.\nVitamin C also contributes to the overall health of your bones, cartilage and teeth.\nIt also plays a role in your body's absorpt",
-        "timestamp": "2025-08-13T22:18:39.595854",
-        "score": 0.8704545454545455
+        "title": "Vitamin D | Linus Pauling Institute | Oregon State University",
+        "text": "Summary\n- Vitamin D can be synthesized in the skin upon exposure to sunlight and is then metabolized in the liver and kidney to the metabolically active form called 1\u03b1,25-dihydroxyvitamin D. Through binding to the vitamin D receptor (VDR), 1\u03b1,25-dihydroxyvitamin D can regulate the expression of hundreds of genes involved in skeletal and other biological functions. (More information)\n- Vitamin D is essential for maintenance of bone mineralization through the regulation of calcium and phosphorus homeostasis. Vitamin D also exhibits many non-skeletal effects, particularly on the immune, endocrine, and cardiovascular systems. (More information)\n- Vitamin D is important for normal bone development and maintenance. Severe vitamin D deficiency causes rickets in children and osteomalacia in adults. (More information)\n- Secondary hyperparathyroidism due to vitamin D insufficiency can increase bone breakdown and precipitate osteoporosis. Randomized clinical trials indicate that supplementation w",
+        "timestamp": "2025-08-17T20:36:32.674230",
+        "score": 0.8215320910973085
       },
       {
-        "url": "https://wellwisp.com/how-does-vitamin-c-help-a-cold/",
+        "url": "https://wellwisp.com/how-does-the-body-get-vitamin-d/",
         "domain": "wellwisp.com",
         "category": "unreliable",
-        "title": "How Does Vitamin C Help A Cold? | Immune Boosting Secrets",
-        "text": "Vitamin C is known to boost the immune system, potentially reducing the duration and severity of cold symptoms.\nUnderstanding Vitamin C\nVitamin C, also known as ascorbic acid, is a water-soluble vitamin that plays a crucial role in various bodily functions. It\u2019s renowned for its antioxidant properties, helping to protect cells from damage caused by free radicals. This vitamin is essential for the growth and repair of tissues in the body, aiding in wound healing and the maintenance of cartilage, bones, and teeth.\nMoreover, Vitamin C is vital for the immune system. It helps stimulate the production of white blood cells, which are essential for combating infections. The body cannot produce or store Vitamin C, making it necessary to obtain it through diet or supplements.\nSources of Vitamin C\nTo harness the benefits of Vitamin C, incorporating a variety of sources into your diet is vital. Here\u2019s a list of foods rich in Vitamin C:\n- Citrus fruits (oranges, lemons, limes)\n- Berries (strawberr",
-        "timestamp": "2025-08-13T22:18:39.595855",
-        "score": 0.8669847328244276
+        "title": "How Does the Body Get Vitamin D ? | Essential Insights",
+        "text": "The body gets vitamin D primarily through sun exposure, food sources, and supplements, making it vital for overall health.\nVitamin D, often dubbed the \u201csunshine vitamin,\u201d plays an essential role in various bodily functions. Understanding how the body gets vitamin D is crucial for maintaining optimal health. This vitamin is unique because it can be synthesized in the skin upon exposure to sunlight, making it different from other vitamins that must be obtained solely through diet.\nThe Sun: Nature\u2019s Best Source\nThe most significant source of vitamin D is sunlight. When ultraviolet B (UVB) rays hit the skin, they trigger a chemical reaction that converts a cholesterol derivative into vitamin D3 (cholecalciferol). This process is fascinating because it underscores how our bodies are designed to utilize natural resources for our well-being.\nIt\u2019s interesting to note that several factors influence this synthesis. Geographic location plays a crucial role; individuals living closer to the equato",
+        "timestamp": "2025-08-17T20:36:32.674231",
+        "score": 0.6649350649350649
       }
     ],
     "ambiguous": [
       {
-        "url": "https://ods.od.nih.gov/factsheets/VitaminC-HealthProfessional/",
-        "domain": "ods.od.nih.gov",
+        "url": "https://www.healthline.com/nutrition/vitamin-d-from-sun",
+        "domain": "healthline.com",
         "category": "reliable",
-        "title": "Vitamin C - Health Professional Fact Sheet",
-        "text": "This is a fact sheet intended for health professionals. For a general overview, see our consumer fact sheet.\nFor information on vitamin C and COVID-19, see Dietary Supplements in the Time of COVID-19.\nIntroduction\nVitamin C, also known as L-ascorbic acid, is a water-soluble vitamin that is naturally present in some foods, added to others, and available as a dietary supplement. Humans, unlike most animals, are unable to synthesize vitamin C endogenously, so it is an essential dietary component [1].\nVitamin C is required for the biosynthesis of collagen, L-carnitine, and certain neurotransmitters; vitamin C is also involved in protein metabolism [1,2]. Collagen is an essential component of connective tissue, which plays a vital role in wound healing. Vitamin C is also an important physiological antioxidant [3] and has been shown to regenerate other antioxidants within the body, including alpha-tocopherol (vitamin E) [4]. Because vitamin C can limit the damaging effects of free radicals t",
-        "timestamp": "2025-08-13T22:18:39.595857",
-        "score": 0.8121794871794872
+        "title": "How to Safely Get Vitamin D From The Sun - Healthline",
+        "text": "Getting midday sun exposure may help you reach your recommended amount of vitamin D in less time. But too much sun exposure can have side effects.\nVitamin D is a unique vitamin that most people don\u2019t get enough of.\nIn fact, it\u2019s estimated that\n- 50-60% of nursing homes and hospitalized patients\n- 47% of African-American infants\n- 56% of Caucasian infants\nThis vitamin is made from cholesterol in your skin when it\u2019s exposed to the sun. That\u2019s why getting enough sunlight is very important for maintaining optimal vitamin D levels.\nHowever, too much sunlight comes with its own health risks.\nThis article explains how to safely get vitamin D from sunlight.\nThere\u2019s good reason why vitamin D is called \u201cthe sunshine vitamin.\u201d\nWhen your skin is exposed to sunlight, it makes vitamin D from cholesterol. The sun\u2019s ultraviolet B (UVB) rays hit cholesterol in the skin cells, providing the energy for vitamin D synthesis to occur.\nVitamin D has many roles in the body and is essential for optimal health.",
+        "timestamp": "2025-08-17T20:36:32.674232",
+        "score": 0.5941176470588235
       },
       {
-        "url": "https://torontofunctionalmedicine.com/the-iv-lounge/continues-to-praise-vitamin-c/",
-        "domain": "torontofunctionalmedicine.com",
+        "url": "https://wellwisp.com/can-vitamin-d-go-through-windows/",
+        "domain": "wellwisp.com",
         "category": "unreliable",
-        "title": "IV Therapy Lounge In Toronto Continues To Praise Vitamin C",
-        "text": "At our IV therapy Toronto lounge, vitamin C is continuously celebrated as a powerful antioxidant!\nThis is because it\u2019s essential for several body functions, including immunity, cellular functioning, collagen synthesis, chronic disease prevention, cognition, and more. But there\u2019s a problem: the body cannot create vitamin C on its own, so we have to outsource it from dietary means or supplementation.\nSince it is already in our food consumption, a deficiency to this nutrient is rare. Though, \u201c\u2026[i]n countries with low rates of food insecurity, vitamin C deficiency can occur from a diet low in vitamin C, but severe deficiency (causing scurvy) is uncommon,\u201d the Merck Manual explains.\nNevertheless, these individuals are at risk of this deficiency: pregnant/breastfeeding women; those with inflammatory health conditions; patients with long-lasting diarrhea; those suffering from thyroid conditions (i.e. hyperthyroidism); people who recently underwent a surgical procedure; and nicotine smokers.\nT",
-        "timestamp": "2025-08-13T22:18:39.595858",
-        "score": 0.7190265486725664
+        "title": "Can Vitamin D Go Through Windows? | Sunlight Truths Revealed",
+        "text": "Vitamin D cannot pass through standard glass windows because UVB rays are blocked, preventing skin synthesis of this essential nutrient.\nUnderstanding Vitamin D and Its Relationship with Sunlight\nVitamin D plays a crucial role in maintaining healthy bones, supporting immune function, and regulating mood. The most natural way to obtain vitamin D is through exposure to sunlight, specifically ultraviolet B (UVB) radiation. When UVB rays hit the skin, they trigger a chemical reaction that produces vitamin D3 (cholecalciferol), which is then metabolized by the liver and kidneys into its active form. This process is efficient, fast, and generally safe when practiced in moderation.\nHowever, not all sunlight is created equal when it comes to vitamin D production. The sun emits different types of ultraviolet rays: UVA and UVB. While both reach the earth\u2019s surface, only UVB rays have the energy required to initiate vitamin D synthesis in the skin. This distinction is essential to understand why ",
+        "timestamp": "2025-08-17T20:36:32.674233",
+        "score": 0.6904428904428905
       },
       {
-        "url": "https://www.bubsnaturals.com/blogs/all-about-vitamin-c/is-vitamin-c-good-for-the-immune-system-understanding-its-role-and-benefits",
-        "domain": "bubsnaturals.com",
+        "url": "https://wellwisp.com/what-are-symptoms-of-vitamin-d-toxicity/",
+        "domain": "wellwisp.com",
         "category": "unreliable",
-        "title": "Is Vitamin C Good for the Immune System? Understanding Its ...",
-        "text": "Table of Contents\n- Introduction\n- The Role of Vitamin C in Immune Function\n- Dietary Sources of Vitamin C\n- Recommended Daily Intake\n- The Effects of Vitamin C on Common Illnesses\n- Potential Risks of Vitamin C Supplementation\n- How BUBS Naturals Supports Your Wellness Journey\n- Conclusion\nIntroduction\nDid you know that the body cannot produce vitamin C on its own? This vital nutrient, also known as ascorbic acid, is essential for our overall health and well-being. It plays a crucial role in various bodily functions, particularly in supporting our immune system. As we navigate through our hectic lives, filled with stress and environmental challenges, understanding the significance of vitamin C becomes even more critical.\nVitamin C has long been associated with boosting immunity, but what does the science really say? In this blog post, we will explore the multifaceted role of vitamin C in immune function, its sources, recommended intake, and how it can support our health. By the end, y",
-        "timestamp": "2025-08-13T22:18:39.595859",
-        "score": 0.8669847328244276
+        "title": "What Are Symptoms Of Vitamin D Toxicity? | Essential Insights",
+        "text": "Vitamin D toxicity can lead to symptoms such as nausea, vomiting, weakness, and serious complications like kidney damage.\nUnderstanding Vitamin D Toxicity\nVitamin D plays a crucial role in maintaining bone health, immune function, and overall well-being. While it\u2019s essential for various bodily functions, too much of this vitamin can lead to toxicity. This situation arises primarily from excessive supplementation rather than dietary intake or sun exposure. Understanding the symptoms of vitamin D toxicity is vital for anyone considering supplements or those who may be at risk.\nThe human body has a remarkable ability to produce vitamin D when exposed to sunlight. However, it can also store this fat-soluble vitamin in the liver and fatty tissues. This storage capability means that while deficiencies are common, excess intake can lead to serious health issues. Knowing the signs and symptoms of vitamin D toxicity is essential for early detection and intervention.\nSources of Vitamin D\nVitamin",
+        "timestamp": "2025-08-17T20:36:32.674234",
+        "score": 0.6738609112709832
       },
       {
-        "url": "https://vitaminreviewer.com/how-do-multivitamins-affect-the-immune-system/",
-        "domain": "vitaminreviewer.com",
+        "url": "https://wellwisp.com/when-does-vitamin-d-start-working/",
+        "domain": "wellwisp.com",
         "category": "unreliable",
-        "title": "How Do Multivitamins Affect the Immune System? - Vitamin Reviewer",
-        "text": "Enhancing your immune system, multivitamins provide vital nutrients to strengthen your body's defenses against illnesses. Vitamins like C and D play essential roles in immune response and fighting infections, while zinc supports white blood cell function. Selenium aids in immune regulation, and Vitamin E acts as a powerful antioxidant. Vitamin A boosts defense mechanisms, and B vitamins promote overall immune health. Multivitamins fill nutrient gaps, supporting your body's well-being. Consulting a healthcare provider can help tailor multivitamin choices to your needs. Learn more about how multivitamins bolster immune function and overall wellness.\nKey Takeaways\n- Multivitamins support immune function by providing essential nutrients.\n- Vitamin C and D in multivitamins enhance immune response and defense.\n- Zinc in multivitamins regulates white blood cells for better immunity.\n- Selenium in multivitamins boosts immune cell function against infections.\n- Multivitamins fill nutrient gaps,",
-        "timestamp": "2025-08-13T22:18:39.595861",
-        "score": 0.7581967213114753
+        "title": "When Does Vitamin D Start Working? | Sunshine Benefits",
+        "text": "Vitamin D begins to work in the body within hours of intake, influencing calcium absorption and immune function.\nThe Role of Vitamin D in the Body\nVitamin D is often called the \u201csunshine vitamin\u201d because our bodies produce it in response to sunlight. This fat-soluble vitamin plays a crucial role in several bodily functions. It aids in calcium absorption, which is vital for maintaining healthy bones and teeth. Without adequate vitamin D, bones can become thin, brittle, or misshapen.\nMoreover, vitamin D is essential for immune system health. It helps modulate the immune response and can reduce the risk of chronic diseases. Studies have shown that adequate levels of this vitamin can help fend off illnesses ranging from the flu to more severe conditions like autoimmune diseases.\nUnderstanding how vitamin D works can provide insight into how quickly one can expect to feel its effects after supplementation or increased sun exposure.\nHow Vitamin D Works in the Body\nAfter being synthesized in ",
+        "timestamp": "2025-08-17T20:36:32.674235",
+        "score": 0.6614379084967319
       },
       {
-        "url": "https://www.ncbi.nlm.nih.gov/books/NBK218224/",
-        "domain": "ncbi.nlm.nih.gov",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6515114/",
+        "domain": "pmc.ncbi.nlm.nih.gov",
         "category": "distraction",
-        "title": "www.ncbi.nlm.nih.gov",
-        "text": "In Chapter 1, the committee found that the current public health system must play a critical role in handling major threats to the public health, but that this system is currently in disarray. Chapter 2 explained the committee's ideal for the public health system\u2014how it should be arranged for handling current and future threats to health. In this chapter the history of the existing public health system is briefly described. This history is intended to provide some perspective on how protection of citizens from health threats came to be a public responsibility and on how the public health system came to be in its current state.\nHistory\nDuring the past 150 years, two factors have shaped the modern public health system: first, the growth of scientific knowledge about sources and means of controlling disease; second, the growth of public acceptance of disease control as both a possibility and a public responsibility. In earlier centuries, when little was known about the causes of disease, ",
-        "timestamp": "2025-08-13T22:18:39.595960",
+        "title": "pmc.ncbi.nlm.nih.gov",
+        "text": "Summary\nThe skin is colonized by a diverse microbiome intricately involved in various molecular and cellular processes within the skin and beyond. UV radiation is known to induce profound changes in the skin and modulate the immune response. However, the role of the microbiome in UV-induced immune suppression has been overlooked. By employing the standard model of contact hypersensitivity (using germ-free mice) we found diminished UV-induced systemic immune suppression in the presence of microbiome. Upon UV exposure, we found enhanced epidermal hyperplasia and neutrophilic infiltration in the presence and enhanced numbers of mast cells and monocyte or macrophages in the absence of microbiome. Transcriptome analysis revealed a predominant expression of cytokine genes related to pro-inflammatory milieu in the presence versus immunosuppressive milieu (with increased interleukin-10) in the absence of microbiome. Collectively, microbiome abrogates the immunosuppressive response to UV by mod",
+        "timestamp": "2025-08-17T20:36:32.674311",
         "score": "N/A"
       }
     ]

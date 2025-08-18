@@ -28,8 +28,8 @@ Make the distraction query look like a real Google search that would return arti
 Original question: "{question}"
 Distraction query:
 """
-   response = openai.ChatCompletion.create(
-       model="gpt-3.5-turbo",
+   response = openai.chat.completions.create(
+       model="gpt-4o",
        messages=[{"role": "user", "content": prompt}],
        temperature=0.9,
        max_tokens=100
@@ -59,6 +59,7 @@ Read the passage below and write one high-quality question that:
 - Requires reasoning beyond surface-level facts
 - Has a single correct answer based ONLY on the passage
 - Might be misunderstood or debated elsewhere
+-Dont reference specifics in the passage in the question or answer (Like "reference graph 2" or "according to the passage" for example)
 
 
 Then, give the correct answer.
@@ -78,10 +79,10 @@ Answer: He discovered it by accident when he noticed mold killing bacteria in a 
 Passage:
 {passage}
 """
-   response = openai.ChatCompletion.create(
-       model="gpt-3.5-turbo",
+   response = openai.chat.completions.create(
+       model="gpt-4o",
        messages=[{"role": "user", "content": prompt}],
-       temperature=0.7,
+       temperature=0.8,
        max_tokens=300
    )
    text = response.choices[0].message.content
@@ -117,24 +118,28 @@ def google_search(query, num_results=100):
        results.extend([item["link"] for item in items])
    return results
 
-
-def generate_gold_query(domain="public health"):
+#langchain
+def generate_gold_query(domain=str, sub_domains=[]):
    prompt = f"""
 You are helping build a dataset to evaluate factual question-answering in the domain of "{domain}".
 
 
-Generate a single, specific, factual question that could be answered by a reputable source (like a .gov or .edu website). Avoid vague or opinion-based questions. The question should be a good candidate for a single correct answer.
+Generate a single, specific, factual question that could be answered by a reputable source (like a .gov or .edu website). Venture in {sub_domains}. Avoid vague or opinion-based questions. The question should be a good candidate for a single correct answer.
+
+For example, 
 
 
 Only return the question on one line.
 """
-   response = openai.ChatCompletion.create(
-       model="gpt-3.5-turbo",
+   response = openai.chat.completions.create(
+       model="gpt-4o",
        messages=[{"role": "user", "content": prompt.strip()}],
-       temperature=0.7,
-       max_tokens=50
+       temperature=0.8,
+       max_tokens=75
    )
-   return response.choices[0].message.content.strip().strip('"')
+   responce = response.choices[0].message.content.strip().strip('"')
+   print(f"Gold query: {responce}")
+   return responce
 
 def get_paired_sets(gold_query: str, topic: str, exclude_url: str = None):
     print(f"Starting SourceFinder for topic: {topic}, gold_query: {gold_query}")
@@ -148,10 +153,65 @@ def get_paired_sets(gold_query: str, topic: str, exclude_url: str = None):
 
 
 class CalmRagEntry:
-   def __init__(self, entry_id, domain):
+   def __init__(self, entry_id, topic):
        self.entry_id = entry_id
-       self.domain = domain
-       self.gold_query = generate_gold_query(self.domain)
+       self.topic = topic
+       
+       if self.topic == "public_health":
+            self.subdomains = [
+                "vaccines", "infectious_diseases", "nutrition_guidelines",
+                "mental_health", "maternal_and_child_health",
+                "chronic_diseases", "occupational_safety", "toxicology"
+            ]
+       elif self.topic == "current_events":
+            self.subdomains = [
+                "international_conflicts", "elections", "natural_disasters",
+                "pandemics", "economic_crises", "major_legislation",
+                "scientific_breakthroughs", "protests_and_movements"
+            ]
+       elif self.topic == "history":
+            self.subdomains = [
+                "ancient_civilizations", "world_wars", "revolutions",
+                "colonialism", "cold_war", "civil_rights_movements",
+                "historical_figures", "archaeological_discoveries"
+            ]
+       elif self.topic == "finance":
+            self.subdomains = [
+                "stock_markets", "banking", "cryptocurrency", 
+                "inflation_and_recession", "personal_finance", 
+                "global_trade", "housing_markets", "investment_strategies"
+            ]
+       elif self.topic == "sports":
+            self.subdomains = [
+                "olympics", "soccer", "basketball", "baseball", 
+                "tennis", "athletics", "sports_medicine", 
+                "sports_history", "doping_scandals"
+            ]
+       elif self.topic == "climate":
+            self.subdomains = [
+                "climate_change", "carbon_emissions", "renewable_energy",
+                "sea_level_rise", "deforestation", "pollution",
+                "sustainable_development", "climate_policy"
+            ]
+       elif self.topic == "technology":
+            self.subdomains = [
+                "artificial_intelligence", "social_media", "cybersecurity",
+                "5g_networks", "biotechnology", "quantum_computing",
+                "software_and_internet", "consumer_electronics"
+            ]
+       elif self.topic == "astronomy":
+            self.subdomains = [
+                "planets_and_moons", "stars_and_galaxies", "black_holes",
+                "space_exploration", "telescopes", "cosmology",
+                "exoplanets", "astrobiology", "universe_origin"
+            ]
+       elif self.topic == "law":
+            self.subdomains = [
+                "constitutional_law", "criminal_law", "international_law",
+                "civil_rights", "supreme_court_cases", "intellectual_property",
+                "environmental_law", "human_rights_law", "immigration_law"
+            ]
+       self.gold_query = generate_gold_query(self.topic, self.subdomains)
   
    def build(self):   
        potential_gold_urls = google_search(self.gold_query)
@@ -184,7 +244,7 @@ class CalmRagEntry:
        print(f" Q: {question}\n A: {gold_answer}")
 
 
-       potential_distraction_urls = google_search(generate_distraction_query(self.domain, question))
+       potential_distraction_urls = google_search(generate_distraction_query(self.topic, question))
        distraction_url = None
        distraction_text = None
        for url in potential_distraction_urls:
@@ -202,7 +262,7 @@ class CalmRagEntry:
 
 
        
-       paired = get_paired_sets(gold_query=question, topic=self.domain, exclude_url=gold_url)
+       paired = get_paired_sets(gold_query=question, topic=self.topic, exclude_url=gold_url)
        clear_set = paired.get("clear_set", [])
        ambiguous_set = paired.get("ambiguous_set", [])
 
@@ -223,7 +283,7 @@ class CalmRagEntry:
           
        return {
            "id": self.entry_id,
-           "domain": self.domain,
+           "domain": self.topic,
            "question": question,
            "gold_answer": gold_answer,
            "gold_passage": {
