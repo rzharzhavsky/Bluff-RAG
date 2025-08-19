@@ -113,7 +113,7 @@ def generate_gold_query(topic=str, sub_domains=[]):
 You are helping build a dataset to evaluate factual question-answering in the domain of "{topic}".
 
 
-Generate a single, specific, factual question that could be answered by a reputable source (like a .gov or .edu website). Venture in {sub_domains}. But pick randomly between these subdomains, and feel free to go outside of these subdomains if theres other topics that are relevant to the bigger topic.Avoid vague or opinion-based questions. The question should be a good candidate for a single correct answer.
+Generate a single, specific, factual question that could be answered by a reputable source (like a .gov or .edu website). Venture in {sub_domains}.  Please pick randomly from the subtopics and don't prioritize the first one. But pick randomly between these subdomains, and feel free to go outside of these subdomains if theres other topics that are relevant to the bigger topic.Avoid vague or opinion-based questions. The question should be a good candidate for a single correct answer.
 
 
 
@@ -164,7 +164,7 @@ class CalmRagEntry:
             self.subdomains = [
                 "ancient_civilizations", "world_wars", "revolutions",
                 "colonialism", "cold_war", "civil_rights_movements",
-                "historical_figures", "archaeological_discoveries"
+                "historical_figures", "archaeological_discoveries", "us-history"
             ]
        elif self.topic == "finance":
             self.subdomains = [
@@ -176,7 +176,7 @@ class CalmRagEntry:
             self.subdomains = [
                 "olympics", "soccer", "basketball", "baseball", 
                 "tennis", "athletics", "sports_medicine", 
-                "sports_history", "doping_scandals"
+                "sports_history", "doping_scandals", "football"
             ]
        elif self.topic == "climate":
             self.subdomains = [
@@ -194,7 +194,7 @@ class CalmRagEntry:
             self.subdomains = [
                 "planets_and_moons", "stars_and_galaxies", "black_holes",
                 "space_exploration", "telescopes", "cosmology",
-                "exoplanets", "astrobiology", "universe_origin"
+                "exoplanets", "astrobiology", "universe_origin", "moon_landing"
             ]
        elif self.topic == "law":
             self.subdomains = [
@@ -216,7 +216,7 @@ class CalmRagEntry:
            if "gov" in url or "edu" in url:
                article = extract_article_text(url)
                if article and len(article) > 300:
-                   gold_passage = article[:2000]
+                   gold_passage = article[:5000]
                    gold_url = url
                    break
 

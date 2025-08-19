@@ -15,19 +15,22 @@ from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeou
 
 class SourceFinder:
     
+    _reliable_domains = set()
+    _unreliable_domains = set()
+    _config_loaded = False
+    
     def __init__(self, gold_query: str, domain_trust_config_path: str = "domain_trust_config.json"):
         self.gold_query = gold_query
         self.domain_trust_config_path = domain_trust_config_path
         
-        # Extract topic from the gold query FIRST so config loads for the right section
+        # Extract topic from the gold query
         self.topic = self._extract_topic_from_query(gold_query)
         
-        # Domain lists, filled after config load
-        self.reliable_domains = set()
-        self.unreliable_domains = set()
+        # Load trust config only once for the entire dataset generation
+        if not SourceFinder._config_loaded:
+            SourceFinder._load_domain_config_static(domain_trust_config_path)
         
-        # Load trust config now that topic is known
-        self._load_domain_config()
+        # Domain lists are class variables
         
         # Initialize stopwords without requiring downloads(ran into problems using nltk)
         self.stopwords = set(ENGLISH_STOP_WORDS)
@@ -37,13 +40,16 @@ class SourceFinder:
         
         print(f"SourceFinder initialized for query: '{self.gold_query}'")
         print(f"Extracted topic: {self.topic}")
-        print(f"Loaded {len(self.reliable_domains)} reliable domains, {len(self.unreliable_domains)} unreliable domains")
+        print(f"Using {len(SourceFinder._reliable_domains)} reliable domains, {len(SourceFinder._unreliable_domains)} unreliable domains")
         print(f"Generated {len(self.search_queries['reliable'])} reliable and {len(self.search_queries['unreliable'])} unreliable search queries")
 
-    def _load_domain_config(self):
-        """Load ALL topics from domain_trust_config.json and union domains globally."""
+
+
+    @classmethod
+    def _load_domain_config_static(cls, domain_trust_config_path: str):
+        """Load ALL topics from domain_trust_config.json and union domains globally. Called only once."""
         try:
-            with open(self.domain_trust_config_path, 'r') as f:
+            with open(domain_trust_config_path, 'r') as f:
                 config = json.load(f)
                 reliable: set = set()
                 unreliable: set = set()
@@ -53,17 +59,29 @@ class SourceFinder:
                     reliable.update(topic_cfg.get("reliable", []))
                     # some configs use "misleading" for unreliable
                     unreliable.update(topic_cfg.get("misleading", []))
-                self.reliable_domains = reliable
-                self.unreliable_domains = unreliable
-                print(f"Domain config loaded (global): {len(self.reliable_domains)} reliable, {len(self.unreliable_domains)} unreliable")
+                cls._reliable_domains = reliable
+                cls._unreliable_domains = unreliable
+                cls._config_loaded = True
+                print(f"Domain config loaded once (global): {len(cls._reliable_domains)} reliable, {len(cls._unreliable_domains)} unreliable domains")
         except FileNotFoundError:
-            print(f"Warning: {self.domain_trust_config_path} not found, using empty domain lists")
-            self.reliable_domains = set()
-            self.unreliable_domains = set()
+            print(f"Warning: {domain_trust_config_path} not found, using empty domain lists")
+            cls._reliable_domains = set()
+            cls._unreliable_domains = set()
+            cls._config_loaded = True
         except json.JSONDecodeError:
-            print(f"Error: Invalid JSON in {self.domain_trust_config_path}")
-            self.reliable_domains = set()
-            self.unreliable_domains = set()
+            print(f"Error: Invalid JSON in {domain_trust_config_path}")
+            cls._reliable_domains = set()
+            cls._unreliable_domains = set()
+            cls._config_loaded = True
+    
+    @classmethod
+    def get_domain_counts(cls):
+        """Get current domain counts for debugging."""
+        return {
+            "reliable": len(cls._reliable_domains),
+            "unreliable": len(cls._unreliable_domains),
+            "config_loaded": cls._config_loaded
+        }
     
     def _extract_topic_from_query(self, query: str) -> str:
         """Extract topic from gold query for domain config loading."""
@@ -282,9 +300,9 @@ class SourceFinder:
             domain = urlparse(url).netloc.lower().replace("www.", "")
             
             # Check for exact match or subdomain
-            if any(domain == d or domain.endswith("." + d) for d in self.reliable_domains):
+            if any(domain == d or domain.endswith("." + d) for d in SourceFinder._reliable_domains):
                 return "reliable"
-            elif any(domain == d or domain.endswith("." + d) for d in self.unreliable_domains):
+            elif any(domain == d or domain.endswith("." + d) for d in SourceFinder._unreliable_domains):
                 return "unreliable"
             else:
                 return "unknown"
