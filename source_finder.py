@@ -112,9 +112,9 @@ class SourceFinder:
         
         if topic == 'public_health':
             base_queries['reliable'].extend([
-                f"{gold_query} guidelines",
-                f"{gold_query} research",
                 f"{gold_query} government",
+                f"{gold_query} research",
+                f"{gold_query} guidelines",
                 f"{gold_query} academic",
                 f"{gold_query} clinical study",
                 f"{gold_query} peer reviewed",
@@ -367,6 +367,8 @@ class SourceFinder:
         print(f"\n=== Starting source discovery for query: '{self.gold_query}' ===")
         
         all_sources = []
+        seen_urls = set()  # Track URLs to prevent duplicates during collection
+        total_urls_encountered = 0  # Track total URLs seen (including duplicates)
         
         # Search for both reliable and unreliable sources
         for source_type, queries in self.search_queries.items():
@@ -379,6 +381,13 @@ class SourceFinder:
                 
                 for result in search_results:
                     url = result['url']
+                    total_urls_encountered += 1
+                    
+                    # Skip if we've already processed this URL
+                    if url in seen_urls:
+                        print(f"\nSkipping duplicate URL: {url}")
+                        continue
+                    
                     print(f"\nProcessing: {url}")
                     
                     # Extract text
@@ -411,10 +420,14 @@ class SourceFinder:
                     }
                     
                     all_sources.append(source)
+                    seen_urls.add(url)  # Mark URL as processed
                     print(f"  ACCEPTED: {category} source with score {score:.3f}")
         
         print(f"\n=== Source discovery complete ===")
         print(f"Total sources found: {len(all_sources)}")
+        print(f"Unique URLs processed: {len(seen_urls)}")
+        print(f"Total URLs encountered: {total_urls_encountered}")
+        print(f"Duplicate URLs removed: {total_urls_encountered - len(seen_urls)}")
         
         # Exclude the gold_url if provided
         if exclude_url:
@@ -474,7 +487,7 @@ class SourceFinder:
         print(f"Unreliable sources: {len(unreliable_sources)}")
         print(f"Unknown sources: {len(unknown_sources)}")
         
-        # Sort by score (highest first)
+        
         random.shuffle(reliable_sources)
         random.shuffle(unreliable_sources)
         

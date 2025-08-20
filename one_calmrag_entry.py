@@ -260,7 +260,14 @@ class CalmRagEntry:
        if len(clear_set) == 0 or len(ambiguous_set) == 0:
             print("Spider did not return paired sets (clear/unclear).")
             return None
-       if distraction_text:
+       # Check if distraction URL already exists in any set to avoid duplicates
+       distraction_exists = False
+       for source in clear_set + ambiguous_set:
+           if source.get("url") == distraction_url:
+               distraction_exists = True
+               break
+       
+       if distraction_text and not distraction_exists:
             ambiguous_set.append({
                 "url": distraction_url,
                 "domain": urlparse(distraction_url).netloc.replace("www.", ""),
@@ -270,8 +277,13 @@ class CalmRagEntry:
                 "timestamp": datetime.now().isoformat(),
                 "score": "N/A"
                  
-            }) 
+            })
+            print(f"Added distraction source: {distraction_url}")
+       elif distraction_exists:
+            print(f"Skipped duplicate distraction source: {distraction_url}") 
           
+
+       
        return {
            "id": self.entry_id,
            "topic": self.topic,
