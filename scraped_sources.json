@@ -1,0 +1,29 @@
+{
+  "gold_url": "https://www.ncbi.nlm.nih.gov/books/NBK279544/",
+  "gold_question": "does vitamin c prevent the common cold?",
+  "topic": "public_health",
+  "question_keywords": [
+    "vitamin",
+    "prevent",
+    "common",
+    "cold",
+    "vitamin c",
+    "c prevent",
+    "common cold"
+  ],
+  "collection_stats": {
+    "reliable": 0,
+    "unreliable": 0,
+    "offtopic": 0,
+    "total": 0,
+    "failed_domains": 2,
+    "timeout_domains": 0
+  },
+  "sources": [],
+  "failed_domains": [
+    "cdc.gov",
+    "medlineplus.gov"
+  ],
+  "completion_reason": "shutdown",
+  "timestamp": "2025-08-13T19:40:25.433128"
+}
