@@ -10,6 +10,8 @@ import trafilatura
 import openai
 from source_finder import SourceFinder
 
+# Global query history to avoid duplicate queries
+query_history = {}
 
 #API keys
 load_dotenv()
@@ -58,6 +60,7 @@ Read the passage below and write one high-quality question that:
 - Has a single correct answer based ONLY on the passage
 - Might be misunderstood or debated elsewhere
 -Dont reference specifics in the passage in the question or answer (Like "reference graph 2" or "according to the passage" for example)
+-Make it so that the question can be answered using other sources, and not just the passage. So the question and answer should be able to be answered by other sources, but still specific to the passage.
 
 
 Then, give the correct answer.
@@ -108,27 +111,104 @@ def duckduckgo_search(query, num_results=100):
    return results
 
 #langchain
-def generate_gold_query(topic=str, sub_domains=[]):
-   prompt = f"""
-You are helping build a dataset to evaluate factual question-answering in the domain of "{topic}".
+def generate_gold_query(topic=str, sub_domains=[], max_attempts=5, used_subdomains=None):
+   global query_history
+   
+   # Initialize topic history if not exists
+   if topic not in query_history:
+       query_history[topic] = []
+   
+   # Get existing queries for this topic
+   existing_queries = query_history[topic]
+   
+   # Get the next subdomain to focus on
+   if used_subdomains is None:
+       used_subdomains = {}
+   
+   target_subdomain = get_next_subdomain(topic, used_subdomains, sub_domains)
+   
+   for attempt in range(max_attempts):
+       
+       prompt = f"""
+You are helping build a dataset to evaluate factual question-answering in the realm of "{topic}".
 
+Generate a single, specific, factual question that could be answered by a reputable source (like a .gov or .edu website).
 
-Generate a single, specific, factual question that could be answered by a reputable source (like a .gov or .edu website). Venture in {sub_domains}.  Please pick randomly from the subtopics and don't prioritize the first one. But pick randomly between these subdomains, and feel free to go outside of these subdomains if theres other topics that are relevant to the bigger topic.Avoid vague or opinion-based questions. The question should be a good candidate for a single correct answer.
+IMPORTANT: The question must be DIFFERENT from these previously generated questions for this topic:
+{chr(10).join([f"- {q}" for q in existing_queries]) if existing_queries else "No previous questions yet"}
 
-
+FOCUS SPECIFICALLY on this subtopic: {target_subdomain}
+- Make the question specific to {target_subdomain}
+- Make the question specific and factual
+- The question should have a single correct answer
 
 
 Only return the question on one line.
 """
-   response = openai.chat.completions.create(
-       model="gpt-4o",
-       messages=[{"role": "user", "content": prompt.strip()}],
-       temperature=0.8,
-       max_tokens=75
-   )
-   responce = response.choices[0].message.content.strip().strip('"')
-   print(f"Gold query: {responce}")
-   return responce
+       
+       response = openai.chat.completions.create(
+           model="gpt-4o",
+           messages=[{"role": "user", "content": prompt.strip()}],
+           temperature=0.9, 
+           max_tokens=100
+       )
+       
+       new_query = response.choices[0].message.content.strip().strip('"')
+       
+       # Check if this query is sufficiently different from existing ones
+       #Extra layer of protection to avoid duplicates
+       if is_query_diverse(new_query, existing_queries):
+           # Add to history and return
+           query_history[topic].append(new_query)
+           print(f"Gold query (attempt {attempt + 1}): {new_query}")
+           return new_query, target_subdomain
+       else:
+           print(f"Query too similar, retrying... (attempt {attempt + 1})")
+   
+   # If all attempts failed, generate a fallback last chance query
+   fallback_query = f"What are the current guidelines for {target_subdomain} in {topic}?"
+   query_history[topic].append(fallback_query)
+   print(f"Fallback query generated: {fallback_query}")
+   return fallback_query, target_subdomain
+
+def is_query_diverse(new_query, existing_queries):
+   #Check if a new query is sufficiently different from existing ones.
+   if not existing_queries:
+       return True
+   
+   # Simple similarity check - count common words
+   new_words = set(new_query.lower().split())
+   
+   for existing in existing_queries[-5:]:  # Check against last 5 queries
+       existing_words = set(existing.lower().split())
+       common_words = new_words.intersection(existing_words)
+       
+       # If more than 70% of words are common, consider it too similar
+       if len(common_words) / max(len(new_words), len(existing_words)) > 0.7:
+           return False
+   
+   return True
+
+
+
+def get_next_subdomain(topic, used_subdomains, available_subdomains):
+   """Get the next subdomain to focus on, rotating through available ones."""
+   
+   # Find subdomains that haven't been used much
+   subdomain_counts = {}
+   for subdomain in available_subdomains:
+       subdomain_counts[subdomain] = used_subdomains.get(subdomain, 0)
+   
+   # Get the subdomain with the lowest usage count
+   min_usage = min(subdomain_counts.values())
+   candidates = [subdomain for subdomain, count in subdomain_counts.items() if count == min_usage]
+   
+   # Pick randomly from least used subdomains
+   selected_subdomain = random.choice(candidates)
+   
+   print(f"Selected subdomain: {selected_subdomain} (usage count: {subdomain_counts[selected_subdomain]})")
+   return selected_subdomain
+
 
 def get_paired_sets(gold_query: str, topic: str, exclude_url: str = None):
     print(f"Starting SourceFinder for topic: {topic}, gold_query: {gold_query}")
@@ -145,6 +225,9 @@ class CalmRagEntry:
    def __init__(self, entry_id, topic):
        self.entry_id = entry_id
        self.topic = topic
+       
+       # Track subdomain usage for this topic
+       self.used_subdomains = {}
        
        if self.topic == "public_health":
             self.subdomains = [
@@ -202,7 +285,20 @@ class CalmRagEntry:
                 "civil_rights", "supreme_court_cases", "intellectual_property",
                 "environmental_law", "human_rights_law", "immigration_law"
             ]
-       self.gold_query = generate_gold_query(self.topic, self.subdomains)
+       elif self.topic == "psychology":
+            self.subdomains = [
+                "clinical_psychology", "cognitive_psychology", "developmental_psychology",
+                "social_psychology", "behavioral_psychology", "neuropsychology",
+                "forensic_psychology", "health_psychology", "industrial_psychology",
+                "educational_psychology", "abnormal_psychology", "personality_psychology",
+                "experimental_psychology", "counseling_psychology", "sports_psychology"
+            ]
+       
+       # Generate gold query with subdomain rotation
+       self.gold_query, self.current_subdomain = generate_gold_query(self.topic, self.subdomains, used_subdomains=self.used_subdomains)
+       
+       # Update subdomain usage
+       self.used_subdomains[self.current_subdomain] = self.used_subdomains.get(self.current_subdomain, 0) + 1
   
    def build(self):   
        potential_gold_urls = duckduckgo_search(self.gold_query)

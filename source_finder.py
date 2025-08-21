@@ -135,7 +135,8 @@ class SourceFinder:
                 f"{gold_query} big pharma",
                 f"{gold_query} cover up",
                 f"{gold_query} holistic cure",
-                f"{gold_query} mercola"
+                f"{gold_query} mercola",
+                f"{gold_query} viral"
             ])
             
         elif topic == 'current_events':
