@@ -210,9 +210,9 @@ def get_next_subdomain(topic, used_subdomains, available_subdomains):
    return selected_subdomain
 
 
-def get_paired_sets(gold_query: str, topic: str, exclude_url: str = None):
+def get_paired_sets(gold_query: str, topic: str, exclude_url: str = None, gold_question: str = None):
     print(f"Starting SourceFinder for topic: {topic}, gold_query: {gold_query}")
-    finder = SourceFinder(gold_query)
+    finder = SourceFinder(gold_query, gold_question)
     result = finder.find_sources(exclude_url=exclude_url)
 
     return {
@@ -331,52 +331,60 @@ class CalmRagEntry:
        print(f" Q: {question}\n A: {gold_answer}")
 
 
+       # Find 2 distraction sources
        potential_distraction_urls = duckduckgo_search(generate_distraction_query(self.topic, question))
-       distraction_url = None
-       distraction_text = None
+       distraction_sources = []
+       
        for url in potential_distraction_urls:
            time.sleep(1)
            article = extract_article_text(url)
            if article and len(article) > 300:
-               distraction_text = article[:2000]
-               distraction_url = url
-               break
+               distraction_sources.append({
+                   'url': url,
+                   'text': article[:2000]
+               })
+               if len(distraction_sources) >= 2:  # Stop after finding 2
+                   break
 
 
-       if not distraction_text:
-           print("Failed to find a distraction source.")
+       if len(distraction_sources) < 2:
+           print("Failed to find enough distraction sources.")
            return None
 
 
        
-       paired = get_paired_sets(gold_query=question, topic=self.topic, exclude_url=gold_url)
+       paired = get_paired_sets(gold_query=self.gold_query, topic=self.topic, exclude_url=gold_url, gold_question=question)
        clear_set = paired.get("clear_set", [])
        ambiguous_set = paired.get("ambiguous_set", [])
 
        if len(clear_set) == 0 or len(ambiguous_set) == 0:
-            print("Spider did not return paired sets (clear/unclear).")
+            print("source finder did not return paired sets (clear/unclear).")
             return None
-       # Check if distraction URL already exists in any set to avoid duplicates
-       distraction_exists = False
-       for source in clear_set + ambiguous_set:
-           if source.get("url") == distraction_url:
-               distraction_exists = True
-               break
-       
-       if distraction_text and not distraction_exists:
-            ambiguous_set.append({
-                "url": distraction_url,
-                "domain": urlparse(distraction_url).netloc.replace("www.", ""),
-                "category": "distraction",
-                "title": urlparse(distraction_url).netloc,
-                "text": distraction_text[:1000],        
-                "timestamp": datetime.now().isoformat(),
-                "score": "N/A"
-                 
-            })
-            print(f"Added distraction source: {distraction_url}")
-       elif distraction_exists:
-            print(f"Skipped duplicate distraction source: {distraction_url}") 
+       # Add both distraction sources to ambiguous set, avoiding duplicates
+       for distraction_source in distraction_sources:
+           distraction_url = distraction_source['url']
+           distraction_text = distraction_source['text']
+           
+           # Check if distraction URL already exists in any set to avoid duplicates
+           distraction_exists = False
+           for source in clear_set + ambiguous_set:
+               if source.get("url") == distraction_url:
+                   distraction_exists = True
+                   break
+           
+           if not distraction_exists:
+                ambiguous_set.append({
+                    "url": distraction_url,
+                    "domain": urlparse(distraction_url).netloc.replace("www.", ""),
+                    "category": "distraction",
+                    "title": urlparse(distraction_url).netloc,
+                    "text": distraction_text[:1000],        
+                    "timestamp": datetime.now().isoformat(),
+                    "score": "N/A"
+                })
+                print(f"Added distraction source: {distraction_url}")
+           else:
+                print(f"Skipped duplicate distraction source: {distraction_url}") 
           
 
        

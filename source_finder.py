@@ -11,7 +11,11 @@ import re
 from collections import Counter
 from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeout
+import os
+from dotenv import load_dotenv
 
+# Load environment variables for Reddit API
+load_dotenv()
 
 class SourceFinder:
     
@@ -19,8 +23,9 @@ class SourceFinder:
     _unreliable_domains = set()
     _config_loaded = False
     
-    def __init__(self, gold_query: str, domain_trust_config_path: str = "domain_trust_config.json"):
+    def __init__(self, gold_query: str, gold_question: str, domain_trust_config_path: str = "domain_trust_config.json"):
         self.gold_query = gold_query
+        self.question = gold_question
         self.domain_trust_config_path = domain_trust_config_path
         
         # Extract topic from the gold query
@@ -38,10 +43,16 @@ class SourceFinder:
         # Generate topic-specific search queries
         self.search_queries = self._get_search_queries_for_topic(self.topic, self.gold_query)
         
+        # Reddit API credentials
+        self.reddit_client_id = os.getenv("REDDIT_CLIENT_ID")
+        self.reddit_client_secret = os.getenv("REDDIT_CLIENT_SECRET")
+        self.reddit_user_agent = os.getenv("REDDIT_USER_AGENT", "CALM-RAG-SourceFinder/1.0")
+        
         print(f"SourceFinder initialized for query: '{self.gold_query}'")
         print(f"Extracted topic: {self.topic}")
         print(f"Using {len(SourceFinder._reliable_domains)} reliable domains, {len(SourceFinder._unreliable_domains)} unreliable domains")
         print(f"Generated {len(self.search_queries['reliable'])} reliable and {len(self.search_queries['unreliable'])} unreliable search queries")
+        print(f"Reddit API configured: {bool(self.reddit_client_id and self.reddit_client_secret)}")
 
 
 
@@ -274,21 +285,21 @@ class SourceFinder:
         keywords = [word for word in words if word not in self.stopwords and len(word) > 2]
         return keywords
     
-    def _compute_relevance_score(self, gold_query: str, text: str) -> float:
-        """Compute relevance score between gold query and text."""
+    def _compute_relevance_score(self, question: str, text: str) -> float:
+        """Compute relevance score between question and text."""
         # Extract keywords from gold query
-        query_keywords = self._extract_keywords(gold_query)
+        question_keywords = self._extract_keywords(question)
         
-        if not query_keywords:
+        if not question_keywords:
             return 0.0
         
         # Count keyword hits in text
         text_lower = text.lower()
-        keyword_hits = sum(1 for keyword in query_keywords if keyword in text_lower)
-        keyword_hit_rate = keyword_hits / len(query_keywords)
+        keyword_hits = sum(1 for keyword in question_keywords if keyword in text_lower)
+        keyword_hit_rate = keyword_hits / len(question_keywords)
         
         # Compute fuzzy string similarity
-        fuzzy_score = fuzz.token_set_ratio(gold_query, text[:5000]) / 100.0
+        fuzzy_score = fuzz.token_set_ratio(question, text[:5000]) / 100.0
         
         # Weighted average: 60% keyword hits, 40% fuzzy similarity
         final_score = 0.6 * keyword_hit_rate + 0.4 * fuzzy_score
@@ -300,8 +311,12 @@ class SourceFinder:
         try:
             domain = urlparse(url).netloc.lower().replace("www.", "")
             
+
+
             # Check for exact match or subdomain
             if any(domain == d or domain.endswith("." + d) for d in SourceFinder._reliable_domains):
+                return "reliable"
+            elif (".gov" in domain or ".edu" in domain):
                 return "reliable"
             elif any(domain == d or domain.endswith("." + d) for d in SourceFinder._unreliable_domains):
                 return "unreliable"
@@ -322,13 +337,152 @@ class SourceFinder:
                         continue
                     results.append({
                         'url': url,
-                        'title': result.get('title', ''),
-                        'snippet': result.get('body', '')
+                        'title': result.get('title', '')
                     })
         except Exception as e:
             print(f"Error searching DuckDuckGo for '{query}': {e}")
         
         return results
+    
+    def _search_reddit_api(self, query: str, max_results: int = 40) -> List[Dict]:
+        """Search Reddit directly using their API"""
+        if not (self.reddit_client_id and self.reddit_client_secret):
+            print("  Reddit API not configured, skipping Reddit search")
+            return []
+        
+        try:
+            import praw
+            
+            reddit = praw.Reddit(
+                client_id=self.reddit_client_id,
+                client_secret=self.reddit_client_secret,
+                user_agent=self.reddit_user_agent
+            )
+            
+            print(f"  Searching Reddit for: {query}")
+            
+            # Search across multiple relevant subreddits based on topic
+            subreddits = self._get_relevant_subreddits()
+            all_results = []
+            
+            for subreddit_name in subreddits:
+                try:
+                    subreddit = reddit.subreddit(subreddit_name)
+                    # Search for posts
+                    search_results = subreddit.search(query, limit=max_results//len(subreddits), sort='relevance')
+                    
+                    for submission in search_results:
+                        # Skip if too old or low quality
+                        if submission.score < 5 or submission.num_comments < 2:
+                            continue
+                        
+                        # Extract full text content directly here
+                        text_parts = []
+                        if submission.title:
+                            text_parts.append(submission.title)
+                        if submission.selftext:
+                            text_parts.append(submission.selftext)
+                        
+                        # Get top comments
+                        submission.comment_sort = 'top'
+                        submission.comments.replace_more(limit=0)
+                        for comment in submission.comments[:3]:  # Top 3 comments
+                            if comment.body and len(comment.body) > 50:
+                                text_parts.append(comment.body)
+                        
+                        full_text = '\n\n'.join(text_parts).strip()
+                        
+                        # Skip if not enough content
+                        if len(full_text) < 400:
+                            continue
+                        
+                        result = {
+                            'url': f"https://reddit.com{submission.permalink}",
+                            'title': submission.title,
+                            'text': full_text,  # Full text content
+                            'score': submission.score,
+                            'subreddit': subreddit_name
+                        }
+                        all_results.append(result)
+                        
+                except Exception as e:
+                    print(f"    Error searching subreddit {subreddit_name}: {e}")
+                    continue
+            
+            print(f"  Reddit API search found {len(all_results)} results")
+            return all_results
+            
+        except ImportError:
+            print("  PRAW not installed. Install with: pip install praw")
+            return []
+        except Exception as e:
+            print(f"  Reddit API search failed: {e}")
+            return []
+    
+    def _get_relevant_subreddits(self) -> List[str]:
+        """Get relevant subreddits based on the topic"""
+        if self.topic == 'public_health':
+            return [
+                'health', 'nutrition', 'fitness', 'mentalhealth', 'medical', 
+                'wellness', 'supplements', 'herbalism', 'homeopathy',
+                'alternative', 'conspiracy', 'naturalmedicine', 'holistic'
+            ]
+        elif self.topic == 'current_events':
+            return [
+                'news', 'worldnews', 'politics', 'conspiracy', 'conspiracytheories',
+                'alternative', 'truth', 'exposing', 'realnews', 'worldpolitics',
+                'politicaldiscussion'
+            ]
+        elif self.topic == 'history':
+            return [
+                'history', 'ancienthistory', 'conspiracy', 'alternativehistory',
+                'archaeology', 'mystery', 'unsolvedmysteries', 'ancientaliens',
+                'forbiddenhistory', 'hiddenhistory', 'lostcivilizations'
+            ]
+        elif self.topic == 'finance':
+            return [
+                'investing', 'wallstreetbets', 'cryptocurrency', 'personalfinance',
+                'conspiracy', 'economiccollapse', 'preppers', 'gold', 'silver',
+                'bitcoin', 'cryptomarkets', 'financialindependence'
+            ]
+        elif self.topic == 'sports':
+            return [
+                'sports', 'nba', 'nfl', 'soccer', 'baseball', 'tennis',
+                'conspiracy', 'sportscorruption', 'olympics', 'ufc', 'boxing'
+            ]
+        elif self.topic == 'climate':
+            return [
+                'climatechange', 'environment', 'climate', 'globalwarming',
+                'conspiracy', 'climateskeptics', 'geoengineering', 'chemtrails',
+                'environmental', 'sustainability', 'renewableenergy'
+            ]
+        elif self.topic == 'technology':
+            return [
+                'technology', 'artificialintelligence', 'programming', 'cybersecurity',
+                'conspiracy', 'privacy', 'surveillance', '5g', 'quantumcomputing',
+                'machinelearning', 'datascience', 'blockchain'
+            ]
+        elif self.topic == 'astronomy':
+            return [
+                'astronomy', 'space', 'nasa', 'cosmology', 'conspiracy',
+                'ufo', 'aliens', 'spacex', 'mars', 'moon', 'stars',
+                'galaxies', 'blackholes', 'exoplanets'
+            ]
+        elif self.topic == 'law':
+            return [
+                'law', 'legaladvice', 'conspiracy', 'politics', 'government',
+                'constitutional', 'supremecourt', 'civilrights', 'legal',
+                'justice', 'criminaljustice', 'humanrights'
+            ]
+        elif self.topic == 'psychology':
+            return [
+                'psychology', 'mentalhealth', 'science', 'conspiracy',
+                'neuroscience', 'cognitive', 'behavioral', 'therapy',
+                'psychiatry', 'mindfulness', 'consciousness'
+            ]
+        else:
+            # Default subreddits for unknown topics
+            return ['conspiracy', 'alternative', 'truth', 'exposing', 'realnews']
     
     def _extract_text_from_url(self, url: str) -> Optional[str]:
         """Extract text content from url using trafilatura with a hard timeout"""
@@ -398,7 +552,7 @@ class SourceFinder:
                         continue
                     
                     # Compute relevance score
-                    score = self._compute_relevance_score(self.gold_query, text)
+                    score = self._compute_relevance_score(self.question, text)
                     print(f"  Relevance score: {score:.3f}")
                     
                     if score < 0.35:
@@ -416,13 +570,52 @@ class SourceFinder:
                         'category': category,
                         'score': score,
                         'text': text[:1000],  # Keep first 1000 chars
-                        'title': result.get('title', ''),
-                        'snippet': result.get('snippet', '')
+                        'title': result.get('title', '')
                     }
                     
                     all_sources.append(source)
                     seen_urls.add(url)  # Mark URL as processed
                     print(f"  ACCEPTED: {category} source with score {score:.3f}")
+        
+        # REDDIT FALLBACK: Always search Reddit to ensure enough misleading sources
+        print(f"\n--- Reddit API Fallback Search ---")
+        reddit_results = self._search_reddit_api(self.gold_query, max_results=30)
+        
+        for result in reddit_results:
+            url = result['url']
+            if url in seen_urls:
+                continue
+                
+            print(f"\nProcessing Reddit: {url}")
+            
+            # Use the full text directly from the search result
+            text = result['text']
+            
+            # Compute relevance score
+            score = self._compute_relevance_score(self.question, text)
+            print(f"  Reddit relevance score: {score:.3f}")
+            
+            if score < 0.3:  # Lower threshold for Reddit sources
+                print(f"  REJECTED: Reddit score too low ({score:.3f} < 0.3)")
+                continue
+            
+            # Reddit sources are classified as unreliable
+            category = "unreliable"
+            print(f"  Reddit domain category: {category}")
+            
+            # Create Reddit source entry
+            source = {
+                'url': url,
+                'domain': 'reddit.com',
+                'category': category,
+                'score': score,
+                'text': text[:1000],  # Limit to 1000 chars for consistency
+                'title': result.get('title', '')
+            }
+            
+            all_sources.append(source)
+            seen_urls.add(url)
+            print(f"  ACCEPTED: Reddit {category} source with score {score:.3f}")
         
         print(f"\n=== Source discovery complete ===")
         print(f"Total sources found: {len(all_sources)}")
@@ -488,9 +681,9 @@ class SourceFinder:
         print(f"Unreliable sources: {len(unreliable_sources)}")
         print(f"Unknown sources: {len(unknown_sources)}")
         
-        
         random.shuffle(reliable_sources)
         random.shuffle(unreliable_sources)
+        random.shuffle(unknown_sources)
         
         # Create clear set: 4 reliable + 1 unreliable
         clear_set = []
@@ -505,9 +698,16 @@ class SourceFinder:
             clear_set.append(unreliable_sources[0])
             print(f"Clear set: Added 1 unreliable source")
         else:
-            print(f"Warning: No unreliable sources available for clear set")
+            # Fallback: use unknown sources marked as unreliable
+            if len(unknown_sources) >= 1:
+                fallback_source = unknown_sources[0].copy()
+                fallback_source['category'] = 'unknown(marked as unreliable)'
+                clear_set.append(fallback_source)
+                print(f"Clear set: Added 1 unknown source marked as unreliable")
+            else:
+                print(f"Warning: No unreliable or unknown sources available for clear set")
         
-        # Create unclear set: 1 reliable + 3 unreliable
+        # Create unclear set: 1 reliable + 2 unreliable
         unclear_set = []
         if len(reliable_sources) >= 5:  # Make sure we don't reuse from clear set
             unclear_set.append(reliable_sources[4])
@@ -515,12 +715,32 @@ class SourceFinder:
         else:
             print(f"Warning: Not enough reliable sources for unclear set")
         
-        if len(unreliable_sources) >= 4:  # Make sure we don't reuse from clear set
-            unclear_set.extend(unreliable_sources[1:4])
-            print(f"Unclear set: Added 3 unreliable sources")
+        # Try to add 2 unreliable sources, fallback to unknown if needed
+        unreliable_needed = 2
+        unreliable_added = 0
+        
+        if len(unreliable_sources) >= 3:  # Make sure we don't reuse from clear set
+            unclear_set.extend(unreliable_sources[1:3])
+            unreliable_added = 2
+            print(f"Unclear set: Added 2 unreliable sources")
         else:
-            print(f"Warning: Only {len(unreliable_sources)} unreliable sources available for unclear set")
-            unclear_set.extend(unreliable_sources[1:])
+            # Add whatever unreliable sources we have
+            remaining_unreliable = unreliable_sources[1:] if len(unreliable_sources) > 1 else []
+            unclear_set.extend(remaining_unreliable)
+            unreliable_added = len(remaining_unreliable)
+            print(f"Unclear set: Added {unreliable_added} unreliable sources")
+            
+            # Fill remaining slots with unknown sources marked as unreliable
+            remaining_slots = 2 - unreliable_added
+            if remaining_slots > 0 and len(unknown_sources) > 0:
+                # Skip sources already used in clear set
+                available_unknown = unknown_sources[1:] if len(unknown_sources) > 1 else unknown_sources
+                for i, unknown_source in enumerate(available_unknown[:remaining_slots]):
+                    fallback_source = unknown_source.copy()
+                    fallback_source['category'] = 'unknown(marked as unreliable)'
+                    unclear_set.append(fallback_source)
+                    unreliable_added += 1
+                print(f"Unclear set: Added {remaining_slots} unknown sources marked as unreliable")
         
         # Convert to expected format
         def format_source(source):

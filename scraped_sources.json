@@ -1,29 +1,573 @@
 {
-  "gold_url": "https://www.ncbi.nlm.nih.gov/books/NBK279544/",
-  "gold_question": "does vitamin c prevent the common cold?",
+  "gold_query": "What is the primary goal of phase 3 clinical trials in medical research?",
   "topic": "public_health",
-  "question_keywords": [
-    "vitamin",
-    "prevent",
-    "common",
-    "cold",
-    "vitamin c",
-    "c prevent",
-    "common cold"
-  ],
   "collection_stats": {
-    "reliable": 0,
-    "unreliable": 0,
-    "offtopic": 0,
-    "total": 0,
-    "failed_domains": 2,
-    "timeout_domains": 0
+    "reliable": 11,
+    "unreliable": 14,
+    "unknown": 45,
+    "total": 70
   },
-  "sources": [],
-  "failed_domains": [
-    "cdc.gov",
-    "medlineplus.gov"
+  "sources": [
+    {
+      "url": "https://www.healthline.com/health/clinical-trial-phases",
+      "domain": "healthline.com",
+      "category": "reliable",
+      "score": 0.7519607843137255,
+      "text": "What are clinical trials?\nClinical trials are a way to test new methods of diagnosing, treating, or preventing health conditions. The goal is to determine whether something is both safe and effective.\nA variety of things are evaluated through clinical trials, including:\n- medications\n- medication combinations\n- new uses for existing medications\n- medical devices\nBefore doing a clinical trial, investigators conduct preclinical research using human cell cultures or animal models. For example, they might test whether a new medication is toxic to a small sample of human cells in a laboratory.\nIf the preclinical research is promising, they move forward with a clinical trial to see how well it works in humans. Clinical trials happen in several phases during which different questions are asked. Each phase builds on the results of previous phases.\nKeep reading to learn more about what happens during each phase. For this article, we use the example of a new medication treatment going through th",
+      "title": "Clinical Trial Phases : What Happens in Phase 0, I, II, III ..."
+    },
+    {
+      "url": "https://www.bioaccessla.com/blog/understanding-the-clinical-study-phase-3-objectives-and-importance",
+      "domain": "bioaccessla.com",
+      "category": "unknown",
+      "score": 0.7762886597938145,
+      "text": "The primary focus of this article is to elucidate the objectives and significance of Phase 3 clinical studies within the drug development process. Phase 3 trials are paramount for validating the efficacy and safety of new treatments, as they encompass large participant groups, rigorous methodologies, and stringent regulatory oversight. Ultimately, these trials play a crucial role in influencing the approval and accessibility of new therapies to the public. Understanding the intricacies of Phase 3 studies is essential for stakeholders in clinical research, as it underscores the collaborative efforts required to navigate the complexities of bringing innovative treatments to market.\nUnderstanding the intricate landscape of clinical trials is essential for grasping how new medical treatments are evaluated and approved. Among the various stages, clinical study phase 3 stands out as a pivotal juncture, where the efficacy and safety of a drug are rigorously tested in diverse populations. This",
+      "title": "Understanding the Clinical Study Phase 3 : Objectives and ..."
+    },
+    {
+      "url": "https://ccrps.org/clinical-research-blog/phase-iii-clinical-trials-definitive-guide-amp-case-studies",
+      "domain": "ccrps.org",
+      "category": "unknown",
+      "score": 0.6508108108108108,
+      "text": "Phase III Clinical Trials: Definitive Guide & Case Studies\nClinical trials form the backbone of modern drug development, but Phase III trials are the defining battleground where a product either advances to approval or fails the ultimate test. At this stage, investigational therapies are tested in large-scale populations, typically ranging from hundreds to thousands of participants, across multiple geographies. The stakes are immense\u2014both clinically and financially. Drugs entering Phase III have a 50\u201360% chance of approval, but this phase consumes the largest share of R&D budgets and can span several years. It\u2019s where the precision of data, rigor of design, and clarity of endpoints come under regulatory microscopes.\nThis guide delivers more than just an overview. We break down critical components of Phase III trials\u2014from trial design, endpoint structuring, and global compliance, to patient engagement and data monitoring. You\u2019ll explore real-world case studies like the Pfizer-BioNTech C",
+      "title": "Phase III Clinical Trials : Definitive Guide & Case Studies"
+    },
+    {
+      "url": "https://clinicaltrials.eu/patient-resources/phase-iii-of-clinical-trials/",
+      "domain": "clinicaltrials.eu",
+      "category": "unknown",
+      "score": 0.5708333333333334,
+      "text": "What is a Phase III Clinical Trial?\nPhase III clinical trials are among the most crucial stages in the development of new treatments. They are designed to confirm the effectiveness of a medication, monitor adverse reactions, compare it to standard treatments, and collect comprehensive safety data. This phase involves a larger group of patients, typically ranging from several hundred to several thousand, who have the condition that the medication aims to treat.\nPurpose of Phase III Trials\nThe primary goal of Phase III trials is to establish the efficacy and safety of a new treatment in comparison to existing standard therapies or placebos. This phase is critical as it provides the substantial evidence needed to support the regulatory approval process. Phase III trials often determine whether a new treatment offers a significant benefit to a specific population and collect valuable data on how the treatment affects people\u2019s quality of life, including any potential side effects that might",
+      "title": "Understanding Phase III Clinical Trials : A Key Step Towards ..."
+    },
+    {
+      "url": "https://www.clinicalstudies.in/design-and-objectives-of-phase-3-clinical-trials-explained-with-examples-and-regulatory-insight/",
+      "domain": "clinicalstudies.in",
+      "category": "unknown",
+      "score": 0.5792134831460675,
+      "text": "Understanding the Planning and Purpose Behind Phase 3 Clinical Trials\nWhat Are Phase 3 Clinical Trials?\nPhase 3 clinical trials represent the final stage of pre-approval testing before a drug or treatment is submitted for marketing authorization. These trials are conducted on a large patient population\u2014usually ranging from several hundred to several thousand participants\u2014and aim to confirm the efficacy, safety, and overall benefit-risk profile of the intervention under investigation.\nUnlike earlier phases, Phase 3 trials are often multinational and multicenter studies with extensive regulatory oversight. Their results provide the core data for submissions to agencies like the U.S. FDA, EMA, CDSCO, or PMDA.\nPrimary Design Features of Phase 3 Trials\nDesigning a Phase 3 clinical trial involves meticulous planning and alignment with both scientific rationale and regulatory expectations. Key design attributes include:\n- Randomized Controlled Trials (RCTs): Most Phase 3 trials use a randomiz",
+      "title": "Design and Objectives of Phase 3 Clinical Trials \u2013 Explained ..."
+    },
+    {
+      "url": "https://med.uc.edu/depart/psychiatry/research/clinical-research/crm/trial-phases-1-2-3-defined",
+      "domain": "med.uc.edu",
+      "category": "reliable",
+      "score": 0.6227272727272727,
+      "text": "Coronavirus COVID-19 Updates: uc.edu/publichealth\nSearch By:\nPhase I trials are concerned primarily with establishing a new drug's safety and dose range in about 20-100 healthy volunteers. How a drug is absorbed, distributed, metabolized and excreted by the human body is called Pharmacokinetics. This is determined through frequent blood draws (usually in an inpatient environment) to check for the level of drug in the blood plasma.\nPharmacokinetic trials are usually considered Phase I trials regardless of when they are conducted during a drug's development. Dosage range of a new drug is determined by administering increasingly larger doses to one or more groups of subjects, who are closely monitored for harmful side effects. The goal is to learn the maximum tolerated dose that does not produce unacceptable side effects.\nPhase I studies may involve risks even though an investigational drug has passed the Preclinical phase of testing. Phase I studies typically offer little or no benefit t",
+      "title": "Trial Phases 1, 2 & 3 Defined | Clinical Research ..."
+    },
+    {
+      "url": "https://pancan.org/research/strategic-research-program/viewpoints/importance-of-phase-iii-clinical-trials/",
+      "domain": "pancan.org",
+      "category": "unknown",
+      "score": 0.6235751295336788,
+      "text": "Position Papers and Reports\nImportance of Phase III Clinical Trials\nAn Interview with Jordan Berlin, MD\nClinical trials are research studies that investigate new treatments or new combinations of treatments. They play an important role in the development of new treatment options for pancreatic cancer. Pancreatic cancer clinical trials are necessary to determine whether new treatments are beneficial to people living with the disease. The Pancreatic Cancer Action Network recommends that all patients consider clinical trials when exploring treatment options.\nJordan Berlin, MD, serves as Associate Professor and Clinical Director of GI Oncology and Phase I Program at the Vanderbilt University Medical Center in Nashville, Tennessee. He also serves as the chair of the organization\u2019s Medical Advisory Board. Recently, he shared his thoughts on the importance of clinical trial participation.\nQ: Why are clinical trials important in pancreatic cancer?\nA: Clinical trials are more important in pancr",
+      "title": "Importance of Phase III Clinical Trials"
+    },
+    {
+      "url": "https://www.lindushealth.com/blog/the-importance-of-phase-3-clinical-trials-in-drug-development",
+      "domain": "lindushealth.com",
+      "category": "unknown",
+      "score": 0.7316326530612245,
+      "text": "Meri was previously a venture capital investor and partner to biotech and digital health companies. He took part in the COVID-19 vaccine trials as a volunteer, where he saw how trial outcomes could be improved by focusing on patient experience.\nPhase 3 clinical trials play a crucial role in the development of new drugs. These trials are conducted to gather comprehensive data on the safety and efficacy of a drug in a large population of patients. The results from these trials are pivotal in determining whether a drug can be approved by regulatory authorities and brought to market. Understanding the significance of Phase 3 trials and their impact on the drug development process is essential for researchers, healthcare professionals, and patients alike.\nTo grasp the importance of Phase 3 trials, it is necessary to have a basic understanding of the different phases of clinical trials. Clinical trials are typically divided into four phases, each serving a specific purpose in the drug develo",
+      "title": "The Importance of Phase 3 Clinical Trials in Drug ..."
+    },
+    {
+      "url": "https://extendedstudies.ucsd.edu/news-events/extended-studies-blog/learning-to-navigate-the-four-phases-of-clinical-trials",
+      "domain": "extendedstudies.ucsd.edu",
+      "category": "reliable",
+      "score": 0.6227272727272727,
+      "text": "13 February 2024\nLearning to Navigate the Four Phases of Clinical Trials\nIntroduction\nClinical trials are an essential aspect of modern medicine. Every drug, biologic, or medical device on the market needs to pass an important process of clinical trial testing to ensure the safety and efficacy of these innovations.\nClinical trials are the critical bridge between scientific research and real-world medical applications.\n\u201cWe're trying to find ways to develop new therapies, usually for problems that can't be solved by over-the-counter or homeopathic remedies,\u201d said Suzan Olson PhD, MHS, RN, and instructor at the UC San Diego Division of Extended Studies Clinical Trials Design and Management Program. \u201cMost everyone has someone in their orbit that has had a healthcare challenge. When you don't have an available medication to solve the condition and quality of life may be compromised. And so a clinical trial helps us to use scientific methods to find help for these people.\u201d\nUnless the product",
+      "title": "Learning to Navigate the Four Phases of Clinical Trials"
+    },
+    {
+      "url": "https://www.abbvieclinicaltrials.com/resources/clinical-trial-phases/",
+      "domain": "abbvieclinicaltrials.com",
+      "category": "unknown",
+      "score": 0.778974358974359,
+      "text": "CLINICAL RESEARCH PHASES\nClinical trials follow a particular timeline, from early, small-scale, phase 1 studies to late-stage, large-scale, phase 3 studies.1 While there are many steps involved in the development of new drugs, clinical trials, which make up clinical research, are the part of drug development that involves people. Here we describe the key goals and provide information about the various clinical research phases.\nPreclinical Studies\nBefore a clinical trial begins, researchers perform extensive preclinical studies in the lab to make sure that their methods (e.g., drug, procedure, preventative measure, or diagnostic) are not harmful to people. The level of harm is measured in terms of toxicity.\nThe research in preclinical trials is not performed on people. Instead, potential drugs and therapies, and the methods to administer them, are first tested in cells or animals, or both, long before they make it to human trials.\nUsually, preclinical studies are not very large. However",
+      "title": "What Are The Phases Of Clinical Trials"
+    },
+    {
+      "url": "https://www.cancer.org/cancer/managing-cancer/making-treatment-decisions/clinical-trials/phases-of-clinical-trials.html",
+      "domain": "cancer.org",
+      "category": "unknown",
+      "score": 0.742,
+      "text": "Phases of Clinical Trials\nClinical trials are the best way to learn what works in treating diseases like cancer. Clinical trials occur in different \u201cphases\u201d that build on one another. Each phase is designed to answer certain questions and keep participants as safe as possible.\nKnowing the phase of a clinical trial is important because it can give you an idea about how much is known about the treatment being studied. While there are many types of clinical trials, this information focuses on clinical trials for treatments for people with cancer.\n- Phase 0 clinical trials: Is this treatment worth studying more?\n- Phase I clinical trials: Is the treatment safe?\n- Phase II clinical trials: Does the treatment work?\n- Phase III clinical trials: Is it better than the standard treatment?\n- Phase IV clinical trials: What else do we need to know?\n- How does a new treatment make it into a clinical trial?\n- How does a new treatment get approved by the FDA?\nPhase 0 clinical trials: Is this treatment",
+      "title": "Phases of Clinical Trials"
+    },
+    {
+      "url": "https://www.mskcc.org/cancer-care/clinical-trials/what-does-phase-clinical-trial-mean",
+      "domain": "mskcc.org",
+      "category": "unknown",
+      "score": 0.6124338624338624,
+      "text": "Clinical trials are research studies. All clinical trials are done in steps, called phases. These phases are numbered 0, I, II, III, and IV (0, 1, 2, 3, and 4).\nNew cancer treatments must go through different phases before they\u2019re available for everyone. If the treatment is successful in one phase, it will move on to the next one. People most often take part in just one phase of a clinical trial.\nMSK is a leader in cancer clinical trials. We often have many trials at a time, researching different types of cancers.\nMSK is home to one of the largest clinical trial programs in the country. This means that we offer more cancer clinical trials than many other cancer centers in the United States. We offer clinical trials in Manhattan and at some of our regional locations, including:\n- Long Island: Commack and Nassau\n- New Jersey: Basking Ridge, Bergen, and Monmouth\n- Westchester: West Harrison\nThe clinical trials done at MSK lead to many approvals of new drugs by the U.S. Food and Drug Admin",
+      "title": "What Does Phase 1, 2, and 3 of a Clinical Trial Mean?"
+    },
+    {
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK209903/",
+      "domain": "ncbi.nlm.nih.gov",
+      "category": "reliable",
+      "score": 0.7558479532163742,
+      "text": "NCBI Bookshelf. A service of the National Library of Medicine, National Institutes of Health.\nNational Research Council (US) Panel on Handling Missing Data in Clinical Trials. The Prevention and Treatment of Missing Data in Clinical Trials. Washington (DC): National Academies Press (US); 2010.\nThe Prevention and Treatment of Missing Data in Clinical Trials.\nShow detailsPrior to the adoption of a new treatment for use in a population, it is important to assess the impact that the use of the treatment will have on the general health of the population. That is, one wants to know how the general health of the population after adoption of the treatment compares with what it would have been if the treatment had not been adopted. In practice, this can never be known exactly (since it is a counterfactual). But the governmental agencies that regulate approval of new treatments are charged with judging the treatment\u2019s impact to the extent possible. This appendix presents an overview of the purpo",
+      "title": "Clinical Trials: Overview and Terminology"
+    },
+    {
+      "url": "https://www.crwf.com/blog/comparing-phases-of-clinical-trials-and-their-importance/",
+      "domain": "crwf.com",
+      "category": "unknown",
+      "score": 0.7519607843137255,
+      "text": "Understanding clinical trials can be overwhelming, especially when it comes to the different phases involved. This article will clarify the stages of the clinical trial process, highlighting the specific roles of Phase 1, Phase 2, Phase 3, and Phase 4 trials. By engaging with this content, readers will gain insights into how each phase contributes to ensuring safety and effectiveness in new treatments. For patients and caregivers seeking answers about clinical studies, this information addresses common concerns and helps navigate the complexities of medical research.\nDefining the Stages of the Clinical Trial Process\nThe journey from a laboratory idea to human testing involves structured clinical research phases that are essential for developing new health care innovations. Pre-clinical research lays the groundwork for human trials, ensuring safety and effectiveness. As part of this process, Phase 0 microdosing studies introduce participants to a clinical drug trial\u2018s potential benefits",
+      "title": "Comparing Phases of Clinical Trials and Their Importance"
+    },
+    {
+      "url": "https://grants.nih.gov/podcast-node/2120",
+      "domain": "grants.nih.gov",
+      "category": "reliable",
+      "score": 0.4127167630057803,
+      "text": "NIH\u2019s definition of a Phase III clinical trial is quite broad, including drug studies, device studies, behavioral interventions, epidemiological studies, community trials, and more. Phase III trials are usually large, prospective trails that compare two or more interventions against other standard or experimental interventions. In this next episode of NIH\u2019s All About Grants podcast, we explain what a Phase III trial is, how it compares to other types of clinical trials, considerations for your application and its review, how these studies influence standards of care, helpful tools and other resources, and much more.\nOur guests include Ms. Dawn Corbett, NIH\u2019s Inclusion Policy Officer, and Dr. Christine Hunter, Acting Director of the NIH Office of Behavioral and Social Sciences Research.\n\u201c\u2026 What NIH defines as a Phase 3 trial is, a broadly-based perspective investigation that compares two or more interventions. A Phase 3 trial often is aimed at generating evidence that may lead to a cons",
+      "title": "Phase III Trials | Grants & Funding"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Phases_of_clinical_research",
+      "domain": "en.wikipedia.org",
+      "category": "unknown",
+      "score": 0.7180628272251308,
+      "text": "Phases of clinical research\nThe phases of clinical research are the stages in which scientists conduct experiments with a health intervention to obtain sufficient evidence for a process considered effective as a medical treatment.[1] For drug development, the clinical phases start with testing for drug safety in a few human subjects, then expand to many study participants (potentially tens of thousands) to determine if the treatment is effective.[1] Clinical research is conducted on drug candidates, vaccine candidates, new medical devices, and new diagnostic assays.\nDescription\n[edit]Clinical trials testing potential medical products are commonly classified into four phases. The drug development process will normally proceed through all four phases over many years.[1] When expressed specifically, a clinical trial phase is capitalized both in name and Roman numeral, such as \"Phase I\" clinical trial.[1]\nIf the drug successfully passes through Phases I, II, and III, it will usually be app",
+      "title": "Phases of clinical research - Wikipedia"
+    },
+    {
+      "url": "https://www.slideshare.net/slideshow/final-phases-of-clinical-trial-11914/51964316",
+      "domain": "slideshare.net",
+      "category": "unknown",
+      "score": 0.3528662420382166,
+      "text": "This document discusses the phases of clinical trials. It begins by defining a clinical trial and explaining their importance. It then outlines the typical phases:\nPhase I trials involve small groups of healthy volunteers and focus on safety, tolerability and pharmacokinetics. Phase II trials enroll larger numbers of patients to study efficacy and further evaluate safety. Phase III trials involve thousands of patients and aim to confirm efficacy and further monitor safety. Phase IV trials occur after marketing approval to further monitor long-term safety and efficacy.\nThe document provides details on the objectives, features, sample sizes, and information gained from each phase of trials. It discusses microdosing studies, pharmacogenomics studies, and post-marketing surveillance. In summary",
+      "title": "Phases of clinical trial 11.9.14"
+    },
+    {
+      "url": "https://www.academia.edu/102654186/Analysis_and_Reporting_of_Sex_Differences_in_Phase_III_Medical_Device_Clinical_Trials_How_Are_We_Doing",
+      "domain": "academia.edu",
+      "category": "reliable",
+      "score": 0.43048780487804883,
+      "text": "Analysis and Reporting of Sex Differences in Phase III Medical Device Clinical Trials\u2014How Are We Doing?\nhttps://doi.org/10.1089/JWH.2013.4400Abstract\nOver the past decade, the scientific community has begun to recognize the importance of biological sex differences in disease pathology, diagnosis, prevention, and treatment; however, the practice of sex-specific analysis and reporting is not integrated as standard practice by either our federal health agencies or by major medical journals. Despite the reforms of 20 years ago and the general inclusion of women in drug clinical trials, we have yet to see data routinely analyzed and reported by sex. Major journals are not requiring it, and large, publicly available datasets, such as ClinicalTrials.gov, are not systematically collecting and pointing to it. However, federal health databases and medical journals have the potential to impact progress in sex-specific analysis and reporting. We conducted a search on ClinicalTrials.gov for phase I",
+      "title": "(PDF) Analysis and Reporting of Sex Differences in Phase III Medical ..."
+    },
+    {
+      "url": "https://www.who.int/health-topics/clinical-trials",
+      "domain": "who.int",
+      "category": "reliable",
+      "score": 0.603763440860215,
+      "text": "Clinical trials\nClinical trials are a type of research that studies new tests and treatments and evaluates their effects on human health outcomes. People volunteer to take part in clinical trials to test medical interventions including drugs, cells and other biological products, surgical procedures, radiological procedures, devices, behavioural treatments and preventive care.\nClinical trials are carefully designed, reviewed and completed, and need to be approved before they can start. People of all ages can take part in clinical trials, including children.\nThere are 4 phases of biomedical clinical trials:\n- Phase I studies usually test new drugs for the first time in a small group of people to evaluate a safe dosage range and identify side effects.\n- Phase II studies test treatments that have been found to be safe in phase I but now need a larger group of human subjects to monitor for any adverse effects.\n- Phase III studies are conducted on larger populations and in different regions ",
+      "title": "Clinical trials"
+    },
+    {
+      "url": "https://innovationscns.com/psychiatric-medications-pipeline-june-2024/",
+      "domain": "innovationscns.com",
+      "category": "unknown",
+      "score": 0.7417582417582418,
+      "text": "by Waguih William IsHak, MD; Ashley Meyer, BS; Luiza Freire, MD; Jayant Totlani, DO; Nathalie Murphy, MD; Sabrina Renteria, MD; Mohamed Salem, BS; Tiffany Chang, MS; Rasha Abdelsalam MD; Rida Khan, MD; Thomas Chandy, MS, DO; Thomas Parrish, BS; Drew Hirsch, BA candidate; Bhumika Patel, DO candidate;\nAlexander J. Steiner, PsyD; Sarah Kim, MD; Rebecca Hedrick, MD;\nRobert N. Pechnick, PhD; and Itai Danovitch, MD\nDrs. IsHak, Murphy, Renteria, Abdelsalam, Khan, Kim, Hedrick, and Danovitch; Mr. Salem; Ms. Chang; Mr. Parrish; and Mr. Hirsch are with Cedars-Sinai Health System in Los Angeles, California. Dr. IsHak is also with David Geffen School of Medicine at UCLA in Los Angeles, California. Ms. Meyer is with University of California Irvine, School of Medicine in Irvine, California. Dr. Freire is with Faculdade Pernambucana de Saude in Recife, PE, Brazil. Drs. Totlani and Pechnick and Ms. Patel are with Western University of Health Sciences in Pomona, California. Dr. Chandy is with Loma Lind",
+      "title": "Overview of Psychiatric Medications in the Pipeline in Phase III Trials ..."
+    },
+    {
+      "url": "https://norstella-insights-sandbox.web.arc-cdn.net/tags/clinical-trials/",
+      "domain": "norstella-insights-sandbox.web.arc-cdn.net",
+      "category": "unknown",
+      "score": 0.5448087431693989,
+      "text": "Clinical Trials\nIn what could amount to a de facto enforcement mechanism, the new draft guidance also \u201cstrongly encourages\u201d sponsors to share details about their diversity action plan and enrollment goals with the public.\nIn what could amount to a de facto enforcement mechanism, the new draft guidance also \u201cstrongly encourages\u201d sponsors to share details about their diversity action plan and enrollment goals with the public.\nTumor infiltrating lymphocyte therapies show promise for solid tumors, with a first FDA approval, but face manufacturing and access challenges as development continues.\nWith the deadline for comments on the US FDA\u2019s draft guidance less than a month away, the Pink Sheet offers an infographic outlining what the agency is expecting in diversity action plans and when that might be implemented.\nThe nod will help unlock a national market for the partners\u2019 Dupert (fulzerasib) in which roughly 50,000 people are expected to be newly diagnosed with lung cancer harboring the K",
+      "title": "Clinical Trials"
+    },
+    {
+      "url": "https://akjournals.com/view/journals/2054/7/3/article-p227.xml",
+      "domain": "akjournals.com",
+      "category": "unknown",
+      "score": 0.7194285714285714,
+      "text": "Abstract\nAssociated with high-risk behavior, borderline personality disorder (BPD) remains one of the field's most misunderstood, misdiagnosed, and stigmatized conditions. Individuals with BPD are frequently labeled as treatment-resistant patients. Furthermore, 25\u201358% of BPD individuals have a comorbid diagnosis of post-traumatic stress disorder (PTSD), and BPD may be conceptualized as a trauma-spectrum disorder. In Phase 3 clinical trials for 3,4-methylenedioxymethamphetamine (MDMA) full-dose participants for treatment-resistant PTSD found that up to 71.2% no longer met the criteria for PTSD. While PTSD is quite different from BPD, a qualitative exploration on the overlap in etiology and conceptualization provided new perspectives by interviewing two clinicians who focus their treatment with BPD diagnosed individuals and two MDMA-assisted therapy clinicians. This research examines the etiological, conceptualization, and therapeutic mechanisms of MDMA-assisted therapists and dialectica",
+      "title": "MDMA-assisted therapy for borderline personality disorder"
+    },
+    {
+      "url": "https://scienceofparkinsons.com/2020/05/12/mams/",
+      "domain": "scienceofparkinsons.com",
+      "category": "unknown",
+      "score": 0.6727272727272726,
+      "text": "|\n# # # # The way that clinical trials are conducted doesn\u2019t make much sense. They take too long and a lot of resources to set up, they take a long time to be conducted, and we have to wait until they are finished before we get the results. And then on top of that we need to repeat the whole process everytime we want to make any further progress. More efficient and adaptive models of clinical trials have been used in other medical conditions, and, thankfully, researchers are now asking if these could also be applied to Parkinson\u2019s In today\u2019s post, we will discuss a recent review that explores the use of Multi-Arm Multi-Stage trial design, and asks how they could be applied to neurodegenerative conditions, like PD. # # # # |\nSource: Mumstheword\n\u201cMum\u2019s the word\u201d is a popular English idiom. It refers to not talking about a particular topic.\nBut where on Earth did the phrase come from?!?\nIn writing these blog posts, I like to try and devise clever (some might fairly say silly) titles to gr",
+      "title": "MAMS the word \u2013 The Science of Parkinson's"
+    },
+    {
+      "url": "https://www.biospace.com/press-releases/mindmed-announces-first-patient-dosed-in-phase-3-voyage-study-of-mm120-in-generalized-anxiety-disorder-gad",
+      "domain": "biospace.com",
+      "category": "unknown",
+      "score": 0.48048780487804876,
+      "text": "- Voyage is the first-ever Phase 3 study of lysergide D-tartrate (LSD) with the primary endpoint measuring the change from baseline in the Hamilton Anxiety Rating Scale (HAM-A) score at week 12 for MM120 Orally Disintegrating Tablet (ODT) 100 \u00b5g vs placebo -\n- Study builds on positive Phase 2b study results presented at the American Psychiatric Association\u2019s Annual Meeting in May 2024 -\n- Topline data from the 12-week double-blind period anticipated in the first half of 2026 -\nNEW YORK--(BUSINESS WIRE)--Mind Medicine (MindMed) Inc. (NASDAQ: MNMD), (the \"Company\" or \"MindMed\"), a clinical-stage biopharmaceutical company developing novel product candidates to treat brain health disorders, today announced that the first patient has been dosed in its Phase 3 Voyage study of MM120 ODT, a pharmaceutically optimized form of lysergide D-tartrate (LSD) for the treatment of GAD. Voyage is the first of two Phase 3 studies in GAD evaluating the efficacy and safety of MM120 ODT versus placebo and i",
+      "title": "MindMed Announces First Patient Dosed in Phase 3 Voyage Study of..."
+    },
+    {
+      "url": "https://investor.insmed.com/2013-07-01-ARIKACE-Meets-Primary-Endpoint-of-Non-Inferiority-to-TOBI-in-Phase-3-Clinical-Trial-in-Europe-and-Canada-to-Treat-Pseudomonas-aeruginosa-in-Cystic-Fibrosis-Patients",
+      "domain": "investor.insmed.com",
+      "category": "unknown",
+      "score": 0.3916167664670659,
+      "text": "The Company reports that its Phase 3 study of once-daily ARIKACE to treat Pseudomonas aeruginosa (Pa) in cystic fibrosis (CF) patients conducted at 70 sites in\nThe Company also announces that the\nPhase 3 Clinical Trial Design for ARIKACE to Treat Pa in CF Patients\nThe Phase 3 trial was an open-label, multi-center, randomized study designed to assess the comparative safety and efficacy of ARIKACE and TOBI in CF patients with Pa. A total of 302 adult and pediatric CF patients with chronic Pa were randomized to receive 28-days of ARIKACE treatment delivered once-daily via an investigational eFlow\u00ae Nebulizer System, or TOBI delivered twice-daily via the PARI LC Plus\u00ae Nebulizer System over a 24-week treatment period.\nThe primary endpoint was relative change in FEV1 measured after three treatment cycles, with each cycle consisting of 28 days \"on\" treatment and 28 days \"off\" treatment. The study was designed to demonstrate non-inferiority to TOBI at a 5% non-inferiority margin with 80% power ",
+      "title": "ARIKACE Meets Primary Endpoint of Non-Inferiority to TOBI in Phase ..."
+    },
+    {
+      "url": "https://mdaquest.org/clinical-trial-alert-phase-3-study-of-pozelimab-and-cemdisiran-in-adults-with-gmg/",
+      "domain": "mdaquest.org",
+      "category": "unknown",
+      "score": 0.4416167664670659,
+      "text": "Clinical Trial Alert: Phase 3 Study of Pozelimab and Cemdisiran in Adults with gMG\nBy Sujatha Gurunathan | Wednesday, April 26, 2023\nResearchers at Regeneron are seeking adults who have symptomatic, generalized myasthenia gravis (gMG), presenting with anti-AChR antibodies or anti-LRP4 antibodies, to participate in a phase 3 clinical trial (NIMBLE) to evaluate the safety, effectiveness, and pharmacological properties of the investigational combination therapy pozelimab + cemdisiran to treat gMG. This combination therapy is designed to improve the connection between nerves and muscles in people with gMG, and is being evaluated for the ability to reduce muscle weakness.\nThis is a phase 3 multi-national, double-blind, randomized, placebo-controlled study, which means that participants at study sites in several countries will be randomly assigned to receive the drug or an inactive placebo control. The study will consist of a screening period of about 5 weeks, a 24-week treatment phase where",
+      "title": "Clinical Trial Alert: Phase 3 Study of Pozelimab and Cemdisiran in..."
+    },
+    {
+      "url": "https://www.clinicalleader.com/doc/otonomy-announces-positive-top-line-results-from-phase-clinical-trial-0001",
+      "domain": "clinicalleader.com",
+      "category": "unknown",
+      "score": 0.4379518072289157,
+      "text": "Otonomy Announces Positive Top-Line Results From Phase 3 Clinical Trial Of OTIPRIO In Patients With Acute Otitis Externa\nSan Diego, CA (GLOBE NEWSWIRE) - Otonomy, Inc. (Nasdaq:OTIC), a biopharmaceutical company focused on the development and commercialization of innovative therapeutics for diseases and disorders of the ear, today announced positive results from its pivotal Phase 3 clinical trial of OTIPRIO (ciprofloxacin otic suspension) in patients with acute otitis externa (AOE), also known as swimmer's ear. This single administration trial of OTIPRIO met the primary endpoint by showing a statistically significant increase in clinical cure rate compared to sham (no treatment) at Day 8 (p<0.001). Treatment with OTIPRIO was also well tolerated. Based on these positive results, Otonomy expects to submit a supplemental New Drug Application (sNDA) with the U.S. Food and Drug Administration (FDA) in the first half of 2017.\nAs shown in the summary table below, treatment with OTIPRIO demonst",
+      "title": "Otonomy Announces Positive Top-Line Results From Phase 3 Clinical ..."
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10023071/",
+      "domain": "pmc.ncbi.nlm.nih.gov",
+      "category": "reliable",
+      "score": 0.7448087431693989,
+      "text": "Abstract\nClinical research is an alternative terminology used to describe medical research. Clinical research involves people, and it is generally carried out to evaluate the efficacy of a therapeutic drug, a medical/surgical procedure, or a device as a part of treatment and patient management. Moreover, any research that evaluates the aspects of a disease like the symptoms, risk factors, and pathophysiology, among others may be termed clinical research. However, clinical trials are those studies that assess the potential of a therapeutic drug/device in the management, control, and prevention of disease. In view of the increasing incidences of both communicable and non-communicable diseases, and especially after the effects that Coronavirus Disease-19 (COVID-19) had on public health worldwide, the emphasis on clinical research assumes extremely essential. The knowledge of clinical research will facilitate the discovery of drugs, devices, and vaccines, thereby improving preparedness dur",
+      "title": "Clinical Trials and Clinical Research: A Comprehensive Review"
+    },
+    {
+      "url": "https://apnimed.com/article/ad109phase3toplineresults/",
+      "domain": "apnimed.com",
+      "category": "unknown",
+      "score": 0.5058479532163742,
+      "text": "Apnimed Announces Positive Topline Results in the First Landmark Phase 3 Clinical Trial of AD109, an Investigational Once-Daily Oral Pill for Obstructive Sleep Apnea\n- AD109 met the primary endpoint, mean change in apnea-hypopnea index (AHI, p=0.001) at 26 weeks, across a broad range of people with mild, moderate and severe obstructive sleep apnea\n- Study participants treated with AD109 achieved a mean reduction in AHI of 55.6% from baseline and achieved significantly improved oxygenation and reduced disease severity\n- AD109 is a first-in-class, anti-apneic neuromuscular modulator which targets the root cause of OSA by increasing upper airway muscle tone during sleep\n- Apnimed expects topline results in Q3\u201925 from its second Phase 3 clinical trial, LunAIRo, and plans to submit an NDA to the U.S. FDA for AD109 by early 2026\nCAMBRIDGE, Mass., May 19, 2025 \u2013 Apnimed, Inc., a pharmaceutical company building the industry-leading portfolio of first-in-class oral drug candidates that address ",
+      "title": "Apnimed Announces Positive Topline Results in the First... - Apnimed"
+    },
+    {
+      "url": "https://www.hilarispublisher.com/open-access/findings-from-a-phase-iii-clinical-trial-for-the-groundbreaking-covid19-vaccine-in-evaluating-immunogenicity-and-safety-100446.html",
+      "domain": "hilarispublisher.com",
+      "category": "unknown",
+      "score": 0.5095744680851064,
+      "text": "Opinion - (2023) Volume 7, Issue 3\nReceived: 01-Jun-2023, Manuscript No. Jcre-23-105788;\nEditor assigned: 03-Jun-2023, Pre QC No. P-105788;\nReviewed: 17-Jun-2023, QC No. Q-105788;\nRevised: 22-Jun-2023, Manuscript No. R-105788;\nPublished:\n29-Jun-2023\n, DOI: 10.37421/2795-6172.2023.7.197\nCitation: Laura, Milazzo. \u201cFindings from a Phase III Clinical\nTrial for the Ground-breaking COVID-19 Vaccine in Evaluating Immunogenicity\nand Safety.\u201d J Clin Res 7 (2023): 197.\nCopyright: \u00a9 2023 Laura M. This is an open-access article distributed under the terms of the Creative Commons Attribution License, which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.\nThe world has been grappling with the COVID-19 pandemic for over two years, and the development of effective vaccines has been a crucial step towards controlling the spread of the virus. Among the many vaccines developed, a novel COVID-19 vaccine has emerged as a potential",
+      "title": "Findings from a Phase III Clinical Trial for the Groundbreaking..."
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10361554/",
+      "domain": "pmc.ncbi.nlm.nih.gov",
+      "category": "reliable",
+      "score": 0.4379518072289157,
+      "text": "Abstract\nObjective:\nThe Core Clinical Journals (CCJ) list, produced by the U.S. National Library of Medicine (NLM), has been used by clinicians and librarians for half a century for two main purposes: narrowing a literature search to clinically useful journals and identifying high priority titles for library collections. After documentation of low usage of the existing CCJ, a review was undertaken to assess current validity, followed by an update to current clinical needs.\nMethods:\nAs the subject coverage of the 50-year-old list had never been evaluated, the CCJ committee began its innovative step-wise approach by analyzing the existing subject scope. To determine whether clinical subjects had changed over the last half-century, the committee collected data on journal usage in hospitals and medical facilities, adding journal usage from Morning Report blogs recording the journal article citations used by physicians and residents in response to clinical questions. Patient-driven high-fre",
+      "title": "PubMed's core clinical journals filter: redesigned for ..."
+    },
+    {
+      "url": "https://www.henryford.com/blog/2023/04/what-happens-during-each-phase-of-a-clinical-trial",
+      "domain": "henryford.com",
+      "category": "unknown",
+      "score": 0.5292134831460674,
+      "text": "Clinical trials are voluntary research studies that bring safe, effective medical treatments to the public. Those who participate in clinical trials have the opportunity to try new treatments up to a decade before they\u2019re widely available and approved by the Food and Drug Administration (FDA). This may be life lengthening and occasionally lifesaving.\n\u201cParticipating in a clinical trial can be an important part of cancer care. It increases someone\u2019s treatment options,\u201d says Amy M. Weise, D.O., a medical oncologist at Henry Ford Health. \u201cCancer clinical trials often include standard-of-care drugs in combination with experimental drugs. The goal is to improve upon drugs that are already available or create new combinations of drugs that might be even more effective.\u201d\nPhases Of Clinical Trials\nTo ensure safety and efficacy, clinical trials undergo several phases before the FDA approves them for widespread public use. Each phase has a different goal, and your diagnosis and state of health de",
+      "title": "What Happens During Each Phase Of A Clinical Trial?"
+    },
+    {
+      "url": "https://www.reddit.com/r/askscience/comments/gx4q76/what_is_a_phase_3_clinical_trial_when_we_talk/",
+      "domain": "reddit.com",
+      "category": "unreliable",
+      "score": 0.3988165680473373,
+      "text": "What is a phase 3 clinical trial when we talk about vaccines?\nMedicine\nMy understanding of the phases of clinical trials goes like this;\nPhase 1: test safety in small number of healthy people.\nPhase 2: test safety in small number of sick people and obtain early data whether it works.\nPhase 3: test efficacy in large number of sick people.\nPhase 4: use new treatment in the clinic and study it.\nMy question is this. Vaccines are given to healthy people to prevent the sickness. So who gets studied in Phase 3? Do you just wait to see how many of those people end up sick after they get the vaccine?\nArchived post. New comments cannot be posted and votes cannot be cast.",
+      "title": "What is a phase 3 clinical trial when we talk about vaccines?"
+    },
+    {
+      "url": "https://www.reddit.com/r/ClinTrialExplain/comments/13bxyms/what_are_the_stages_of_clinical_trials/",
+      "domain": "reddit.com",
+      "category": "unreliable",
+      "score": 0.5624338624338624,
+      "text": "Explain to Me about Clinical Trials A group for anyone interested in learning more about clinical trials, patient rights, rules, and the history of clinical trials and drug development.\nWhat are the stages of clinical trials?\nClinical trials are research studies that test new drugs, devices, or treatments in people to see if they are safe and effective. Clinical trials are important for finding new ways to prevent, diagnose, or treat diseases. However, clinical trials are also complicated and have strict rules and procedures.The main stages of clinical trials are:\n-\nPreclinical research: This is when researchers test new drugs or devices in the lab or in animals to learn more about them, such as how they work, how they affect the body, and what side effects they may have. Preclinical research helps researchers decide if a new drug or device is worth testing in people.\n-\nPhase I trials: These are the first trials that involve people, usually healthy volunteers who agree to join the stud",
+      "title": "What are the stages of clinical trials? : r/ClinTrialExplain"
+    },
+    {
+      "url": "https://www.reddit.com/r/clinicaltrials/comments/d61idj/types_and_phases_of_clinical_trials/",
+      "domain": "reddit.com",
+      "category": "unreliable",
+      "score": 0.553763440860215,
+      "text": "Types and phases of clinical trials\nThere are different types of clinical trials including the ones that follow.\nThe clinical trials to assess new treatments or new ways to make them more effective existing treatments. You can study new drugs or new methods to perform surgery or administer radiotherapy, for example. This is the type of clinical trial in which people with cancer participate most frequently.\nThe prevention trials to assess new ways to reduce the risk of cancer or prevent it from reappearing.\nThe screening trials help to find ways to detect cancer early in humans, before they experience symptoms.\nThe diagnostic tests used to find better ways to diagnose cancer or to determine the stage.\nThe trials supportive care possible to find ways to improve comfort and quality of life for people with cancer or cancer survivors.\nPhases of a clinical trial\nThe clinical trial that involves a new treatment always takes place in several stages called phases. Each phase is designed to answ",
+      "title": "Types and phases of clinical trials : r/clinicaltrials"
+    },
+    {
+      "url": "https://www.reddit.com/r/RobinHoodPennyStocks/comments/leuwae/a_guide_to_drug_development_and_clinical_trials/",
+      "domain": "reddit.com",
+      "category": "unreliable",
+      "score": 0.7495073891625617,
+      "text": "Penny stocks available to trade in the RobinHood mobile stock trading app. Browse top penny stock investments available to trade online.\nA Guide to Drug Development and Clinical Trials\nIt seems like more and more of the penny stocks being discussed on this subreddit fall into the biotech, biomedical, or biopharmaceutical sectors. Lately, I have been seeing misunderstandings and misconceptions around the many phases of clinical trials and the path to FDA approval.\nWith this in mind, I put together this \"Guide to Drug Development and Clinical Trials\" to provide some information on the process. While I am not an expert on the topic, I am a future medical provider (PA student). It is by no means all-encompassing, but it is a good starting point for those who aren't especially familiar with clinical trials.\nIts format and much of the content comes from a NY Times article that discusses the vaccine approval process and directly from the FDA website.\nDevelopment: After identifying a promising",
+      "title": "A Guide to Drug Development and Clinical Trials"
+    },
+    {
+      "url": "https://www.reddit.com/r/clinicalresearch/comments/lstwk2/clinical_trial_phases/",
+      "domain": "reddit.com",
+      "category": "unreliable",
+      "score": 0.5259887005649717,
+      "text": "Clinical research is a branch of healthcare science that determines the safety and effectiveness (efficacy) of medications, devices, diagnostic products, and treatment regimens intended for human use. These may be used for prevention, treatment, diagnosis or for relieving symptoms of a disease.\nClinical trial phases\nClinical trials are a type of research conducted to study new tests, treatments, and drugs and evaluate their outcomes, side effects, and efficacy on human health. There are various medical interventions, including drugs, biological products, radiological procedures, devices, behavioral treatments, surgical procedures, and preventive care in which people volunteer to take part. Take Clinical Research Training for experience and on ground experience.\nClinical trial phases\nBiomedical, clinical trials include the following four clinical research phases:\n\u25cf Phase I of clinical trials usually studies new drugs for the first time in a small group of people to evaluate a safe dosag",
+      "title": "Clinical trial phases : r/clinicalresearch"
+    },
+    {
+      "url": "https://beingpatient.com/experimental-alzheimers-drug-donanemab-promising-results-small-trial/",
+      "domain": "beingpatient.com",
+      "category": "unknown",
+      "score": 0.40584795321637424,
+      "text": "Experimental Alzheimer\u2019s Drug Donanemab Looks Promising in Phase 2 Trial\nEli Lilly announced on Monday that its investigational drug donanemab showed promise in a mid-stage clinical trial for patients with early symptoms of Alzheimer\u2019s.\nThe initial results from Eli Lilly and Co\u2019s Phase 2 clinical trial for experimental Alzheimer\u2019s drug donanemab provide much needed hope for the Alzheimer\u2019s community, which has seen setback after setback in drug development. Alzheimer\u2019s drug trials have had a 99 percent failure rate, and many drug companies have bailed from developing therapies for Alzheimer\u2019s.\nAccording to the Lilly\u2019s news release, donanemab slowed the decline of cognition and ability to perform activities of daily living by 32 percent in participants who received the therapy, compared to those who received placebo, meeting its primary goal of statistically significant slowing of decline over 18 months.\n\u201cThe positive results we have obtained today give us confidence in donanemab and su",
+      "title": "Experimental Alzheimer's Drug Donanemab Looks Promising in Phase ..."
+    },
+    {
+      "url": "https://www.biospace.com/eli-lilly-release-new-analyses-of-phase-3-trials-show-improvements-in-rheumatoid-arthritis-symptoms-following-treatment-with-baricitinib-across-diver",
+      "domain": "biospace.com",
+      "category": "unknown",
+      "score": 0.4879518072289157,
+      "text": "Three post-hoc analyses of two phase 3 studies showed improvements in rheumatoid arthritis symptoms in patients irrespective of age, BMI and number of previously used conventional synthetic DMARDs\nINDIANAPOLIS, Nov. 14, 2016 /PRNewswire/ -- Eli Lilly and Company (NYSE: LLY) and Incyte Corporation (NASDAQ: INCY) today announced new data analyses of two phase 3 trials, RA-BUILD and RA-BEAM, showing that baricitinib treatment resulted in improvements in rheumatoid arthritis (RA) symptoms across a diverse population of patients with RA regardless of age, body mass index (BMI) and previous treatment with conventional synthetic disease-modifying antirheumatic drugs (csDMARDs). Findings were presented today at the American College of Rheumatology (ACR)/Association of Rheumatology Health Professionals (ARHP) Annual Meeting in Washington DC, November 11-16, 2016.\n\"Multiple patient characteristics may impact the effectiveness of rheumatoid arthritis treatment,\" said James McGill, M.D., distingui",
+      "title": "Eli Lilly Release: New Analyses Of Phase 3 Trials Show... - BioSpace"
+    },
+    {
+      "url": "https://preskorn.com/columns/0311.html",
+      "domain": "preskorn.com",
+      "category": "unknown",
+      "score": 0.6324022346368714,
+      "text": "|\n|\n| Relating Clinical Trials To Psychiatric Practice: Part II: The Gap Between the Usual Patient in Registration Trials and in Practice |\n|\n|\nSHELDON H. PRESKORN, MD\n|\n|\nJournal of Psychiatric Practice, November 2003, 455-461\n|\nThis column is the second in a two-part series. The first column presented the case of a 13-year-old boy treated with 60 mg/day of both aripiprazole and fluoxetine and discussed how the treatment in that case varied from the available clinical trial data.1 It also discussed the multiple mechanisms underlying the drug-drug interaction that occurred and how they related to the clinical presentation.\nThis second column presents a more general discussion of the disparity between patients eligible for clinical trials and those seen in daily practice. Recognition of that disparity can help clinicians more readily interpret clinical trial data and use that knowledge in their practices.\nThe Equations\nThe following two equations are fundamental to understanding the saf",
+      "title": "Column - Relating Clinical Trials To Psychiatric Practice: Part II: The..."
+    },
+    {
+      "url": "https://www.jnj.com/innovation/what-are-clinical-trials",
+      "domain": "jnj.com",
+      "category": "unknown",
+      "score": 0.5595744680851064,
+      "text": "A clinical trial is a research study that determines whether specific healthcare interventions\u2014such as investigational therapies, medicines and treatments\u2014are safe and effective. Clinical trials are essential for making medical progress and helping Johnson & Johnson address the world\u2019s most complex diseases.\nBefore reaching the clinical trial stage, investigational interventions may undergo various types of preclinical research and testing. The clinical trial process itself can include:\n- Phase 1: Researchers test the investigational drug or treatment in a small group of people to learn about its safety, including how it is absorbed by the body, what dosage should be used and potential side effects.\n- Phase 2: The intervention is given to a larger group of people to better understand ongoing safety, whether it works for a particular disease and the best dose.\n- Phase 3: The intervention is given to an even larger group of people. The main objectives are studying safety and side effects",
+      "title": "What are clinical trials?"
+    },
+    {
+      "url": "https://clinicaltrialshub.htq.org.au/blog/understanding-the-clinical-trial-phases/",
+      "domain": "clinicaltrialshub.htq.org.au",
+      "category": "unknown",
+      "score": 0.5478260869565217,
+      "text": "Understanding the clinical trial phases\nIt often takes years for researchers to develop and test new medical interventions, first in a laboratory setting and then as part of a clinical trial. With objectives for safety, ethics and efficiency in mind, researchers break the process down into smaller parts, typically known as phases.\nEvery phase is an important opportunity for researchers to gather information, evaluate risks and benefits, and move the intervention further towards approval and wider use.\nBelow, we explain the most common phases used in Australian clinical trials, including investigator-led or initiated trials. These phases apply to \u2013 but may differ between \u2013 trials for different interventions, from medical drugs and devices to diagnostic tools.\nClinical trial phases: A quick summary\n- clinical trials are run in different phases\n- there are four key phases, each with a different goal\n- the phases of a clinical trial may vary for investigator-led trials due to budget constr",
+      "title": "The clinical trial phases guide | Phase 1, 2, 3, & 4"
+    },
+    {
+      "url": "https://www.numberanalytics.com/blog/phase-iii-clinical-trials-epidemiology-guide",
+      "domain": "numberanalytics.com",
+      "category": "unknown",
+      "score": 0.7842639593908629,
+      "text": "Phase III Clinical Trials: A Comprehensive Guide\nSarah Lee AI generated Llama-4-Maverick-17B-128E-Instruct-FP8 5 min read \u00b7 May 25, 2025\nIntroduction to Phase III Clinical Trials\nPhase III clinical trials represent a pivotal stage in the development of new medical treatments, playing a crucial role in determining their efficacy and safety in a larger population. To understand the significance of Phase III trials, it's essential to first grasp the overall structure of clinical trial phases and the importance of epidemiology in shaping these trials.\nOverview of Clinical Trial Phases\nClinical trials are conducted in several phases, each designed to answer specific research questions. The phases are sequential, with each phase building on the results of the previous one. The four main phases are:\n- Phase I: Focuses on assessing the safety of a new treatment in a small group of healthy volunteers or patients.\n- Phase II: Evaluates the efficacy and side effects of the treatment in a larger g",
+      "title": "Phase III Clinical Trials: A Comprehensive Guide"
+    },
+    {
+      "url": "https://drug-dev.com/ocular-therapeutix-announces-first-patients-enrolled-in-phase-3-sol-r-wet-amd-study/",
+      "domain": "drug-dev.com",
+      "category": "unknown",
+      "score": 0.43240223463687144,
+      "text": "Ocular Therapeutix Announces First Patients Enrolled in Phase 3 SOL-R Wet AMD Study\nOcular Therapeutix, Inc. recently announced the first patients have been enrolled in the Phase 3 SOL-R clinical trial evaluating repeat dosing of AXPAXLI (axitinib intravitreal implant, also known as OTX-TKI) for the treatment of patients with wet age-related macular degeneration (wet AMD).\nSOL-R is a global, 825-patient, non-inferiority study evaluating repeat dosing of AXPAXLI every six months (Q6M) compared to 2 mg aflibercept, dosed every eight weeks (Q8W) in patients with wet AMD. A third arm evaluating 8 mg aflibercept dosed Q6M is incorporated to ensure the study is adequately masked. The trial is evaluating AXPAXLI versus the current standard of care under the \u201creal world\u201d requirements of a repeat-dosing regimen.\n\u201cOur first Phase 3 trial, SOL-1, is intended to show that AXPAXLI can safely and durably maintain visual acuity in patients with wet AMD. SOL-R is intended to build on that by providing",
+      "title": "Ocular Therapeutix Announces First Patients Enrolled in Phase ..."
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Tuskegee_Syphilis_Study",
+      "domain": "en.wikipedia.org",
+      "category": "unknown",
+      "score": 0.4987179487179487,
+      "text": "Tuskegee Syphilis Study\n| Tuskegee Syphilis Study | |\n|---|---|\n| Dates | 1932\u20131972 |\n| Locations | Tuskegee, Alabama |\n| Funding | U.S. Public Health Service (PHS) |\nThe Tuskegee Study of Untreated Syphilis in the Negro Male[1] (informally referred to as the Tuskegee Experiment or Tuskegee Syphilis Study) was a study conducted between 1932 and 1972 by the United States Public Health Service (PHS) and the Centers for Disease Control and Prevention (CDC) on a group of nearly 400 African American men with syphilis as well as a control group without.[2][3] The purpose of the study was to observe the effects of the disease when untreated, to the point of death and autopsy.[4] Although there had been effective treatments to reduce the severity of the disease since the 1920s, the use of penicillin for the treatment of syphilis was widespread as of 1945.[4] The men were not informed of the nature of the study, proper treatment was withheld, and more than 100 died as a result.\nThe Public Healt",
+      "title": "Tuskegee Syphilis Study"
+    },
+    {
+      "url": "https://www.news-medical.net/health/What-is-a-Phase-3-Clinical-Trial.aspx",
+      "domain": "news-medical.net",
+      "category": "unknown",
+      "score": 0.5448087431693989,
+      "text": "Phase 3 clinical trials follow phase 1 and 2 clinical trials. In a phase 1 clinical trial, the tolerability and safety of the new drug is studied, usually in a small number of healthy volunteers. Phase 2 is aimed at determining the drug's efficacy and optimal dosing regimen. After phase 2, the drug is entered into the next phase of testing in a phase 3 trial.\nThe main focus of phase 3 trials is to demonstrate and confirm the prelimary evidence gathered in the previous trials that the drug is, a safe, beneficial and effective treatment for the intended indication.\nPhase 3 is the last phase of testing to be completed before the drug's details and clinical trial results are submitted to the regulatory authorities for approval of the drug's release on the open market. Phase 3 is therefore a vital phase of drug development and billions may be spent progressing the drug to a phase 3 trial, only for the drug to prove ineffective in a larger patient population or have serious safety concerns t",
+      "title": "What is a Phase 3 Clinical Trial? - News-Medical.net"
+    },
+    {
+      "url": "https://www.biospace.com/daiichi-sankyo-jumps-on-positive-phase-iii-pain-data",
+      "domain": "biospace.com",
+      "category": "unknown",
+      "score": 0.4694285714285714,
+      "text": "BASKING RIDGE, N.J. and TOKYO, June 30, 2017 /PRNewswire/ -- Daiichi Sankyo Company, Limited (hereafter, Daiichi Sankyo) today announced top-line results from NEUCOURSE, a phase 3 clinical trial in patients with post-herpetic neuralgia, and the ALDAY phase 3 clinical trials in patients with fibromyalgia. The NEUCOURSE and ALDAY clinical trials are integral aspects of Daiichi Sankyo's broader global clinical development program for mirogabalin, evaluating its use in pain syndromes including post-herpetic neuralgia, fibromyalgia and diabetic peripheral neuropathic pain.\nIn NEUCOURSE, a single phase 3, double-blind, placebo-controlled, 14-week study evaluating mirogabalin in Asian patients with post-herpetic neuralgia, mirogabalin met the primary efficacy endpoint by demonstrating a statistically significant reduction in the weekly average daily pain score (ADPS) from baseline to Week 14.\nThe primary objective of the NEUCOURSE study was to evaluate the efficacy of mirogabalin in patients ",
+      "title": "Daiichi Sankyo Jumps On Positive Phase III Pain Data - BioSpace"
+    },
+    {
+      "url": "https://hejnu.ug/africa-europe-partnership-to-launch-historic-phase-3-clinical-trial-in-early-pregnancy/",
+      "domain": "hejnu.ug",
+      "category": "unknown",
+      "score": 0.5379518072289158,
+      "text": "The trial will leverage clinical and social research to better serve women of reproductive age at risk of malaria\nA global consortium plans to undertake a Phase 3 clinical trial assessing antimalarial medicines in women in their first trimester of pregnancy.\nThe trial will evaluate the efficacy, safety, tolerability, and cost-effectiveness of antimalarial drugs to treat uncomplicated malaria. This pioneering approach challenges the status quo, in which pregnant women are typically excluded from clinical trials, and addresses a critical gap by focusing on an often-neglected group: women in their first trimester.\nOn 11 July 2024, the Safety of Antimalarials in the First Trimester (SAFIRE) consortium, comprised of scientific and social research experts in malaria in pregnancy, initiated the preparation of a historic project: the first-ever Phase 3 clinical trial testing the efficacy and safety of antimalarials in women in their first trimester of pregnancy.\nWith financial support from the",
+      "title": "Africa-Europe Partnership to Launch Historic Phase 3 Clinical Trial in ..."
+    },
+    {
+      "url": "https://blog.cytonics.com/2024/08/28/37-\ud83c\udf09-bridging-finance-and-pharma-insights-from-arvind-rachamadugu/",
+      "domain": "blog.cytonics.com",
+      "category": "unknown",
+      "score": 0.6069620253164557,
+      "text": "Disclosure: The views and opinions expressed here reflect only those of Mr. Arvind Rachamadugu and not those of any entity or organization with which Mr. Rachamadugu may or may not be affiliated. This interview has been edited significantly for length and clarity.\nEver wondered what it\u2019s like to navigate the high-stakes world of biotech from the inside? Buckle up, because Arvind Rachamadugu\u2018s interview is a rollercoaster ride through the thrilling ups and downs of drug development, financial strategy, and leadership in one of the most cutting-edge industries out there. From his journey as a chemical engineer turned Wall Street banker to his current role steering biotech ships through stormy financial waters, Arvind drops knowledge bombs left and right. He dishes on everything from the art of reading cash burn charts (it\u2019s more exciting than it sounds, trust us) to the potential game-changing magic of digital twins in clinical trials. Whether you\u2019re a biotech newbie or a seasoned pro, t",
+      "title": "#37 Bridging Finance and Pharma : Insights From Biogen\u2019s Arvind..."
+    },
+    {
+      "url": "https://aq-trials.com/what-is-phase-3-clinical-trial/",
+      "domain": "aq-trials.com",
+      "category": "unknown",
+      "score": 0.6208333333333335,
+      "text": "What is Phase 3 Clinical Trial?\nTable of Contents\nTogglePhase 3 clinical trials, lasting for over 5 years, represent a critical stage in the development of new drugs and medical treatments. They are conducted after preliminary evidence suggesting effectiveness of the drug has been obtained in Phase 2 trials. The primary goal of Phase 3 is to confirm the drug\u2019s effectiveness, monitor side effects, compare it to commonly used treatments, and collect information that will allow the drug or treatment to be used safely.\nLet\u2019s discuss in detail what is phase 3 clinical trial, covering how AQ CTMS streamlines it.\nScale and Scope\nPhase 3 trials are large-scale studies, involving a larger number of participants compared to the earlier phases. Typically, these trials include several hundred to several thousand participants. The participants are usually from diverse geographic locations and often have the condition or disease that the treatment is aimed at addressing. This broad participation hel",
+      "title": "What is Phase 3 Clinical Trial | AQ Trials"
+    },
+    {
+      "url": "https://www.brightfocus.org/about/clinical-trials/phases-of-clinical-trials/",
+      "domain": "brightfocus.org",
+      "category": "unknown",
+      "score": 0.5792134831460675,
+      "text": "Phases of Clinical Trials\nA company must first complete three phases in the clinical trial process before it can submit its experimental drug to the Food and Drug Administration (FDA) for approval to sell. Each stage of a clinical trial has its own purpose in ensuring that the treatment is safe and effective for public use.\nPhase 1 Clinical Trial\nThe purpose of a Phase 1 Clinical Trial is to ensure that the treatment is safe for humans. Researchers will also examine the appropriate dose range, how the experimental drug interacts with body, and how the body processes the drug.\nHow it works:\n- Testing normally takes place with a small group of healthy volunteers.\n- The trial sponsor monitors for potential \u201cserious adverse events.\u201d This includes any toxic, undesirable, or unwanted effect that causes death or danger to health, such as a disability or permanent damage, birth defect, heart attack, or other serious medical condition.\n- At the end of Phase 1, the results are collected, analyze",
+      "title": "Phases of Clinical Trials"
+    },
+    {
+      "url": "https://www.roche.com/innovation/process/clinical-trials/about",
+      "domain": "roche.com",
+      "category": "unknown",
+      "score": 0.6124338624338624,
+      "text": "What is a clinical trial and how does a trial work?\n[00:01]\n[Music] if you're interested in healthcare you've probably heard of clinical studies and you might know they're done to find out if experimental treatments are safe and effective. When experts talk about clinical studies you'll hear expressions like double blind comparative multicenter or adaptive and maybe also study arms statistical significance bias interim analysis and above all outcomes complicated stuff, what's it all about. Clinical studies are designed to answer specific scientific questions. For\n[00:44]\nexample what side effects does a new drug have does it reverse or stop the disease it's designed to treat is it more effective than existing treatments can it be given alongside other drugs that are used for the same disease. In each case the answer must come in the form of scientific data, not the impressions or opinions of the doctors or patients involved. These can be influenced by many factors which could bias the ",
+      "title": "What is a clinical trial and how does a trial work?"
+    },
+    {
+      "url": "https://www.academia.edu/92296936/Analysis_and_Reporting_of_Sex_Differences_in_Phase_III_Medical_Device_Clinical_Trials_How_Are_We_Doing",
+      "domain": "academia.edu",
+      "category": "reliable",
+      "score": 0.43048780487804883,
+      "text": "Analysis and Reporting of Sex Differences in Phase III Medical Device Clinical Trials\u2014How Are We Doing?\nhttps://doi.org/10.1089/JWH.2013.4400Abstract\nOver the past decade, the scientific community has begun to recognize the importance of biological sex differences in disease pathology, diagnosis, prevention, and treatment; however, the practice of sex-specific analysis and reporting is not integrated as standard practice by either our federal health agencies or by major medical journals. Despite the reforms of 20 years ago and the general inclusion of women in drug clinical trials, we have yet to see data routinely analyzed and reported by sex. Major journals are not requiring it, and large, publicly available datasets, such as ClinicalTrials.gov, are not systematically collecting and pointing to it. However, federal health databases and medical journals have the potential to impact progress in sex-specific analysis and reporting. We conducted a search on ClinicalTrials.gov for phase I",
+      "title": "(PDF) Analysis and Reporting of Sex Differences in Phase III Medical ..."
+    },
+    {
+      "url": "https://scienceblogs.com/insolence/2013/01/21/quoth-joe-mercola-i-love-me-some-burzynski-antineoplastons",
+      "domain": "scienceblogs.com",
+      "category": "unknown",
+      "score": 0.6523529411764706,
+      "text": "As I contemplated how I wanted to start the blogging week, I thought that I should probably again plug Bob Blaskiewicz's campaign to provide Dr. Stanislaw Burzynski, the Houston doctor who for the last 35 years has been treating patients diagnosed with advanced stage and terminal cancers with something he calls antineoplastons (ANPs), with a most excellent \"gift\" for his 70th birthday. This he does despite the astounding lack of compelling evidence that ANPs are actually effective against cancer, none of which stops him from charging patients exorbitant amounts of money, sometimes upwards of $100,000, for his \"treatments,\" which he claims to be part of being on a clinical trial. Never mind that, as I've pointed out time and time again, Burzynski has had dozens of phase II clinical trials since the 1990s and has published on precious few of them, and when he has claimed remissions others have not been able to replicate his results. In particular, a multicenter phase II trial carried out",
+      "title": "Quoth Joe Mercola : I love me some Burzynski... | ScienceBlogs"
+    },
+    {
+      "url": "https://www.readkong.com/page/initial-symptom-and-sign-results-from-run-in-cohort-of-1204494",
+      "domain": "readkong.com",
+      "category": "unknown",
+      "score": 0.5058479532163742,
+      "text": "Initial Symptom and Sign Results From Run-In Cohort of Phase 3 TRANQUILITY Trial in Dry Eye Disease - DATA RELEASE\n\u2190\n\u2192\nPage content transcription\nIf your browser does not render page correctly, please read the page content below\nJanuary 7, 2021 DATA RELEASE Initial Symptom and Sign Results From Run-In Cohort of Phase 3 TRANQUILITY Trial in Dry Eye Disease Nasdaq: ALDX \u00a9 Aldeyra Therapeutics, Inc. 2021\nDisclaimers and Forward-Looking Statements This presentation and various remarks which may be made during this presentation contain forward-looking statements within the meaning of the Private Securities Litigation Reform Act of 1995 and Section 21E of the Securities Exchange Act of 1934, as amended, including statements regarding Aldeyra\u2019s possible or assumed future results of operations, expenses and financing needs, business strategies and plans, research and development plans or expectations, political, economic, legal, social and health risks, including the recent COVID-19 outbreak a",
+      "title": "Initial Symptom and Sign Results From Run-In Cohort of Phase ..."
+    },
+    {
+      "url": "https://internetguides.net/what-is-difference-between-510k-and-pma/",
+      "domain": "internetguides.net",
+      "category": "unreliable",
+      "score": 0.628974358974359,
+      "text": "A PMA is more in-depth than a 510k \u2013 it is used to prove that a new device is safe and effective for the end user and typically requires clinical trials with human participants along with laboratory testing.\nQ. Can you appeal a de novo hearing?\nThe established case law allows for a De Novo (meaning \u2018new\u2019) hearing as if the original hearing had not occurred, and more importantly, allows an individual to include testimony from outside parties and witnesses. If the court denies a party\u2019s ability to a full hearing it could lead to a reversal on appeal.\nTable of Contents\n- Q. Can you appeal a de novo hearing?\n- Q. What is FDA de novo approval?\n- Q. What is 510k approval?\n- Q. How long does 510k approval take?\n- Q. How much does it cost to get 510k approval?\n- Q. What is 510k exempt?\n- Q. What are the 4 phases of clinical trials?\n- Q. What are the 3 phases of clinical trials?\n- Q. What are Phase 3 trials for?\n- Q. What is the difference between Phase 3 and 4 clinical trials?\n- Q. How many pe",
+      "title": "What is difference between 510k and PMA? \u2013 Internet Guides"
+    },
+    {
+      "url": "https://braintumourresearch.org/blogs/research-campaigning-news/gene-therapy-shows-promise-and-review-of-phase-3-clinical-trials-from-2005-2022",
+      "domain": "braintumourresearch.org",
+      "category": "unknown",
+      "score": 0.603763440860215,
+      "text": "Research:\nStudy could help explain why certain brain tumours don\u2019t respond well to immunotherapy. A study led by researchers at the UCLA Jonsson Comprehensive Cancer Center has shed new light on why tumours that have spread to the brain from other parts of the body respond to immunotherapy while glioblastoma, an aggressive cancer that originates in the brain, does not.\nIn people with tumours that originated in other parts of the body but spread to the brain, treatment with a type of immunotherapy called immune checkpoint blockade appears to elicit a significant increase in both active and exhausted T cells (immune cells) \u2014 signs that the T cells have been triggered to fight the cancer. The reason the same thing doesn't occur in people with glioblastoma is that anti-tumour immune responses are best initiated in draining lymph nodes outside of the brain, and that process does not occur very effectively in glioblastoma cases.\nTreatments:\nPhase II Trial of Dabrafenib Plus Trametinib in Rel",
+      "title": "Gene therapy shows promise and review of Phase 3 clinical trials from"
+    },
+    {
+      "url": "https://www.advarra.com/blog/phases-of-clinical-research-a-detailed-overview/",
+      "domain": "advarra.com",
+      "category": "unknown",
+      "score": 0.7624338624338625,
+      "text": "Clinical trials are studies involving human volunteers to research ways to prevent, detect, and treat various medical conditions. The goal is to identify safer, more effective methods of treating illnesses using new drugs or new combinations of existing drugs.\nA clinical trial investigating a drug or therapy is typically divided into four phases: Phase I, Phase II, Phase III, and Phase IV. Each phase has a different purpose in testing the treatment\u2019s safety and efficacy. This article explores how the clinical research phases protect study volunteers from harm and ensure new drugs and therapies are developed effectively.\nThe Importance of Clinical Research in Medical Advancements\nResearchers use clinical trials to test a drug\u2019s or other medical treatment\u2019s safety and efficacy. Most modern medicines were developed from clinical trials, and clinical trials remain essential for drug development.\nWithout clinical studies, our global understanding of medicine would likely stagnate, and novel",
+      "title": "Phases of Clinical Research: A Detailed Overview"
+    },
+    {
+      "url": "https://ncirs.org.au/phases-clinical-trials",
+      "domain": "ncirs.org.au",
+      "category": "unknown",
+      "score": 0.3916167664670659,
+      "text": "Australia\u2019s trusted immunisation experts\n14 August 2025 | NewsSKAI engages parents to help close growing immunity gap among adolescentsRead the full article\nA vaccine must go through several phases of clinical trials before it can be licensed. Before a vaccine enters clinical trials, it undergoes pre-clinical assessment, where the target antigen is identified, and the vaccine safety and efficacy are tested in laboratory and animal models.\nIn phase I clinical trials, typically dozens of participants are recruited. In this phase, the vaccine dose level and safety are tested. It takes at least 1 year for a phase I clinical trial to be complete. Not all vaccine candidates that complete phase I clinical trials enter phase II clinical trials.\nIn phase II clinical trials, hundreds of participants are recruited. In this phase, the immunogenicity and safety of the vaccine are tested. It is important to ensure that the candidate vaccine stimulates both humoral and cellular antibody responses aga",
+      "title": "Phases of clinical trials"
+    },
+    {
+      "url": "https://www.simbecorion.com/whats-the-difference-between-phase-2-and-phase-3-clinical-trials/",
+      "domain": "simbecorion.com",
+      "category": "unknown",
+      "score": 0.7730046948356808,
+      "text": "In previous years, pharmacology and clinical trials were topics which mainly interested medical professionals, rather than the public. However, as a result of the COVID-19 pandemic, there has been a growing interest in clinical trials, alongside the development of the vaccine. As a global community, we have been able to see the development, testing, and production of life-saving vaccines, almost in real time.\nThe quick turnaround on the Coronavirus vaccine was in part due to decades of research into similar viruses, and how to treat them. But the speed of the process sparked a great deal of interest in how vaccines and similar treatments are tested and developed.\nOur experts at Simbec-Orion were keen to provide some insights into critical Phase 2 and Phase 3 clinical trials, as well as the process of taking a drug from its initial research, to the market.\nRead on to discover more about the phases of clinical trials, and the key differences between them. Why not read more about how new ",
+      "title": "The Difference between Phase 2 and Phase 3 Clinical Trials"
+    },
+    {
+      "url": "https://www.nih.gov/news-events/news-releases/phase-3-clinical-trial-investigational-vaccine-covid-19-begins",
+      "domain": "nih.gov",
+      "category": "reliable",
+      "score": 0.4023529411764706,
+      "text": "Phase 3 clinical trial of investigational vaccine for COVID-19 begins\nMonday, July 27, 2020\nPhase 3 clinical trial of investigational vaccine for COVID-19 begins\nPeople 18 years of age and older who are interested in participating in this trial can visit https://www.coronaviruspreventionnetwork.org or ClinicalTrials.gov and search identifier NCT04470427 for details. Please do not contact the NIAID media phone number or email to enroll in this trial.\nA Phase 3 clinical trial designed to evaluate if an investigational vaccine can prevent symptomatic coronavirus disease 2019 (COVID-19) in adults has begun. The vaccine, known as mRNA-1273, was co-developed by the Cambridge, Massachusetts-based biotechnology company Moderna, Inc., and the National Institute of Allergy and Infectious Diseases (NIAID), part of the National Institutes of Health. The trial, which will be conducted at U.S. clinical research sites, is expected to enroll approximately 30,000 adult volunteers who do not have COVID-",
+      "title": "Phase 3 clinical trial of investigational vaccine for COVID- ..."
+    },
+    {
+      "url": "https://thejns.org/focus/view/journals/neurosurg-focus/50/2/article-pE2.xml",
+      "domain": "thejns.org",
+      "category": "unknown",
+      "score": 0.4988165680473373,
+      "text": "Glioblastoma (GBM) is the most common primary brain malignancy1 and is invariably fatal despite maximal safe resection, followed by adjuvant chemotherapy and radiation.2 The median survival remains less than 15 months due to the infiltrative nature of these tumors (making complete resection impossible), sequestration behind the blood-brain barrier (BBB), immune-privileged status of the CNS, and eventual treatment resistance, thereby underscoring a need for novel treatments that extend survival.\nTheoretically, viral therapies combat these characteristics through direct tumoricidal effects and generation of anticancer inflammatory responses that overcome the immunosuppressive high-grade glioma (HGG) and GBM microenvironments.3 The concept of virus therapies for cancer was established in 1912, when a woman\u2019s cervical cancer regressed after she received an attenuated rabies vaccine;4 this connection between viral infection and cancer regression was anecdotally reported for several decades ",
+      "title": "Viral therapies for glioblastoma and high-grade gliomas in adults..."
+    },
+    {
+      "url": "https://reddit.com/r/nutrition/comments/1fam4l3/research_shows_there_is_no_independent/",
+      "domain": "reddit.com",
+      "category": "unreliable",
+      "score": 0.318944099378882,
+      "text": "Research shows there is no independent association between Saturated fats and Heart disease.\n\nhttps://academic.oup.com/nutritionreviews/article/78/6/474/5678770?login=false\n\n\"This narrative review provides evidence from meta-analyses of observational studies and RCTs that saturated fat intake is not independently associated with the incidence of heart disease and that replacement of SFA with PUFA may not be beneficial despite reducing total- and low-density lipoprotein cholesterol. The clinical trials used by the AHA\u2019s Advisory to uphold their 1961 recommendation to reduce SFA and replace SFA with PUFA are plagued by design flaws, lacked dietary control of variables other than fat, and did not account for trans-fat restriction in the high-PUFA groups.\"\n\nWhat are your thoughts?\n\n#### About participation in the comments of /r/nutrition  \n\nDiscussion in this subreddit should be rooted in science rather than \"cuz I sed\" or entertainment pieces. Always be wary of unsupported and poorly supp",
+      "title": "Research shows there is no independent association between Saturated fats and Heart disease."
+    },
+    {
+      "url": "https://reddit.com/r/nutrition/comments/hahelq/which_frying_oils_are_best_smoke_point_actually/",
+      "domain": "reddit.com",
+      "category": "unreliable",
+      "score": 0.4792134831460674,
+      "text": "Which frying oils are best? Smoke point actually isn't a good indicator. (Science discussion: \"Potential Adverse Public Health Effects Afforded by the Ingestion of Dietary Lipid Oxidation Product Toxins: Significance of Fried Food Sources\" Apr 2020)\n\nCrosspost from:\n\nhttps://www.reddit.com/r/ScientificNutrition/comments/h9wzzh/potential_adverse_public_health_effects_afforded/\n\nThe article is here: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7254282/\n\n>**Abstract:** Exposure of polyunsaturated fatty acid (PUFA)-rich culinary oils (COs) to high temperature frying practices generates high concentrations of cytotoxic and genotoxic lipid oxidation products (LOPs) via oxygen-fueled, recycling peroxidative bursts. These toxins, including aldehydes and epoxy-fatty acids, readily penetrate into fried foods and hence are available for human consumption; therefore, they may pose substantial health hazards. Although previous reports have claimed health benefits offered by the use of PUFA-laden CO",
+      "title": "Which frying oils are best? Smoke point actually isn't a good indicator. (Science discussion: \"Potential Adverse Public Health Effects Afforded by the Ingestion of Dietary Lipid Oxidation Product Toxins: Significance of Fried Food Sources\" Apr 2020)"
+    },
+    {
+      "url": "https://reddit.com/r/Supplements/comments/1kas40l/the_truth_about_folic_acid_why_your_multivitamin/",
+      "domain": "reddit.com",
+      "category": "unreliable",
+      "score": 0.4452380952380952,
+      "text": "The Truth About Folic Acid: Why Your Multivitamin Might Be Doing More Harm Than Good\n\nHey checkout the full blog here \n\nhttps://turbulencegains.com/folic-acid-cancer-risk-review/\n\nI thought folic acid was just another safe B-vitamin\u2026 until I went down a rabbit hole of studies, DNA repair, and potential cancer risks. Spent 3 days, skipped a workout, and drank too much coffee but came out of it questioning every \u2018fortified\u2019 label I\u2019ve ever read. If you lift, supplement, or just like nerding out on micronutrients this one\u2019s for you.\n\nThis isn\u2019t fearmongering. It\u2019s nuance. Because not all B9 is equal, and how you absorb, use, and respond to it depends on what you eat, your genetics, and how many \"one a day\" pills you stack each morning without blinking.\n\nLet\u2019s talk mechanisms, dosing risks, MTHFR variants, and the quiet cancer signal buried in meta-analyses most people never read past the abstract.\n\n# 1. Folate 101: The MVP of Methylation & DNA Repair\n\nFolate is the natural, bioactive form",
+      "title": "The Truth About Folic Acid: Why Your Multivitamin Might Be Doing More Harm Than Good"
+    },
+    {
+      "url": "https://reddit.com/r/Supplements/comments/pwhur7/how_vitamin_d_and_magnesium_work_together_50_of/",
+      "domain": "reddit.com",
+      "category": "unreliable",
+      "score": 0.37668711656441717,
+      "text": "How Vitamin D And Magnesium Work Together: \"50% of the population does not get adequate magnesium.\"\n\n\\[Updated version of [this post](https://www.reddit.com/r/Supplements/comments/n3363a/short_clip_how_vitamin_d_and_magnesium_work/)\\]\n\n# Introduction\n\n* [YouTube Clip (1m:37s)](https://youtu.be/05WyRTjc0sU): \"50% of the population does not get adequate magnesium.\"\n\n# Why you could have a magnesium deficiency?\n\n* Magnesium deficiency is strongly correlated with anxiety.\n* Other ***possible*** symptoms are heart palpitations, leg cramps, vertigo, panic attacks, hypertension, IBS, acid reflux.\n* Some of these symptoms could also be caused by *vasoconstriction* which can lead to an increase in blood pressure - so measurable with a blood pressure machine. Magnesium acts as a ***vasodilator***.\n\nhttps://preview.redd.it/710nj580req71.jpg?width=2262&format=pjpg&auto=webp&s=5f24839f9622c3acb7ac3c832650919f54b3d715\n\n* As less than 1% of your total body magnesium  is stored in the blood the   stan",
+      "title": "How Vitamin D And Magnesium Work Together: \"50% of the population does not get adequate magnesium.\""
+    },
+    {
+      "url": "https://reddit.com/r/herbalism/comments/1hm5ome/ive_spent_nearly_3_years_testing_different_herbs/",
+      "domain": "reddit.com",
+      "category": "unreliable",
+      "score": 0.43048780487804883,
+      "text": "I\u2019ve spent nearly 3 years testing different herbs for hair growth. Here\u2019s what actually works and what doesn\u2019t\n\nHave been dealing with hair thinning for the better part of the decade now. I\u2019ve spent the vast majority of it trying remedies and plant-based solutions. Everything from hearsay to ancient wisdom. Over time, at least from my own personal experience, I have isolated what truly works and what doesn\u2019t. My take of the best and worst remedies I\u2019ve tried over a 3-year horizon (bear with the long post, have tried to make it as detailed as possible). \n\n**1. Simple Rosemary oil (4/10)**\n\nHow long did I use it, and method:\n\nI used rosemary oil consistently for about 6 months. I diluted 5-7 drops of rosemary essential oil into a tablespoon of almond oil and massaged it into my scalp twice a week. I left it on for 1-2 hours before washing my hair with a mild shampoo. \n\nOther variables:\n\nMoved to a new country. Might have led to changes in water quality (only for the better!). Where I was",
+      "title": "I\u2019ve spent nearly 3 years testing different herbs for hair growth. Here\u2019s what actually works and what doesn\u2019t"
+    },
+    {
+      "url": "https://reddit.com/r/herbalism/comments/1jy8b3w/heavily_ridiculed_on_hair_loss_subreddits_after_i/",
+      "domain": "reddit.com",
+      "category": "unreliable",
+      "score": 0.44881656804733727,
+      "text": "Heavily ridiculed on hair loss subreddits after I reposted my herbal findings for hair growth\n\nIt seems there is no space to discuss herbal remedies for hair loss (beyond this subreddit!), without being bombarded by finasteride and minoxidil shills, even when the research around the side effects is seriously under reported. And forget about the fact that finasteride is not FDA-approved for women and still gets prescribed or recommended commonly (with serious side effects to child birth and mental health)\n\nI reposted [this particular post ](https://www.reddit.com/r/herbalism/comments/1iuvyqa/update_ive_spent_3_years_testing_different_herbs/)from our subreddit to a hair loss group and got so heavily derided that I eventually deleted and decided to quit that group! This is not to to say these prescriptions don't work, but the nature of the \"quick fix\" and one-stop approach that these groups talk about brush a lot of other issues under the carpet.  \n\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_",
+      "title": "Heavily ridiculed on hair loss subreddits after I reposted my herbal findings for hair growth"
+    },
+    {
+      "url": "https://reddit.com/r/homeopathy/comments/1kz8sn8/what_modern_science_could_learn_from_homeopathys/",
+      "domain": "reddit.com",
+      "category": "unreliable",
+      "score": 0.3304878048780488,
+      "text": "What Modern Science Could Learn from Homeopathy\u2019s Radical Data Obsession\n\nScience isn't just lab coats and statistics\u2014it's rigorous observation. By that definition, homeopathy conducted one of history\u2019s most radical experiments: **200 years of meticulously documenting every human symptom imaginable\u2014and clinically validating them globally.**  \n\n### The Unmatched Data Machine  \nHomeopathic \"provings\" (trials on healthy humans) recorded *everything*:  \n- Dreams of betrayal after taking *Natrum mur* (salt)  \n- Midnight anxiety + knife phobia with *Syphilinum*  \n- Cravings for sour foods during migraines  \n\n**Critically, these symptoms weren\u2019t just lab curiosities.** For 200 years, skilled homeopaths like **Kent, Boericke, and Hering clinically confirmed them in real patients across continents.** Their repertories became living databases\u2014with 150,000+ symptom-remedy links **field-tested in millions of cases.**  \n\n### Hahnemann\u2019s Mandate: Clinical Verification  \n> *\"The totality of symptoms ",
+      "title": "What Modern Science Could Learn from Homeopathy\u2019s Radical Data Obsession"
+    },
+    {
+      "url": "https://reddit.com/r/conspiracy/comments/1it6z3m/covid_vaccine_faces_ban_for_all_americans/",
+      "domain": "reddit.com",
+      "category": "unreliable",
+      "score": 0.43048780487804883,
+      "text": "Covid vaccine faces ban for all Americans.\n\n[**Daily Mail**](https://archive.is/i7t5A) \u2014 Covid vaccines could be suspended for all age groups in America under radical new plans backed by key health figures in the Trump Administration.\n\nSeveral experts poised for top jobs in US health agencies subscribe to the disputed idea the shots are causing widespread side effects and deaths.\n\n[Dr Jay Bhattacharya](https://en.m.wikipedia.org/wiki/Jay_Bhattacharya), who has been nominated to lead the National Institutes of Health (NIH), has backed a petition calling for the mRNA vaccines to be paused and retested, DailyMail.com can reveal.\n\nHe is one of the signatories of the Hope Accord, which claims there is a 'causal link' between the mRNA shots and [an alarming rise in excess deaths worldwide](https://archive.is/r1NuR).\n\nDailyMail.com also understands Robert F Kennedy Jr has privately expressed concerns about the vaccines and signaled he is open to axing them if the data supports it.\n\nOther key ",
+      "title": "Covid vaccine faces ban for all Americans."
+    }
   ],
-  "completion_reason": "shutdown",
-  "timestamp": "2025-08-13T19:40:25.433128"
+  "timestamp": "2025-08-21T20:44:58.380358"
 }
