@@ -13,6 +13,9 @@ from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeout
 import os
 from dotenv import load_dotenv
+import nltk
+from nltk.tokenize import sent_tokenize
+
 
 # Load environment variables for Reddit API
 load_dotenv()
@@ -23,13 +26,17 @@ class SourceFinder:
     _unreliable_domains = set()
     _config_loaded = False
     
-    def __init__(self, gold_query: str, gold_question: str, domain_trust_config_path: str = "domain_trust_config.json"):
+    def __init__(self, gold_query: str, gold_question: str, topic: str = None, domain_trust_config_path: str = "domain_trust_config.json", entry_id: str = None):
         self.gold_query = gold_query
         self.question = gold_question
         self.domain_trust_config_path = domain_trust_config_path
+        self.entry_id = entry_id
         
-        # Extract topic from the gold query
-        self.topic = self._extract_topic_from_query(gold_query)
+        # Use provided topic or extract from gold query
+        if topic:
+            self.topic = topic
+        else:
+            self.topic = self._extract_topic_from_query(gold_query)
         
         # Load trust config only once for the entire dataset generation
         if not SourceFinder._config_loaded:
@@ -128,13 +135,7 @@ class SourceFinder:
                 f"{gold_query} guidelines",
                 f"{gold_query} academic",
                 f"{gold_query} clinical study",
-                f"{gold_query} peer reviewed",
-                """
-                f"{gold_query} medical journal",
-                f"{gold_query} WHO CDC",
-                f"{gold_query} NIH",
-                f"{gold_query} Mayo Clinic"
-                """
+                f"{gold_query} peer reviewed"
             ])
             base_queries['unreliable'].extend([
                 f"{gold_query} reddit",
@@ -326,7 +327,7 @@ class SourceFinder:
             print(f"Error classifying domain for {url}: {e}")
             return "unknown"
     
-    def _search_duckduckgo(self, query: str, max_results: int = 80) -> List[Dict]:
+    def _search_duckduckgo(self, query: str, max_results: int = 30) -> List[Dict]:  # Reduced from 80 to 30
         """Search Duck for urls (ddgs returns keys: href/title/body)"""
         results: List[Dict] = []
         try:
@@ -344,7 +345,7 @@ class SourceFinder:
         
         return results
     
-    def _search_reddit_api(self, query: str, max_results: int = 40) -> List[Dict]:
+    def _search_reddit_api(self, query: str, max_results: int = 20) -> List[Dict]:  # Reduced from 40 to 20
         """Search Reddit directly using their API"""
         if not (self.reddit_client_id and self.reddit_client_secret):
             print("  Reddit API not configured, skipping Reddit search")
@@ -484,8 +485,113 @@ class SourceFinder:
             # Default subreddits for unknown topics
             return ['conspiracy', 'alternative', 'truth', 'exposing', 'realnews']
     
-    def _extract_text_from_url(self, url: str) -> Optional[str]:
-        """Extract text content from url using trafilatura with a hard timeout"""
+    def _clean_and_chunk_text(self, text: str, question: str, is_distraction: bool = False) -> str:
+        """Clean HTML text and select most relevant chunks"""
+        if not text:
+            return ""
+        
+        # Clean the text: remove extra whitespace, normalize, remove common web elements
+        text = re.sub(r'\s+', ' ', text.strip())
+        
+        # Remove common web elements that might have been extracted
+        text = re.sub(r'(cookie|privacy|terms|contact|about|advertisement|advert|sponsored|subscribe|newsletter|sign up|log in|menu|navigation|footer|header|sidebar)', '', text, flags=re.IGNORECASE)
+        
+        # Remove common HTML artifacts
+        text = re.sub(r'\[.*?\]', '', text)  # Remove bracketed content
+        text = re.sub(r'\{.*?\}', '', text)  # Remove braced content
+        text = re.sub(r'<.*?>', '', text)    # Remove any remaining HTML tags
+        
+        # Split into sentences using robust fallback method
+        sentences = []
+        try:
+            # Try NLTK first
+            try:
+                nltk.data.find('tokenizers/punkt')
+                sentences = sent_tokenize(text)
+            except LookupError:
+                # NLTK not available, use regex fallback
+                sentences = re.split(r'[.!?]+', text)
+                sentences = [s.strip() for s in sentences if s.strip()]
+        except Exception as e:
+            print(f"    NLTK tokenization failed: {e}, using fallback")
+            # Fallback: simple sentence splitting
+            sentences = re.split(r'[.!?]+', text)
+            sentences = [s.strip() for s in sentences if s.strip()]
+        
+        # Create chunks of 200-400 tokens (roughly 2-4 sentences)
+        chunks = []
+        current_chunk = []
+        current_tokens = 0
+        
+        for sentence in sentences:
+            # Use simple word counting instead of NLTK word_tokenize
+            sentence_tokens = len(sentence.split())
+            
+            if current_tokens + sentence_tokens > 500:
+                # Current chunk is getting too long, save it
+                if current_chunk:
+                    chunks.append(' '.join(current_chunk))
+                current_chunk = [sentence]
+                current_tokens = sentence_tokens
+            else:
+                current_chunk.append(sentence)
+                current_tokens += sentence_tokens
+                
+                # If we have a good chunk size, save it
+                if current_tokens >= 300:
+                    chunks.append(' '.join(current_chunk))
+                    current_chunk = []
+                    current_tokens = 0
+        
+        # Add any remaining text as final chunk
+        if current_chunk:
+            chunks.append(' '.join(current_chunk))
+        
+        if not chunks:
+            return text[:2000]  # Fallback to original method
+        
+        # For distraction sources, just return first chunk (no relevance scoring needed)
+        if is_distraction:
+            return chunks[0][:1000]
+        
+        # Score each chunk against the question using existing relevance method
+        chunk_scores = []
+        for chunk in chunks:
+            score = self._compute_relevance_score(question, chunk)
+            chunk_scores.append((chunk, score))
+        
+        # Sort by relevance score (highest first)
+        chunk_scores.sort(key=lambda x: x[1], reverse=True)
+        
+        # Take top 1-2 chunks (300-500 tokens total)
+        selected_chunks = []
+        total_tokens = 0
+        
+        for chunk, score in chunk_scores:
+            # Use simple word counting instead of NLTK word_tokenize
+            chunk_tokens = len(chunk.split())
+            if total_tokens + chunk_tokens <= 500:
+                selected_chunks.append(chunk)
+                total_tokens += chunk_tokens
+                if len(selected_chunks) >= 2:  # Max 2 chunks
+                    break
+        
+        # Combine selected chunks
+        final_text = ' '.join(selected_chunks)
+        
+        print(f"    Created {len(chunks)} chunks, selected {len(selected_chunks)} best chunks")
+        print(f"    Total tokens: {total_tokens}")
+        if chunk_scores:
+            print(f"    Best chunk score: {chunk_scores[0][1]:.3f}")
+        
+        # Ensure we don't exceed reasonable length
+        if len(final_text) > 2000:
+            final_text = final_text[:2000]
+        
+        return final_text
+
+    def _extract_text_from_url(self, url: str, question: str = None, is_distraction: bool = False) -> Optional[str]:
+        """Extract text content from url using trafilatura with improved cleaning and chunking"""
         print(f"  Extracting text from: {url}")
 
         def _do_extract() -> Optional[str]:
@@ -498,21 +604,36 @@ class SourceFinder:
             except Exception:
                 return None
 
+        # Skip problematic domains that consistently timeout
+        problematic_domains = {'gatorcountry.com', 'totalenergies.fr', 'statbase.org'}
+        domain = urlparse(url).netloc.lower()
+        if any(prob_domain in domain for prob_domain in problematic_domains):
+            print(f"    Skipping problematic domain: {domain}")
+            return None
+            
         with ThreadPoolExecutor(max_workers=1) as executor:
             future = executor.submit(_do_extract)
             try:
-                text = future.result(timeout=10)
+                text = future.result(timeout=15)  # Reduced timeout for faster failure
             except FuturesTimeout:
-                print("    Extraction timed out (>10s), skipping")
+                print("    Extraction timed out (>15s), skipping")
                 return None
             
-        if text and len(text) >= 400:
-            return text
-        if text is None:
+        if not text:
             print("    Failed to download content")
-        else:
+            return None
+            
+        if len(text) < 400:
             print(f"    Text too short ({len(text)} chars), skipping")
-        return None
+            return None
+        
+        # Clean and chunk the text
+        cleaned_text = self._clean_and_chunk_text(text, question or self.question, is_distraction)
+        
+        print(f"    Original text: {len(text)} chars")
+        print(f"    Cleaned text: {len(cleaned_text)} chars")
+        
+        return cleaned_text
     
     def find_sources(self, exclude_url: Optional[str] = None) -> Dict[str, List]:
         """
@@ -545,8 +666,8 @@ class SourceFinder:
                     
                     print(f"\nProcessing: {url}")
                     
-                    # Extract text
-                    text = self._extract_text_from_url(url)
+                    # Extract text with question for relevance scoring
+                    text = self._extract_text_from_url(url, question=self.question, is_distraction=False)
                     if not text:
                         print(f"  REJECTED: Could not extract text")
                         continue
@@ -555,8 +676,8 @@ class SourceFinder:
                     score = self._compute_relevance_score(self.question, text)
                     print(f"  Relevance score: {score:.3f}")
                     
-                    if score < 0.35:
-                        print(f"  REJECTED: Score too low ({score:.3f} < 0.35)")
+                    if score < 0.25:  # Lowered threshold for faster processing
+                        print(f"  REJECTED: Score too low ({score:.3f} < 0.25)")
                         continue
                     
                     # Classify domain
@@ -581,7 +702,24 @@ class SourceFinder:
         print(f"\n--- Reddit API Fallback Search ---")
         reddit_results = self._search_reddit_api(self.gold_query, max_results=30)
         
+        # Sort Reddit results by relevance score (highest first) before processing
+        reddit_results_with_scores = []
         for result in reddit_results:
+            # Pre-compute relevance score for sorting
+            text = result['text']
+            score = self._compute_relevance_score(self.question, text)
+            reddit_results_with_scores.append({
+                'result': result,
+                'score': score
+            })
+        
+        # Sort by relevance score (highest first)
+        reddit_results_with_scores.sort(key=lambda x: x['score'], reverse=True)
+        print(f"  Reddit results sorted by relevance score (highest first)")
+        
+        for item in reddit_results_with_scores:
+            result = item['result']
+            score = item['score']
             url = result['url']
             if url in seen_urls:
                 continue
@@ -591,8 +729,7 @@ class SourceFinder:
             # Use the full text directly from the search result
             text = result['text']
             
-            # Compute relevance score
-            score = self._compute_relevance_score(self.question, text)
+            # Use pre-computed score from sorting
             print(f"  Reddit relevance score: {score:.3f}")
             
             if score < 0.3:  # Lower threshold for Reddit sources
@@ -645,7 +782,26 @@ class SourceFinder:
             reliable_count = sum(1 for s in all_sources if s.get('category') == 'reliable')
             unreliable_count = sum(1 for s in all_sources if s.get('category') == 'unreliable')
             unknown_count = sum(1 for s in all_sources if s.get('category') == 'unknown')
-            scraped_data = {
+            
+            # Load existing scraped sources or create new list
+            scraped_sources_file = "scraped_sources.json"
+            try:
+                with open(scraped_sources_file, "r") as f:
+                    existing_scraped = json.load(f)
+                    if isinstance(existing_scraped, list):
+                        # If it's already a list, use it
+                        all_scraped_data = existing_scraped
+                    else:
+                        # If it's the old format, convert to list
+                        all_scraped_data = [existing_scraped]
+                    print(f"Loaded existing scraped sources with {len(all_scraped_data)} entries")
+            except FileNotFoundError:
+                all_scraped_data = []
+                print("Creating new scraped sources file")
+            
+            # Add new scraped data
+            new_scraped_data = {
+                "entry_id": getattr(self, 'entry_id', 'unknown'),  # Add entry ID if available
                 "gold_query": self.gold_query,
                 "topic": self.topic,
                 "collection_stats": {
@@ -657,9 +813,12 @@ class SourceFinder:
                 "sources": all_sources,
                 "timestamp": datetime.now().isoformat()
             }
-            with open("scraped_sources.json", "w") as f:
-                json.dump(scraped_data, f, indent=2)
-            print("Saved pre-pairing sources to scraped_sources.json")
+            all_scraped_data.append(new_scraped_data)
+            
+            # Save updated scraped sources
+            with open(scraped_sources_file, "w") as f:
+                json.dump(all_scraped_data, f, indent=2)
+            print(f"Saved pre-pairing sources to {scraped_sources_file} (now contains {len(all_scraped_data)} entries)")
         except Exception as e:
             print(f"Warning: failed to write scraped_sources.json: {e}")
         
@@ -682,8 +841,9 @@ class SourceFinder:
         print(f"Unknown sources: {len(unknown_sources)}")
         
         random.shuffle(reliable_sources)
-        random.shuffle(unreliable_sources)
-        random.shuffle(unknown_sources)
+        unreliable_sources.sort(key=lambda x: x['score'], reverse=True)
+        # Sort unknown sources by relevance score (highest first) instead of random shuffle
+        unknown_sources.sort(key=lambda x: x['score'], reverse=True)
         
         # Create clear set: 4 reliable + 1 unreliable
         clear_set = []

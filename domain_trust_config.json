@@ -671,7 +671,12 @@
       "unfccc.int",
       "wmo.int"
     ],
-    "misleading": []
+    "misleading": [
+      "wattsupwiththat.com",
+      "climatedepot.com",
+      "iceagenow.info",
+      "realclimatescience.com"
+    ]
   },
   "technology": {
     "reliable": [
@@ -688,7 +693,12 @@
       "csis.org",
       "carnegieendowment.org"
     ],
-    "misleading": []
+    "misleading": [
+      "infowars.com",
+      "naturalnews.com",
+      "disclose.tv",
+      "collective-evolution.com"
+    ]
   },
   "astronomy": {
     "reliable": [
@@ -709,7 +719,10 @@
       "eso.org"
     ],
     "misleading": [
-      "disclose.tv"
+      "disclose.tv",
+      "ancient-code.com",
+      "ancient-origins.net",
+      "grahamhancock.com"
     ]
   },
   "law": {
@@ -731,7 +744,13 @@
       "senate.gov",
       "house.gov"
     ],
-    "misleading": []
+    "misleading": [
+      "infowars.com",
+      "breitbart.com",
+      "thegatewaypundit.com",
+      "dailywire.com",
+      "theblaze.com"
+    ]
   },
   "psychology": {
     "reliable": [
@@ -767,6 +786,38 @@
       "9gag.com",
       "rt.com",
       "kp.ru",
+      "naturalnews.com",
+      "mercola.com",
+      "thetruthaboutcancer.com",
+      "vaccineimpact.com",
+      "childrenshealthdefense.org",
+      "doctoroz.com",
+      "americasfrontlinedoctors.org",
+      "healthrangerreport.com",
+      "greenmedinfo.com",
+      "foodbabe.com",
+      "draxe.com",
+      "goop.com",
+      "medicalmedium.com",
+      "naturalcures.com",
+      "naturalblaze.com",
+      "naturalsociety.com",
+      "wakeup-world.com",
+      "collective-evolution.com",
+      "consciouslifenews.com",
+      "mindbodygreen.com",
+      "thriveglobal.com",
+      "lifespa.com",
+      "dailyhealthpost.com",
+      "modernsurvivalblog.com",
+      "papersowl.com",
+      "disastertw.com",
+      "journalgrid.com",
+      "internetguides.net",
+      "ems1.com",
+      "azdictionary.com",
+      "ponfish.com",
+      "samples.freshessays.com",
       "4chan.org",
       "gazeta.ru",
       "vz.ru",

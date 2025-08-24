@@ -1,0 +1,446 @@
+{
+  "total_generated": 191,
+  "topic_progress": {
+    "public_health": 49,
+    "current_events": 38,
+    "history": 41,
+    "finance": 32,
+    "sports": 19,
+    "climate": 12
+  },
+  "failed_entries": [
+    {
+      "entry_id": "public_health_020",
+      "topic": "public_health",
+      "timestamp": "2025-08-23T03:43:02.143386",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "current_events_005",
+      "topic": "current_events",
+      "timestamp": "2025-08-23T08:57:55.680746",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "current_events_013",
+      "topic": "current_events",
+      "timestamp": "2025-08-23T09:46:27.620589",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "current_events_018",
+      "topic": "current_events",
+      "timestamp": "2025-08-23T11:03:03.997217",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "current_events_020",
+      "topic": "current_events",
+      "timestamp": "2025-08-23T11:06:19.649909",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "current_events_026",
+      "topic": "current_events",
+      "timestamp": "2025-08-23T11:26:00.974071",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "current_events_028",
+      "topic": "current_events",
+      "timestamp": "2025-08-23T11:37:09.596303",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "current_events_030",
+      "topic": "current_events",
+      "timestamp": "2025-08-23T11:42:27.501958",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "current_events_033",
+      "topic": "current_events",
+      "timestamp": "2025-08-23T11:51:06.009618",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "current_events_034",
+      "topic": "current_events",
+      "timestamp": "2025-08-23T11:52:15.729023",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "current_events_035",
+      "topic": "current_events",
+      "timestamp": "2025-08-23T11:59:30.900096",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "current_events_036",
+      "topic": "current_events",
+      "timestamp": "2025-08-23T12:00:12.889296",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "current_events_049",
+      "topic": "current_events",
+      "timestamp": "2025-08-23T13:30:30.121304",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "history_001",
+      "topic": "history",
+      "timestamp": "2025-08-23T13:57:36.965270",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "history_003",
+      "topic": "history",
+      "timestamp": "2025-08-23T14:01:20.686375",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "history_014",
+      "topic": "history",
+      "timestamp": "2025-08-23T14:43:51.951800",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "history_018",
+      "topic": "history",
+      "timestamp": "2025-08-23T14:51:16.502047",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "history_019",
+      "topic": "history",
+      "timestamp": "2025-08-23T14:51:56.180040",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "history_023",
+      "topic": "history",
+      "timestamp": "2025-08-23T15:00:39.026202",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "history_032",
+      "topic": "history",
+      "timestamp": "2025-08-23T15:23:39.356163",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "history_041",
+      "topic": "history",
+      "timestamp": "2025-08-23T15:57:19.576224",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "history_044",
+      "topic": "history",
+      "timestamp": "2025-08-23T16:02:22.332651",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "finance_004",
+      "topic": "finance",
+      "timestamp": "2025-08-23T17:30:27.177108",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "finance_007",
+      "topic": "finance",
+      "timestamp": "2025-08-23T17:53:49.712538",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "finance_009",
+      "topic": "finance",
+      "timestamp": "2025-08-23T18:38:23.918862",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "finance_013",
+      "topic": "finance",
+      "timestamp": "2025-08-23T19:45:37.994970",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "finance_015",
+      "topic": "finance",
+      "timestamp": "2025-08-23T20:01:09.428849",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "finance_019",
+      "topic": "finance",
+      "timestamp": "2025-08-23T20:39:28.161552",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "finance_020",
+      "topic": "finance",
+      "timestamp": "2025-08-23T20:40:09.768955",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "finance_022",
+      "topic": "finance",
+      "timestamp": "2025-08-23T20:49:08.175131",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "finance_027",
+      "topic": "finance",
+      "timestamp": "2025-08-23T21:34:54.220452",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "finance_028",
+      "topic": "finance",
+      "timestamp": "2025-08-23T21:35:35.646098",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "finance_031",
+      "topic": "finance",
+      "timestamp": "2025-08-23T21:43:22.798674",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "finance_032",
+      "topic": "finance",
+      "timestamp": "2025-08-23T21:44:04.011741",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "finance_034",
+      "topic": "finance",
+      "timestamp": "2025-08-23T22:19:48.499148",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "finance_035",
+      "topic": "finance",
+      "timestamp": "2025-08-23T22:42:00.773130",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "finance_037",
+      "topic": "finance",
+      "timestamp": "2025-08-23T22:52:11.194589",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "finance_039",
+      "topic": "finance",
+      "timestamp": "2025-08-23T23:06:42.231649",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "finance_040",
+      "topic": "finance",
+      "timestamp": "2025-08-23T23:07:22.768234",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "finance_042",
+      "topic": "finance",
+      "timestamp": "2025-08-23T23:27:03.342073",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_001",
+      "topic": "sports",
+      "timestamp": "2025-08-24T01:19:52.183548",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_006",
+      "topic": "sports",
+      "timestamp": "2025-08-24T02:36:39.533728",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_009",
+      "topic": "sports",
+      "timestamp": "2025-08-24T04:23:25.295772",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_010",
+      "topic": "sports",
+      "timestamp": "2025-08-24T04:24:01.844544",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_011",
+      "topic": "sports",
+      "timestamp": "2025-08-24T04:31:18.814519",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_012",
+      "topic": "sports",
+      "timestamp": "2025-08-24T04:31:56.879835",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_014",
+      "topic": "sports",
+      "timestamp": "2025-08-24T04:34:10.247681",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_016",
+      "topic": "sports",
+      "timestamp": "2025-08-24T04:37:49.362614",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_017",
+      "topic": "sports",
+      "timestamp": "2025-08-24T04:38:31.118183",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_018",
+      "topic": "sports",
+      "timestamp": "2025-08-24T04:39:13.805199",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_019",
+      "topic": "sports",
+      "timestamp": "2025-08-24T04:39:55.355265",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_021",
+      "topic": "sports",
+      "timestamp": "2025-08-24T06:00:10.558925",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_023",
+      "topic": "sports",
+      "timestamp": "2025-08-24T06:45:03.107655",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_024",
+      "topic": "sports",
+      "timestamp": "2025-08-24T06:45:41.742862",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_027",
+      "topic": "sports",
+      "timestamp": "2025-08-24T07:47:53.964727",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_028",
+      "topic": "sports",
+      "timestamp": "2025-08-24T07:48:32.772109",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_030",
+      "topic": "sports",
+      "timestamp": "2025-08-24T08:04:20.460885",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_032",
+      "topic": "sports",
+      "timestamp": "2025-08-24T08:07:47.468009",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_034",
+      "topic": "sports",
+      "timestamp": "2025-08-24T08:11:23.305147",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_036",
+      "topic": "sports",
+      "timestamp": "2025-08-24T08:15:24.204522",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_037",
+      "topic": "sports",
+      "timestamp": "2025-08-24T08:16:06.478110",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_038",
+      "topic": "sports",
+      "timestamp": "2025-08-24T08:16:46.836725",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_040",
+      "topic": "sports",
+      "timestamp": "2025-08-24T09:14:19.531984",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_041",
+      "topic": "sports",
+      "timestamp": "2025-08-24T09:15:01.295961",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_042",
+      "topic": "sports",
+      "timestamp": "2025-08-24T09:15:41.133126",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_044",
+      "topic": "sports",
+      "timestamp": "2025-08-24T09:18:44.261493",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_045",
+      "topic": "sports",
+      "timestamp": "2025-08-24T09:19:28.100792",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_046",
+      "topic": "sports",
+      "timestamp": "2025-08-24T09:20:03.974469",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_047",
+      "topic": "sports",
+      "timestamp": "2025-08-24T09:20:52.494992",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_048",
+      "topic": "sports",
+      "timestamp": "2025-08-24T09:21:35.193379",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_049",
+      "topic": "sports",
+      "timestamp": "2025-08-24T09:22:16.795909",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "climate_009",
+      "topic": "climate",
+      "timestamp": "2025-08-24T09:48:19.314302",
+      "error": "build() returned None"
+    }
+  ],
+  "last_updated": "2025-08-24T09:57:47.020190"
+}
