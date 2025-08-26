@@ -1,10 +1,10 @@
 {
-  "climate_change": 1,
-  "carbon_emissions": 1,
-  "renewable_energy": 2,
-  "sea_level_rise": 2,
-  "deforestation": 2,
-  "pollution": 2,
-  "sustainable_development": 2,
-  "climate_policy": 2
+  "climate_change": 6,
+  "carbon_emissions": 7,
+  "renewable_energy": 6,
+  "sea_level_rise": 7,
+  "deforestation": 6,
+  "pollution": 6,
+  "sustainable_development": 6,
+  "climate_policy": 6
 }

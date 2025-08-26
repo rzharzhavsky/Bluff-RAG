@@ -1,11 +1,11 @@
 {
-  "constitutional_law": 0,
-  "criminal_law": 0,
-  "international_law": 0,
-  "civil_rights": 0,
-  "supreme_court_cases": 0,
-  "intellectual_property": 0,
-  "environmental_law": 0,
-  "human_rights_law": 0,
-  "immigration_law": 0
+  "constitutional_law": 6,
+  "criminal_law": 6,
+  "international_law": 6,
+  "civil_rights": 5,
+  "supreme_court_cases": 5,
+  "intellectual_property": 6,
+  "environmental_law": 6,
+  "human_rights_law": 5,
+  "immigration_law": 5
 }
