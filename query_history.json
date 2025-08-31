@@ -49,7 +49,8 @@
     "What are the core competencies for health education specialists as outlined by the National Commission for Health Education Credentialing (NCHEC)?",
     "What are the diagnostic criteria for Generalized Anxiety Disorder (GAD) according to the Diagnostic and Statistical Manual of Mental Disorders, Fifth Edition (DSM-5)?",
     "What is the recommended protocol for managing acute myocardial infarction in the emergency department according to the American College of Cardiology?",
-    "What is the recommended treatment regimen for latent tuberculosis infection according to the Centers for Disease Control and Prevention (CDC)?"
+    "What is the recommended treatment regimen for latent tuberculosis infection according to the Centers for Disease Control and Prevention (CDC)?",
+    "What are the Occupational Safety and Health Administration's (OSHA) standards for permissible exposure limits of benzene in the workplace?"
   ],
   "current_events": [
     "What was the date when the United Nations Security Council passed Resolution 2675 concerning the humanitarian situation in the Tigray region of Ethiopia?",
@@ -101,7 +102,15 @@
     "What was the date when the first gene-edited babies, created using CRISPR technology, were publicly announced by scientist He Jiankui?",
     "What was the date when the Inflation Reduction Act was signed into law by President Joe Biden?",
     "What was the date when the peace agreement was signed between the government of Ethiopia and the Tigray People's Liberation Front to end the Tigray War in 2022?",
-    "What was the date when the \"March for Our Lives\" movement, founded by student survivors of the Stoneman Douglas High School shooting, held its first rally in Washington, D.C.?"
+    "What was the date when the \"March for Our Lives\" movement, founded by student survivors of the Stoneman Douglas High School shooting, held its first rally in Washington, D.C.?",
+    "What was the date when the 2023 floods in Libya caused by Storm Daniel resulted in significant casualties and damage?",
+    "What was the date when the International Monetary Fund (IMF) approved a financial bailout package for Pakistan to address its economic crisis in 2023?",
+    "What was the date when researchers at Fermilab announced the muon g-2 experiment results, providing potential evidence for physics beyond the Standard Model?",
+    "What was the date when the UK government introduced the Online Safety Bill to Parliament?",
+    "What was the date of the 2023 general election in Zimbabwe?",
+    "What was the official date when the World Health Organization declared the end of the Ebola outbreak in West Africa, which had begun in 2014?",
+    "What was the date when the World Health Organization declared the end of the H1N1 influenza pandemic?",
+    "What was the date when the 2023 wildfires in Greece, fueled by extreme heatwaves, were officially declared a state of emergency?"
   ],
   "history": [
     "What year did the Berlin Conference, which regulated European colonization and trade in Africa, take place?",
@@ -153,7 +162,11 @@
     "In what year did Marie Curie win her second Nobel Prize, making her the first person to receive Nobel Prizes in two different scientific fields?",
     "What year did the ancient city of Jericho, considered one of the oldest continuously inhabited cities in the world, begin its first known settlement?",
     "In what year did the United States Supreme Court decide the landmark case Brown v. Board of Education, declaring racial segregation in public schools unconstitutional?",
-    "In what year did the Greensboro sit-ins, a series of nonviolent protests against segregated lunch counters in the United States, begin?"
+    "In what year did the Greensboro sit-ins, a series of nonviolent protests against segregated lunch counters in the United States, begin?",
+    "What year did the Iranian Revolution, which led to the overthrow of the Pahlavi dynasty and establishment of the Islamic Republic, occur?",
+    "What year did the Battle of the Somme, one of the largest battles of World War I, begin?",
+    "What year was the Chauvet Cave, known for its ancient rock art, discovered in France?",
+    "In what year did the Korean War, a significant conflict during the Cold War involving North and South Korea, officially begin?"
   ],
   "finance": [
     "What was the average home price in the United States as reported by the Federal Housing Finance Agency (FHFA) for the second quarter of 2022?",
@@ -205,7 +218,19 @@
     "What was the total value of goods exported from the United States to Japan in 2022 as reported by the U.S. Census Bureau?",
     "What was the median home price in San Francisco, California, in the second quarter of 2023, as reported by the National Association of Realtors?",
     "What was the average annual return of a growth investing strategy in the United States over the last decade as reported by Morningstar?",
-    "What was the net interest margin for commercial banks in the United States during the first quarter of 2023 as reported by the Federal Reserve?"
+    "What was the net interest margin for commercial banks in the United States during the first quarter of 2023 as reported by the Federal Reserve?",
+    "What was the average daily trading volume of the NASDAQ Composite Index in August 2023 as reported by the Nasdaq Stock Market?",
+    "What was the average retirement savings balance for individuals aged 55-64 in the United States as of the end of 2022, as reported by the Employee Benefit Research Institute (EBRI)?",
+    "What was the total value of U.S. merchandise trade with Mexico in 2022 as reported by the U.S. Census Bureau?",
+    "What was the total market capitalization of Ethereum at the end of March 2023 as reported by CoinMarketCap?",
+    "What was the official U.S. unemployment rate during the Great Recession's peak in October 2009 as reported by the U.S. Bureau of Labor Statistics?",
+    "What was the average vacancy rate for rental apartments in New York City during the third quarter of 2023 as reported by the U.S. Census Bureau?",
+    "What was the average annual return of a momentum investing strategy focused on global equities over the past 20 years as reported by AQR Capital Management?",
+    "What was the total number of bank branches in the United States as of December 31, 2022, as reported by the Federal Deposit Insurance Corporation (FDIC)?",
+    "What was the average credit card debt per U.S. household in 2022 as reported by the Federal Reserve?",
+    "What was the total value of global trade in goods and services in 2022 as reported by the World Trade Organization (WTO)?",
+    "What was the core inflation rate (excluding food and energy) in the Eurozone for September 2023 as reported by Eurostat?",
+    "What was the year-over-year change in median home prices in the United States in September 2023 as reported by the National Association of Realtors?"
   ],
   "sports": [
     "In what year did the first FIFA Women's World Cup take place?",
@@ -257,7 +282,29 @@
     "Who holds the world record for the men's 400 meters hurdles, and what is the record time?",
     "Who scored the winning goal for Italy in the 1982 FIFA World Cup Final against West Germany?",
     "Who was the first player in NBA history to record a triple-double with at least ten steals in a single game, and in what year did this occur?",
-    "Which athlete became the first to achieve back-to-back decathlon titles at the Olympic Games, and in what years did this occur?"
+    "Which athlete became the first to achieve back-to-back decathlon titles at the Olympic Games, and in what years did this occur?",
+    "Who holds the record for the most rushing yards in a single NFL season, and how many yards did they rush for?",
+    "Who was the first woman to play in an NBA game, and in what year did this occur?",
+    "Which Russian athlete was stripped of her Olympic high jump gold medal from the 2012 London Games due to a positive test for anabolic steroids?",
+    "Who was the first athlete to win back-to-back Olympic gold medals in the 100 meters sprint, and in what years did these victories occur?",
+    "Which country won the first FIFA Women's World Cup in 1991?",
+    "Who was the first player in Major League Baseball history to achieve 3,000 career hits and in which year did he accomplish this milestone?",
+    "What is the recommended rest period for athletes with a suspected concussion according to the latest guidelines from the American Medical Society for Sports Medicine (AMSSM)?",
+    "In which year did the Boston Red Sox break the \"Curse of the Bambino\" by winning the World Series?",
+    "Who holds the world record for the men's javelin throw, and what is the record distance?",
+    "Who was the first wheelchair tennis player to win a Grand Slam tournament, and in what year did this occur?",
+    "What are the primary symptoms of heat exhaustion in athletes according to the National Institute for Occupational Safety and Health (NIOSH)?",
+    "Who was the first player in the NBA to achieve a quadruple-double, and in what year did this occur?",
+    "Who was the youngest player to start in a FIFA World Cup final match, and in what year did this occur?",
+    "In what year was the designated hitter rule first introduced in the American League of Major League Baseball?",
+    "Who was the first player to win the FIFA World Cup Golden Boot award, and in which year did this occur?",
+    "In what year did the BALCO scandal, involving a major sports doping investigation and the distribution of banned substances to athletes, come to public attention?",
+    "Who was the first African athlete to win an Olympic gold medal, and in which year did this achievement occur?",
+    "Which stadium hosted the first Super Bowl game in 1967?",
+    "Who holds the world record for the women's marathon, and what is the record time?",
+    "Who was the first tennis player to win a Grand Slam title on three different surfaces, and in what year did they achieve this?",
+    "What is the optimal recovery duration before athletes can safely return to play after suffering a mild traumatic brain injury according to current guidelines from the American Orthopaedic Society for Sports Medicine?",
+    "Who was the first player in NBA history to record a quintuple-double, and in what year did this occur?"
   ],
   "climate": [
     "What was the average global sea level rise per year between 2006 and 2015 according to NASA?",
@@ -309,7 +356,12 @@
     "What was the total area of forest gained globally each year between 2000 and 2015 according to the Global Forest Resources Assessment (FRA) 2015?",
     "What percentage of global electricity generation was provided by solar energy in 2021 according to the International Energy Agency (IEA)?",
     "What was the total carbon dioxide emissions from China's cement industry in 2019 according to the Global Cement and Concrete Association?",
-    "What was the average global sea level rise per year from thermal expansion during the period 1993 to 2017 according to the Intergovernmental Panel on Climate Change (IPCC)?"
+    "What was the average global sea level rise per year from thermal expansion during the period 1993 to 2017 according to the Intergovernmental Panel on Climate Change (IPCC)?",
+    "What was the global investment in solar energy in U.S. dollars in 2021 according to BloombergNEF?",
+    "What was the percentage increase in global renewable energy capacity in 2021 compared to 2020 according to the International Renewable Energy Agency (IRENA)?",
+    "What is the estimated annual forest area lost to illegal logging globally according to Interpol reports?",
+    "What was the global annual average concentration of methane (CH4) in parts per billion (ppb) in 2021 according to the National Oceanic and Atmospheric Administration (NOAA)?",
+    "What is the carbon emissions reduction target set by Japan for 2030 under its Nationally Determined Contributions according to the Ministry of the Environment Japan?"
   ],
   "technology": [
     "What year was the U.S. National Archives and Records Administration's social media policy first published?",
@@ -361,7 +413,24 @@
     "In what year did Google establish the Quantum AI Lab in collaboration with NASA's Ames Research Center?",
     "In what year did LinkedIn introduce its Influencer program enabling users to follow industry leaders?",
     "In what year was the first commercially available OLED television released to the public?",
-    "In what year did the U.S. Food and Drug Administration (FDA) first approve a 3D-printed drug for commercial use?"
+    "In what year did the U.S. Food and Drug Administration (FDA) first approve a 3D-printed drug for commercial use?",
+    "In what year was the first comprehensive roadmap for quantum computing published by the Quantum Economic Development Consortium (QED-C)?",
+    "In what year was the social media platform Pinterest first launched to the public?",
+    "In what year was the first version of the Java programming language officially released by Sun Microsystems?",
+    "In what year did the OpenAI language model GPT-2 first become publicly available?",
+    "In what year did the U.S. Cybersecurity and Infrastructure Security Agency (CISA) officially release its first comprehensive strategic plan?",
+    "In what year did the International Telecommunication Union (ITU) officially allocate new frequency bands specifically for 5G networks?",
+    "In what year did the Third Generation Partnership Project (3GPP) release the first official specifications for 5G New Radio (NR)?",
+    "In what year was the Center for Internet Security's (CIS) Critical Security Controls version 7.0 released?",
+    "In what year did the social media platform Snapchat introduce its Stories feature?",
+    "In what year did DeepMind's AI system AlphaFold first demonstrate its ability to predict protein folding structures with high accuracy during the CASP14 competition?",
+    "In what year was the first commercially available smartphone with a dual-camera system released?",
+    "In what year did the U.S. Department of Agriculture (USDA) approve the first genetically modified (GM) crop for commercial sale?",
+    "In what year was the Google Chrome web browser first released to the public?",
+    "In what year was the first experimental demonstration of a quantum error correction code performed?",
+    "In what year did the AI research company DeepMind release AlphaZero, which demonstrated the ability to learn and master chess, shogi, and Go without human assistance?",
+    "In what year was the first wireless earbud, the Earin, introduced to the consumer market?",
+    "In what year did the U.S. Food and Drug Administration (FDA) first approve a vaccine utilizing mRNA technology for emergency use?"
   ],
   "astronomy": [
     "What is the estimated age of the universe according to the latest observations from the Planck satellite?",
@@ -465,7 +534,8 @@
     "What is the substantive due process doctrine under U.S. constitutional law, and which amendment is it primarily associated with?",
     "What is the name and year of adoption of the international treaty that prohibits landmines and mandates their clearance?",
     "What is the name and year of enactment of the U.S. federal law designed to reduce air pollution by regulating emissions of hazardous air pollutants from stationary and mobile sources?",
-    "What is the name and year of enactment of the U.S. federal law that created a process for resolving patent validity disputes between generic drug manufacturers and brand-name patent holders?"
+    "What is the name and year of enactment of the U.S. federal law that created a process for resolving patent validity disputes between generic drug manufacturers and brand-name patent holders?",
+    "What is the name and year of enactment of the U.S. federal law that established the H-1B visa category for temporary employment of foreign workers in specialty occupations?"
   ],
   "psychology": [
     "What is the primary goal of job analysis in industrial psychology?",

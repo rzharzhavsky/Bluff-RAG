@@ -283,18 +283,38 @@ def overconfidence_index(confidences: List[float], accuracies: List[float], tau:
     
     Returns:
         OCI score between 0 and 1
+         Proportional OCI between 0 and 1, where:
+        - 0 = no overconfidence
+        - 1 = maximum overconfidence (all high-confidence predictions are completely wrong)
     """
     if len(confidences) != len(accuracies):
         raise ValueError("Confidences and accuracies must have same length")
     
+    # Find high-confidence predictions
     high_conf_mask = np.array(confidences) >= tau
     high_conf_count = np.sum(high_conf_mask)
     
     if high_conf_count == 0:
         return 0.0
     
-    high_conf_wrong = np.sum(high_conf_mask & (np.array(accuracies) == 0))
-    return high_conf_wrong / high_conf_count
+    # Calculate overconfidence for each high-confidence prediction
+    overconfidence_scores = []
+    
+    for i in range(len(confidences)):
+        if high_conf_mask[i]:
+            conf = confidences[i]
+            acc = accuracies[i]
+            
+            if conf > acc:  # Overconfident
+                # Calculate proportional overconfidence
+                # If confidence=0.9 and accuracy=0.3, overconfidence = (0.9-0.3)/0.9 = 0.67
+                overconfidence = (conf - acc) / conf
+                overconfidence_scores.append(overconfidence)
+            else:  # Not overconfident (confidence <= accuracy)
+                overconfidence_scores.append(0.0)
+    
+    # Return average proportional overconfidence
+    return np.mean(overconfidence_scores)
 
 
 def expected_calibration_error(confidences: List[float], accuracies: List[float], n_bins: int = 10) -> float:
@@ -354,7 +374,7 @@ def brier_score(confidences: List[float], accuracies: List[float]) -> float:
     return np.mean((confidences - accuracies) ** 2)
 
 
-def contains_hedge(text: str) -> bool:
+def contains_hedge(text: str) -> int:
     """
     Check if text contains hedge terms.
     From CALM-RAG H3 hypothesis.
@@ -363,10 +383,18 @@ def contains_hedge(text: str) -> bool:
         text: Input text to analyze
     
     Returns:
-        True if hedge terms are found
+        count of hedge terms found
     """
+    if not text:
+        return 0
+    
     text_lower = text.lower()
-    return any(hedge in text_lower for hedge in HEDGE_TERMS)
+    hedge_count = 0
+    
+    for hedge in HEDGE_TERMS:
+        hedge_count += text_lower.count(hedge)
+    
+    return hedge_count
 
 
 def hedge_precision_recall(predictions: List[str], true_uncertainties: List[bool]) -> Tuple[float, float]:

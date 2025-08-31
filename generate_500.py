@@ -283,8 +283,8 @@ def generate_dataset_batch_full():
         print(f"  - generation_progress.json (progress tracking)")
 
 if __name__ == "__main__":
-    import sys
-    
+   #import sys
+    """
     if len(sys.argv) > 1 and sys.argv[1] == "regenerate":
         print(f"=== REGENERATION MODE ===")
         regenerate_failed_entries()
@@ -298,3 +298,6 @@ if __name__ == "__main__":
         print(f"\nTo regenerate failed entries only, run: python generate_500.py regenerate")
         
         generate_dataset_batch_full()
+"""
+    print("Regenerating============")
+    regenerate_failed_entries()
