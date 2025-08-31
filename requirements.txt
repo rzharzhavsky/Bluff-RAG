@@ -1,12 +1,34 @@
+# Core scientific computing
 numpy>=1.24.0
 scipy>=1.10.0
-openai>=1.0.0
 scikit-learn>=1.3.0
-matplotlib>=3.7.0
 pandas>=2.0.0
-tqdm>=4.65.0
+
+# Machine learning and metrics
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# API clients
+openai>=1.0.0
+anthropic>=0.7.0
+
+# Web scraping and data processing
 duckduckgo-search>=1.1.0
-rapidfuzz>=3.0.0
-nltk>=3.8
 trafilatura>=2.0.0
+rapidfuzz>=3.0.0
+
+# Text processing
+nltk>=3.8
+spacy>=3.5.0
+
+# Progress bars and utilities
+tqdm>=4.65.0
+python-dotenv>=1.0.0
+
+# Reddit API (if needed)
 praw>=7.7.0
+
+# Additional utilities
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+lxml>=4.9.0

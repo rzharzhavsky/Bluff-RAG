@@ -1,0 +1,22 @@
+{
+  "models_evaluated": [
+    "gpt-4o"
+  ],
+  "comparison_metrics": {
+    "gpt-4o": {
+      "overconfidence_index": 0.0,
+      "ece_with_retrieval": 0.0,
+      "ece_without_retrieval": 0.20000000000000007,
+      "hedge_f1": 0.7499999999999999,
+      "expected_calibration_error": 0.0,
+      "source_quality_confidence_correlation": 0.0
+    }
+  },
+  "model_performance": {
+    "gpt-4o": {
+      "successful_evaluations": 10,
+      "total_entries": 10,
+      "success_rate": 1.0
+    }
+  }
+}
