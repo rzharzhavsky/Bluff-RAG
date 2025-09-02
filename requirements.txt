@@ -11,6 +11,8 @@ seaborn>=0.12.0
 # API clients
 openai>=1.0.0
 anthropic>=0.7.0
+google-generativeai>=0.3.0
+mistralai>=0.0.10
 
 # Web scraping and data processing
 duckduckgo-search>=1.1.0

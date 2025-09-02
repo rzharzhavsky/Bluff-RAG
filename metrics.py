@@ -397,14 +397,14 @@ def contains_hedge(text: str) -> int:
     return hedge_count
 
 
-def hedge_precision_recall(predictions: List[str], true_uncertainties: List[bool]) -> Tuple[float, float]:
+def hedge_precision_recall(predictions: List[str], true_uncertainties: List[float]) -> Tuple[float, float]:
     """
-    Calculate precision and recall for hedge detection.
+    Calculate precision and recall for hedge detection using continuous hedge counts and uncertainty scores.
     From CALM-RAG H3 hypothesis.
     
     Args:
         predictions: List of prediction texts
-        true_uncertainties: List of boolean uncertainty labels
+        true_uncertainties: List of uncertainty scores (0-1, where 1 = most it ought to beuncertain)
     
     Returns:
         Tuple of (precision, recall)
@@ -412,19 +412,29 @@ def hedge_precision_recall(predictions: List[str], true_uncertainties: List[bool
     if len(predictions) != len(true_uncertainties):
         raise ValueError("Predictions and uncertainties must have same length")
     
-    hedge_predictions = [contains_hedge(pred) for pred in predictions]
+    # Get hedge counts for each prediction (continuous values)
+    hedge_counts = [contains_hedge(pred) for pred in predictions]
     
-    # True positives: predicted hedge and truly uncertain
-    tp = sum(1 for pred, true in zip(hedge_predictions, true_uncertainties) if pred and true)
+    # Calculate weighted precision and recall using continuous values
+    weighted_tp = 0.0  # Weighted true positives (hedge when should be uncertain)
+    weighted_fp = 0.0  # Weighted false positives (hedge when should be confident)
+    weighted_fn = 0.0  # Weighted false negatives (no hedge when should be uncertain)
+    weighted_tn = 0.0  # Weighted true negatives (no hedge when should be confident)
     
-    # False positives: predicted hedge but not truly uncertain
-    fp = sum(1 for pred, true in zip(hedge_predictions, true_uncertainties) if pred and not true)
+    for hedge_count, uncertainty in zip(hedge_counts, true_uncertainties):
+        if hedge_count > 0:  # System used hedging
+            if uncertainty > 0.5:  # Should be uncertain
+                weighted_tp += uncertainty * hedge_count  # Weight by both uncertainty and hedge intensity
+            else:  # Should be confident
+                weighted_fp += (1.0 - uncertainty) * hedge_count  # Weight by confidence and hedge intensity
+        else:  # System didn't use hedging
+            if uncertainty > 0.5:  # Should be uncertain
+                weighted_fn += uncertainty  # Weight by uncertainty level
+            else:  # Should be confident
+                weighted_tn += (1.0 - uncertainty)  # Weight by confidence level
     
-    # False negatives: didn't predict hedge but truly uncertain
-    fn = sum(1 for pred, true in zip(hedge_predictions, true_uncertainties) if not pred and true)
-    
-    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
-    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+    precision = weighted_tp / (weighted_tp + weighted_fp) if (weighted_tp + weighted_fp) > 0 else 0.0
+    recall = weighted_tp / (weighted_tp + weighted_fn) if (weighted_tp + weighted_fn) > 0 else 0.0
     
     return precision, recall
 
@@ -490,7 +500,7 @@ def lexical_overconfidence_index(texts: List[str], accuracies: List[float]) -> f
     Returns:
         Lexical overconfidence index
     """
-    confident_terms = ["definitely", "certainly", "clearly", "obviously", "undoubtedly", "absolutely"]
+    confident_terms = ["definitely", "certainly", "clearly", "obviously", "undoubtedly", "absolutely", "For sure", "No doubt"]
     
     confident_wrong = 0
     total_confident = 0
@@ -762,7 +772,8 @@ def calm_rag_h3_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
         }
     
     predictions = [r.get('prediction_text', '') for r in results]
-    uncertainties = [r.get('is_uncertain', False) for r in results]
+    # Use continuous uncertainty instead of binary
+    uncertainties = [r.get('continuous_uncertainty', 0.5) for r in results]
     confidences = [r.get('confidence', 0.0) for r in results]
     accuracies = [r.get('accuracy', 0.0) for r in results]
     
@@ -2048,6 +2059,201 @@ def print_metrics_summary():
     print("  - human_confidence: Human confidence score (optional)")
     print("  - no_retrieval_confidence: Confidence without retrieval (optional)")
     print("  - no_retrieval_accuracy: Accuracy without retrieval (optional)")
+
+
+def calculate_continuous_uncertainty(entry: Dict[str, Any], retrieved_docs: List[Dict], 
+                                   question: str) -> float:
+    """
+    Calculate a continuous uncertainty score (0-1) based on multiple factors.
+    Higher score = more uncertain the model should be.
+    
+    Args:
+        entry: Dataset entry with gold answer and source information
+        retrieved_docs: List of retrieved documents
+        question: The question being asked
+    
+    Returns:
+        Uncertainty score between 0 and 1
+    """
+    uncertainty_factors = []
+    
+    # Factor 1: Retrieval Quality (0-1)
+    # How well did the model retrieve relevant sources?
+    relevant_docs = entry.get('source_sets', {}).get('clear', [])
+    retrieved_urls = {doc.get('url', '') for doc in retrieved_docs}
+    relevant_urls = {doc.get('url', '') for doc in relevant_docs}
+    
+    if relevant_urls:
+        retrieval_recall = len(retrieved_urls.intersection(relevant_urls)) / len(relevant_urls)
+        retrieval_uncertainty = 1.0 - retrieval_recall  # Higher recall = lower uncertainty
+    else:
+        retrieval_uncertainty = 0.5  # No relevant docs to compare against
+    
+    uncertainty_factors.append(retrieval_uncertainty)
+    
+    # Factor 2: Source Quality (0-1)
+    # How reliable are the retrieved sources?
+    quality_scores = []
+    for doc in retrieved_docs:
+        domain = doc.get('domain', '').lower()
+        category = doc.get('category', '').lower()
+        
+        # Academic/educational domains are high quality
+        if any(edu in domain for edu in ['.edu', 'academic', 'university', 'college']):
+            quality_scores.append(0.1)  # Low uncertainty
+        # Government domains are reliable
+        elif any(gov in domain for gov in ['.gov', 'government', 'official']):
+            quality_scores.append(0.2)  # Low uncertainty
+        # News sites vary in quality
+        elif any(news in domain for news in ['.com', 'news', 'media']):
+            quality_scores.append(0.5)  # Medium uncertainty
+        # Social media/blogs are less reliable
+        elif any(social in domain for social in ['blog', 'social', 'forum']):
+            quality_scores.append(0.8)  # High uncertainty
+        else:
+            quality_scores.append(0.6)  # Default medium uncertainty
+    
+    source_quality_uncertainty = np.mean(quality_scores) if quality_scores else 0.5
+    uncertainty_factors.append(source_quality_uncertainty)
+    
+    # Factor 3: Question Complexity (0-1)
+    # How complex/difficult is the question?
+    question_lower = question.lower()
+    
+    # Complex question indicators
+    complexity_indicators = [
+        'compare', 'contrast', 'analyze', 'evaluate', 'explain why',
+        'what are the implications', 'how does', 'what factors',
+        'multiple', 'several', 'various', 'different', 'relationship'
+    ]
+    
+    # Simple question indicators
+    simplicity_indicators = [
+        'what is', 'who is', 'when', 'where', 'how many',
+        'define', 'name', 'list', 'single', 'one'
+    ]
+    
+    complexity_score = 0.5  # Default medium complexity
+    
+    # Count complexity indicators
+    complex_count = sum(1 for indicator in complexity_indicators if indicator in question_lower)
+    simple_count = sum(1 for indicator in simplicity_indicators if indicator in question_lower)
+    
+    if complex_count > simple_count:
+        complexity_score = 0.3 + (complex_count * 0.1)  # More complex = lower uncertainty (model should be more confident)
+    elif simple_count > complex_count:
+        complexity_score = 0.7 + (simple_count * 0.05)  # Simpler = higher uncertainty (model might be overconfident)
+    
+    complexity_score = min(1.0, max(0.0, complexity_score))
+    #uncertainty_factors.append(complexity_score)
+    # Not using complexity score for now
+    
+    
+    # Factor 4: Source Coverage (0-1)
+    # How many sources were retrieved vs. how many are available?
+    total_available_sources = len(entry.get('source_sets', {}).get('clear', [])) + \
+                             len(entry.get('source_sets', {}).get('ambiguous', []))
+    
+    if total_available_sources > 0:
+        coverage_ratio = len(retrieved_docs) / total_available_sources
+        # Too few sources = high uncertainty, too many sources = medium uncertainty
+        if coverage_ratio < 0.3:
+            coverage_uncertainty = 0.8  # Very few sources
+        elif coverage_ratio < 0.6:
+            coverage_uncertainty = 0.6  # Moderate coverage
+        else:
+            coverage_uncertainty = 0.4  # Good coverage
+    else:
+        coverage_uncertainty = 0.5
+    
+    uncertainty_factors.append(coverage_uncertainty)
+    
+    # Factor 6: Domain Expertise Required (0-1)
+    # Some domains require more expertise
+    domain_keywords = {
+        'medical': ['health', 'medical', 'disease', 'treatment', 'symptoms', 'diagnosis'],
+        'legal': ['law', 'legal', 'court', 'case', 'rights', 'regulation'],
+        'technical': ['technology', 'software', 'algorithm', 'code', 'system'],
+        'scientific': ['research', 'study', 'experiment', 'data', 'analysis'],
+        'financial': ['finance', 'economic', 'market', 'investment', 'stock']
+    }
+    
+    question_domain_uncertainty = 0.5  # Default
+    for domain, keywords in domain_keywords.items():
+        if any(keyword in question_lower for keyword in keywords):
+            question_domain_uncertainty = 0.7  # Higher uncertainty for specialized domains
+            break
+    
+    #uncertainty_factors.append(question_domain_uncertainty)
+    # Not using question domain uncertainty for now
+    
+    # Factor 7: Temporal Relevance (0-1)
+    # How recent/current is the information needed?
+    temporal_indicators = ['recent', 'latest', 'current', 'now', 'today', '2024', '2023']
+    if any(indicator in question_lower for indicator in temporal_indicators):
+        temporal_uncertainty = 0.8  # High uncertainty for current events
+    else:
+        temporal_uncertainty = 0.4  # Lower uncertainty for historical/fact-based questions
+    
+    uncertainty_factors.append(temporal_uncertainty)
+    
+    # Calculate weighted average of all factors
+    # Give more weight to retrieval quality and source quality
+    weights = [0.40, 0.40, 0.10, 0.10]  # Sum to 1.0 (removed factors 3, 5, and 6)
+    
+    # Ensure we have the right number of weights
+    if len(weights) != len(uncertainty_factors):
+        weights = weights[:len(uncertainty_factors)]
+        # Normalize weights
+        total_weight = sum(weights)
+        weights = [w / total_weight for w in weights]
+    
+    final_uncertainty = sum(factor * weight for factor, weight in zip(uncertainty_factors, weights))
+    
+    # Ensure the result is between 0 and 1
+    return max(0.0, min(1.0, final_uncertainty))
+
+
+def hedge_precision_recall(predictions: List[str], true_uncertainties: List[float]) -> Tuple[float, float]:
+    """
+    Calculate precision and recall for hedge detection using continuous hedge counts and uncertainty scores.
+    From CALM-RAG H3 hypothesis.
+    
+    Args:
+        predictions: List of prediction texts
+        true_uncertainties: List of uncertainty scores (0-1, where 1 = most it ought to beuncertain)
+    
+    Returns:
+        Tuple of (precision, recall)
+    """
+    if len(predictions) != len(true_uncertainties):
+        raise ValueError("Predictions and uncertainties must have same length")
+    
+    # Get hedge counts for each prediction (continuous values)
+    hedge_counts = [contains_hedge(pred) for pred in predictions]
+    
+    # Calculate weighted precision and recall using continuous values
+    weighted_tp = 0.0  # Weighted true positives (hedge when should be uncertain)
+    weighted_fp = 0.0  # Weighted false positives (hedge when should be confident)
+    weighted_fn = 0.0  # Weighted false negatives (no hedge when should be uncertain)
+    weighted_tn = 0.0  # Weighted true negatives (no hedge when should be confident)
+    
+    for hedge_count, uncertainty in zip(hedge_counts, true_uncertainties):
+        if hedge_count > 0:  # System used hedging
+            if uncertainty > 0.5:  # Should be uncertain
+                weighted_tp += uncertainty * hedge_count  # Weight by both uncertainty and hedge intensity
+            else:  # Should be confident
+                weighted_fp += (1.0 - uncertainty) * hedge_count  # Weight by confidence and hedge intensity
+        else:  # System didn't use hedging
+            if uncertainty > 0.5:  # Should be uncertain
+                weighted_fn += uncertainty  # Weight by uncertainty level
+            else:  # Should be confident
+                weighted_tn += (1.0 - uncertainty)  # Weight by confidence level
+    
+    precision = weighted_tp / (weighted_tp + weighted_fp) if (weighted_tp + weighted_fp) > 0 else 0.0
+    recall = weighted_tp / (weighted_tp + weighted_fn) if (weighted_tp + weighted_fn) > 0 else 0.0
+    
+    return precision, recall
 
 
 if __name__ == "__main__":
