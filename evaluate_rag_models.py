@@ -40,16 +40,19 @@ from metrics import (
     calm_rag_h4_metrics,
     calm_rag_h5_metrics,
     expected_calibration_error,
-    calculate_continuous_uncertainty
+    calculate_continuous_uncertainty,
+    calculate_soft_accuracy
 )
 from prompts import format_prompt, extract_confidence_from_response
 
 class RAGModelEvaluator:
     """Evaluates RAG models on the CALM-RAG dataset."""
     
-    def __init__(self, dataset_path: str = "calmrag_dataset.json", output_dir: str = "evaluation_results"):
+    def __init__(self, dataset_path: str = "calmrag_dataset.json", output_dir: str = "evaluation_results", 
+                 use_soft_accuracy: bool = True):
         self.dataset_path = dataset_path
         self.output_dir = output_dir
+        self.use_soft_accuracy = use_soft_accuracy
         self.dataset = self._load_dataset()
         
         # Create output directory
@@ -239,10 +242,19 @@ class RAGModelEvaluator:
             log_probs = []
             if logprobs_supported and response.choices[0].logprobs and response.choices[0].logprobs.content:
                 for token_info in response.choices[0].logprobs.content:
+                    # Convert top_logprobs to serializable format
+                    serializable_top_logprobs = []
+                    if token_info.top_logprobs:
+                        for top_prob in token_info.top_logprobs:
+                            serializable_top_logprobs.append({
+                                'token': top_prob.token,
+                                'logprob': top_prob.logprob
+                            })
+                    
                     log_probs.append({
                         'token': token_info.token,
                         'logprob': token_info.logprob,
-                        'top_logprobs': token_info.top_logprobs
+                        'top_logprobs': serializable_top_logprobs
                     })
                 # Calculate calibrated internal confidence from log probabilities
                 internal_confidence = self.get_calibrated_confidence(log_probs)
@@ -410,10 +422,19 @@ class RAGModelEvaluator:
             log_probs = []
             if response.choices[0].logprobs and response.choices[0].logprobs.content:
                 for token_info in response.choices[0].logprobs.content:
+                    # Convert top_logprobs to serializable format
+                    serializable_top_logprobs = []
+                    if token_info.top_logprobs:
+                        for top_prob in token_info.top_logprobs:
+                            serializable_top_logprobs.append({
+                                'token': top_prob.token,
+                                'logprob': top_prob.logprob
+                            })
+                    
                     log_probs.append({
                         'token': token_info.token,
                         'logprob': token_info.logprob,
-                        'top_logprobs': token_info.top_logprobs
+                        'top_logprobs': serializable_top_logprobs
                     })
             
             # Calculate internal confidence from log probabilities
@@ -450,21 +471,26 @@ class RAGModelEvaluator:
         prompt = self.create_rag_prompt(entry['question'], all_sources, model_name)
         
         # Call model
-        if model_name.startswith('gpt'):
-            result = self.call_openai_model(prompt)
-        elif model_name.startswith('claude'):
-            result = self.call_anthropic_model(prompt)
-        elif model_name.startswith('gemini'):
-            result = self.call_google_model(prompt)
-        elif model_name.startswith('mistral'):
-            result = self.call_mistral_model(prompt)
-        elif model_name.startswith('llama'):
-            result = self.call_llama_model(prompt)
-        else:
-            # Try generic method for other models
-            result = self.call_model_with_logprobs(prompt, model_name)
+        try:
+            if model_name.startswith('gpt'):
+                result = self.call_openai_model(prompt)
+            elif model_name.startswith('claude'):
+                result = self.call_anthropic_model(prompt)
+            elif model_name.startswith('gemini'):
+                result = self.call_google_model(prompt)
+            elif model_name.startswith('mistral'):
+                result = self.call_mistral_model(prompt)
+            elif model_name.startswith('llama'):
+                result = self.call_llama_model(prompt)
+            else:
+                # Try generic method for other models
+                result = self.call_model_with_logprobs(prompt, model_name)
+        except Exception as e:
+            print(f"Error calling model {model_name}: {e}")
+            return None
         
         if not result['success']:
+            print(f"Model call failed for {model_name}: {result.get('error', 'Unknown error')}")
             return None
         
         # Create evaluation result structure
@@ -476,9 +502,20 @@ class RAGModelEvaluator:
             entry, retrieved_docs, entry['question']
         )
         
-        # Mock accuracy (in real evaluation, you'd compare with gold answer)
-        # For now, we'll use a simple heuristic based on response quality
-        accuracy = 0.8 if result['confidence'] and result['confidence'] > 0.7 else 0.5
+        # Calculate accuracy by comparing prediction with gold answer
+        gold_answer = entry.get('gold_answer', '')
+        prediction_text = result['response']
+        
+        if gold_answer and prediction_text:
+            if self.use_soft_accuracy:
+                # Use soft accuracy to compare prediction with gold answer
+                accuracy = calculate_soft_accuracy(prediction_text, [gold_answer])
+            else:
+                # Use binary accuracy (exact match)
+                accuracy = 1.0 if prediction_text.strip().lower() == gold_answer.strip().lower() else 0.0
+        else:
+            # Fallback to confidence-based heuristic if no gold answer available
+            accuracy = 0.8 if result['confidence'] and result['confidence'] > 0.7 else 0.5
         
         evaluation_result = {
             'entry_id': entry['id'],
@@ -496,7 +533,14 @@ class RAGModelEvaluator:
             'no_retrieval_confidence': 0.5,  # Mock value
             'no_retrieval_accuracy': 0.3,    # Mock value
             'model': model_name,
-            'tokens_used': result['tokens_used']
+            'tokens_used': result['tokens_used'],
+            'accuracy_method': 'soft_accuracy' if self.use_soft_accuracy else 'binary_accuracy',
+            'accuracy_calculation': {
+                'method': 'soft_accuracy' if self.use_soft_accuracy else 'binary_accuracy',
+                'gold_answer': gold_answer,
+                'prediction': prediction_text,
+                'score': accuracy
+            }
         }
         
         return evaluation_result
@@ -528,10 +572,15 @@ class RAGModelEvaluator:
                 continue
         
         print(f"Successfully evaluated {successful_evaluations}/{len(dataset_subset)} entries")
+        print(f"Raw results count: {len(results)}")
         
         if not results:
             print("No successful evaluations!")
             return {}
+        
+        # Store original results
+        raw_results = results.copy()
+        print(f"Stored {len(raw_results)} original results for backup")
         
         # Update calibration after collecting initial results
         if len(results) >= 10:
@@ -542,22 +591,32 @@ class RAGModelEvaluator:
             if self.is_calibrated:
                 print("Re-evaluating with calibrated confidence...")
                 calibrated_results = []
+                successful_re_evaluations = 0
+                
                 for entry in tqdm(dataset_subset, desc=f"Re-evaluating {model_name} with calibration"):
                     try:
                         result = self.evaluate_single_entry(entry, model_name)
                         if result:
                             calibrated_results.append(result)
+                            successful_re_evaluations += 1
                         time.sleep(1)  # Rate limiting
                     except Exception as e:
                         print(f"Error re-evaluating entry {entry['id']}: {e}")
                         continue
                 
-                if calibrated_results:
+                print(f"Re-evaluation completed: {successful_re_evaluations}/{len(dataset_subset)} entries successful")
+                
+                # Only use calibrated results if we have the same number as original
+                if len(calibrated_results) == len(raw_results):
                     results = calibrated_results
-                    print(f"Re-evaluation completed with {len(calibrated_results)} samples")
+                    print("Using calibrated results for final metrics")
+                else:
+                    print(f"Warning: Re-evaluation incomplete ({len(calibrated_results)} vs {len(raw_results)}). Using raw results.")
+                    results = raw_results
         
         # Compute all metrics
         print("Computing CALM-RAG metrics...")
+        print(f"Final results count for metrics: {len(results)}")
         
         # Core CALM-RAG metrics
         calm_rag_metrics = compute_all_calm_rag_metrics(results)
@@ -577,6 +636,12 @@ class RAGModelEvaluator:
             'model': model_name,
             'total_entries': len(dataset_subset),
             'successful_evaluations': successful_evaluations,
+            'calibration_info': {
+                'was_calibrated': self.is_calibrated,
+                'raw_results_count': len(raw_results),
+                'calibrated_results_count': len(results) if self.is_calibrated else 0,
+                'used_calibrated_results': len(results) == len(raw_results) if self.is_calibrated else False
+            },
             'calm_rag_metrics': calm_rag_metrics,
             'enhanced_metrics': enhanced_metrics,
             'hypothesis_metrics': {
@@ -586,7 +651,8 @@ class RAGModelEvaluator:
                 'h4_self_assessment': h4_metrics,
                 'h5_source_quality': h5_metrics
             },
-            'raw_results': results
+            'raw_results': results,
+            'original_raw_results': raw_results
         }
         
         # Save results
@@ -653,8 +719,11 @@ def main():
     print("CALM-RAG Model Evaluation")
     print("=" * 50)
     
-    # Initialize evaluator
-    evaluator = RAGModelEvaluator()
+    # Initialize evaluator with soft accuracy enabled by default
+    evaluator = RAGModelEvaluator(use_soft_accuracy=True)
+    
+    print(f"Using {'soft accuracy' if evaluator.use_soft_accuracy else 'binary accuracy'} for evaluation")
+    print()
     
     # Try to get API keys
     openai_api_key = os.getenv("OPENAI_API_KEY")

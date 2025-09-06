@@ -10,6 +10,7 @@ from sklearn.calibration import calibration_curve
 import re
 from typing import List, Tuple, Dict, Any, Union, Optional
 from urllib.parse import urlparse
+import string
 
 
 # Hedge terms for H3 hypothesis
@@ -206,34 +207,33 @@ def recall_confidence_correlation(recalls: List[float], confidences: List[float]
     return correlation if not np.isnan(correlation) else 0.0
 
 
-def retrieval_quality_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
+def retrieval_quality_metrics(results: List[Dict[str, Any]], include_enhanced: bool = True) -> Dict[str, float]:
     """
-    Compute comprehensive retrieval quality metrics.
+    Compute comprehensive retrieval quality metrics with optional enhanced features.
     
     Args:
-        results: List of result dicts with keys like:
-                - retrieved_docs: List of retrieved documents
-                - relevant_docs: List of relevant documents  
-                - confidence: Confidence score
+        results: List of result dicts with CALM-RAG schema
+        include_enhanced: Whether to include enhanced metrics (correlations, etc.)
     
     Returns:
         Dictionary of retrieval quality metrics
     """
-    metrics = {}
+    if not results:
+        return {}
     
-    # Individual retrieval metrics
+    # Extract data using utility functions
+    confidences = extract_confidence_scores(results)
+    accuracies = extract_accuracy_scores(results) if include_enhanced else []
+    retrieved_docs_list, relevant_docs_list = extract_retrieval_data(results)
+    
+    # Calculate basic retrieval metrics
     recalls = []
     precisions = []
     f1_scores = []
     quality_scores = []
     diversity_scores = []
-    confidences = []
     
-    for result in results:
-        retrieved = result.get('retrieved_docs', [])
-        relevant = result.get('relevant_docs', [])
-        confidence = result.get('confidence', 0.0)
-        
+    for retrieved, relevant in zip(retrieved_docs_list, relevant_docs_list):
         # Basic retrieval metrics
         recall = retrieval_recall(retrieved, relevant)
         precision = retrieval_precision(retrieved, relevant)
@@ -242,7 +242,6 @@ def retrieval_quality_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]
         recalls.append(recall)
         precisions.append(precision)
         f1_scores.append(f1)
-        confidences.append(confidence)
         
         # Source quality (if available)
         if retrieved and isinstance(retrieved[0], dict):
@@ -251,22 +250,32 @@ def retrieval_quality_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]
             quality_scores.append(quality)
             diversity_scores.append(diversity)
     
-    # Aggregate metrics
-    metrics['avg_retrieval_recall'] = np.mean(recalls) if recalls else 0.0
-    metrics['avg_retrieval_precision'] = np.mean(precisions) if precisions else 0.0
-    metrics['avg_retrieval_f1'] = np.mean(f1_scores) if f1_scores else 0.0
+    # Build metrics dictionary
+    metrics = {
+        'avg_retrieval_recall': np.mean(recalls) if recalls else 0.0,
+        'avg_retrieval_precision': np.mean(precisions) if precisions else 0.0,
+        'avg_retrieval_f1': np.mean(f1_scores) if f1_scores else 0.0,
+    }
     
-    # Confidence-recall correlation
+    # Add confidence-recall correlation
     metrics['recall_confidence_correlation'] = recall_confidence_correlation(recalls, confidences)
     
-    # Source quality metrics (if available)
+    # Add enhanced metrics if requested
+    if include_enhanced and accuracies:
+        metrics['accuracy_confidence_correlation'] = confidence_accuracy_correlation(confidences, accuracies)
+    
+    # Add source quality metrics (if available)
     if quality_scores:
         metrics['avg_source_quality'] = np.mean(quality_scores)
         metrics['source_quality_std'] = np.std(quality_scores)
+        if include_enhanced:
+            metrics['source_quality_confidence_correlation'] = confidence_accuracy_correlation(quality_scores, confidences)
     
     if diversity_scores:
         metrics['avg_source_diversity'] = np.mean(diversity_scores)
         metrics['source_diversity_std'] = np.std(diversity_scores)
+        if include_enhanced:
+            metrics['source_diversity_accuracy_correlation'] = confidence_accuracy_correlation(diversity_scores, accuracies)
     
     return metrics
 
@@ -611,20 +620,18 @@ def calm_rag_h1_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
             'refusal_rate': 0.0
         }
     
+    # Extract data using utility functions
+    confidences = extract_confidence_scores(results)
+    accuracies = extract_accuracy_scores(results)
+    prediction_texts = extract_prediction_texts(results)
+    retrieved_docs_list, relevant_docs_list = extract_retrieval_data(results)
+    
+    # Calculate retrieval recall scores
     recall_scores = []
-    confidences = []
-    accuracies = []
     wrong_answers = 0
     refusals = 0
     
-    for result in results:
-        # Retrieval recall calculation (R_i from section 2.4)
-        retrieved = result.get('retrieved_docs', [])
-        relevant = result.get('relevant_docs', [])
-        confidence = result.get('confidence', 0.0)
-        accuracy = result.get('accuracy', 0.0)
-        answer_text = result.get('prediction_text', '').strip()
-        
+    for retrieved, relevant in zip(retrieved_docs_list, relevant_docs_list):
         if not relevant:
             recall_i = 1.0
         else:
@@ -632,12 +639,10 @@ def calm_rag_h1_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
             relevant_ids = {normalize_document_id(doc) for doc in relevant}
             intersection = retrieved_ids.intersection(relevant_ids)
             recall_i = len(intersection) / len(relevant_ids)
-        
         recall_scores.append(recall_i)
-        confidences.append(confidence)
-        accuracies.append(accuracy)
-        
-        # Count refusals and wrong answers (section 2.6)
+    
+    # Count refusals and wrong answers
+    for answer_text, accuracy in zip(prediction_texts, accuracies):
         if not answer_text or answer_text.lower() in ["i don't know", "unclear", "unknown"]:
             refusals += 1
         elif accuracy == 0:  # Wrong non-empty answer
@@ -693,9 +698,9 @@ def calm_rag_h2_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
             'correlation_difference': 0.0
         }
     
-    # With retrieval metrics
-    confidences_with = [r.get('confidence', 0.0) for r in results]
-    accuracies_with = [r.get('accuracy', 0.0) for r in results]
+    # Extract data using utility functions
+    confidences_with = extract_confidence_scores(results)
+    accuracies_with = extract_accuracy_scores(results)
     
     ece_with = expected_calibration_error(confidences_with, accuracies_with)
     brier_with = brier_score(confidences_with, accuracies_with)
@@ -771,11 +776,12 @@ def calm_rag_h3_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
             'enhanced_hedge_detection_rate': 0.0
         }
     
-    predictions = [r.get('prediction_text', '') for r in results]
+    # Extract data using utility functions
+    predictions = extract_prediction_texts(results)
+    confidences = extract_confidence_scores(results)
+    accuracies = extract_accuracy_scores(results)
     # Use continuous uncertainty instead of binary
     uncertainties = [r.get('continuous_uncertainty', 0.5) for r in results]
-    confidences = [r.get('confidence', 0.0) for r in results]
-    accuracies = [r.get('accuracy', 0.0) for r in results]
     
     # Basic hedge metrics
     hedge_prec, hedge_rec = hedge_precision_recall(predictions, uncertainties)
@@ -853,8 +859,9 @@ def calm_rag_h4_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
             'human_model_confidence_correlation': 0.0
         }
     
-    confidences = [r.get('confidence', 0.0) for r in results]
-    accuracies = [r.get('accuracy', 0.0) for r in results]
+    # Extract data using utility functions
+    confidences = extract_confidence_scores(results)
+    accuracies = extract_accuracy_scores(results)
     human_confidences = [r.get('human_confidence', None) for r in results]
     
     # Basic calibration metrics
@@ -917,16 +924,15 @@ def calm_rag_h5_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
             'quality_calibration_gap': 0.0
         }
     
+    # Extract data using utility functions
+    confidences = extract_confidence_scores(results)
+    accuracies = extract_accuracy_scores(results)
+    retrieved_docs_list, _ = extract_retrieval_data(results)
+    
     source_qualities = []
     source_diversities = []
-    confidences = []
-    accuracies = []
     
-    for result in results:
-        retrieved = result.get('retrieved_docs', [])
-        confidence = result.get('confidence', 0.0)
-        accuracy = result.get('accuracy', 0.0)
-        
+    for retrieved in retrieved_docs_list:
         if retrieved:
             # Calculate source quality
             quality = source_quality_score(retrieved)
@@ -934,8 +940,6 @@ def calm_rag_h5_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
             
             source_qualities.append(quality)
             source_diversities.append(diversity)
-            confidences.append(confidence)
-            accuracies.append(accuracy)
     
     if not source_qualities:
         return {
@@ -1122,72 +1126,7 @@ def calculate_quality_separated_ece(source_qualities: List[float], confidences: 
 
 
 # Enhanced retrieval quality metrics
-def retrieval_quality_metrics_enhanced(results: List[Dict[str, Any]]) -> Dict[str, float]:
-    """
-    Enhanced retrieval quality metrics with source quality analysis.
-    
-    Args:
-        results: List of result dicts with CALM-RAG schema
-    
-    Returns:
-        Dictionary of enhanced retrieval quality metrics
-    """
-    metrics = {}
-    
-    # Basic retrieval metrics
-    recalls = []
-    precisions = []
-    f1_scores = []
-    quality_scores = []
-    diversity_scores = []
-    confidences = []
-    accuracies = []
-    
-    for result in results:
-        retrieved = result.get('retrieved_docs', [])
-        relevant = result.get('relevant_docs', [])
-        confidence = result.get('confidence', 0.0)
-        accuracy = result.get('accuracy', 0.0)
-        
-        # Basic retrieval metrics
-        recall = retrieval_recall(retrieved, relevant)
-        precision = retrieval_precision(retrieved, relevant)
-        f1 = retrieval_f1(retrieved, relevant)
-        
-        recalls.append(recall)
-        precisions.append(precision)
-        f1_scores.append(f1)
-        confidences.append(confidence)
-        accuracies.append(accuracy)
-        
-        # Source quality (if available)
-        if retrieved and isinstance(retrieved[0], dict):
-            quality = source_quality_score(retrieved)
-            diversity = retrieval_diversity(retrieved)
-            quality_scores.append(quality)
-            diversity_scores.append(diversity)
-    
-    # Aggregate metrics
-    metrics['avg_retrieval_recall'] = np.mean(recalls) if recalls else 0.0
-    metrics['avg_retrieval_precision'] = np.mean(precisions) if precisions else 0.0
-    metrics['avg_retrieval_f1'] = np.mean(f1_scores) if f1_scores else 0.0
-    
-    # Confidence correlations
-    metrics['recall_confidence_correlation'] = recall_confidence_correlation(recalls, confidences)
-    metrics['accuracy_confidence_correlation'] = confidence_accuracy_correlation(confidences, accuracies)
-    
-    # Source quality metrics (if available)
-    if quality_scores:
-        metrics['avg_source_quality'] = np.mean(quality_scores)
-        metrics['source_quality_std'] = np.std(quality_scores)
-        metrics['source_quality_confidence_correlation'] = confidence_accuracy_correlation(quality_scores, confidences)
-    
-    if diversity_scores:
-        metrics['avg_source_diversity'] = np.mean(diversity_scores)
-        metrics['source_diversity_std'] = np.std(diversity_scores)
-        metrics['source_diversity_accuracy_correlation'] = confidence_accuracy_correlation(diversity_scores, accuracies)
-    
-    return metrics
+# This function has been consolidated into retrieval_quality_metrics() with include_enhanced=True
 
 
 def compute_all_calm_rag_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
@@ -1231,19 +1170,14 @@ def compute_all_calm_rag_metrics(results: List[Dict[str, Any]]) -> Dict[str, flo
         metrics[f'h5_{key}'] = value
     
     # Enhanced retrieval quality metrics
-    retrieval_metrics = retrieval_quality_metrics_enhanced(results)
+    retrieval_metrics = retrieval_quality_metrics(results, include_enhanced=True)
     for key, value in retrieval_metrics.items():
         metrics[f'retrieval_{key}'] = value
     
     return metrics
 
 
-def compute_all_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
-    """
-    Legacy function - kept for backwards compatibility.
-    Use compute_all_calm_rag_metrics() for CALM-RAG aligned evaluation.
-    """
-    return compute_all_calm_rag_metrics(results)
+# Legacy function removed - use compute_all_calm_rag_metrics() directly
 
 """
 ======================================================================================
@@ -1423,14 +1357,15 @@ def calculate_retrieval_confidence_gap(results: List[Dict[str, Any]]) -> Dict[st
             'underconfidence_rate': 0.0
         }
     
+    # Extract data using utility functions
+    confidences = extract_confidence_scores(results)
+    retrieved_docs_list, relevant_docs_list = extract_retrieval_data(results)
+    
     confidence_gaps = []
     overconfident_count = 0
     underconfident_count = 0
     
-    for result in results:
-        retrieved = result.get('retrieved_docs', [])
-        relevant = result.get('relevant_docs', [])
-        confidence = result.get('confidence', 0.0)
+    for retrieved, relevant, confidence in zip(retrieved_docs_list, relevant_docs_list, confidences):
         
         if retrieved and relevant:
             recall = retrieval_recall(retrieved, relevant)
@@ -1475,8 +1410,9 @@ def calculate_source_quality_distribution(results: List[Dict[str, Any]]) -> Dict
     source_counts = {'reliable': 0, 'unreliable': 0, 'unknown': 0}
     total_sources = 0
     
-    for result in results:
-        retrieved = result.get('retrieved_docs', [])
+    retrieved_docs_list, _ = extract_retrieval_data(results)
+    
+    for retrieved in retrieved_docs_list:
         if retrieved:
             for doc in retrieved:
                 if isinstance(doc, dict):
@@ -1524,23 +1460,21 @@ def calculate_hedge_effectiveness(results: List[Dict[str, Any]]) -> Dict[str, fl
             'effective_hedge_rate': 0.0
         }
     
+    # Extract data using utility functions
+    predictions = extract_prediction_texts(results)
+    confidences = extract_confidence_scores(results)
+    accuracies = extract_accuracy_scores(results)
+    
     hedge_predictions = []
     uncertainties = []
-    accuracies = []
-    confidences = []
+    
+    for prediction in predictions:
+        has_hedge = contains_hedge(prediction)
+        hedge_predictions.append(has_hedge)
     
     for result in results:
-        prediction = result.get('prediction_text', '')
         uncertainty = result.get('is_uncertain', False)
-        accuracy = result.get('accuracy', 0.0)
-        confidence = result.get('confidence', 0.0)
-        
-        has_hedge = contains_hedge(prediction)
-        
-        hedge_predictions.append(has_hedge)
         uncertainties.append(uncertainty)
-        accuracies.append(accuracy)
-        confidences.append(confidence)
     
     # Calculate correlations
     hedge_uncertainty_corr = confidence_accuracy_correlation(hedge_predictions, uncertainties)
@@ -1585,8 +1519,9 @@ def calculate_calibration_improvement_potential(results: List[Dict[str, Any]]) -
             'calibration_consistency': 0.0
         }
     
-    confidences = [r.get('confidence', 0.0) for r in results]
-    accuracies = [r.get('accuracy', 0.0) for r in results]
+    # Extract data using utility functions
+    confidences = extract_confidence_scores(results)
+    accuracies = extract_accuracy_scores(results)
     
     # Calculate current ECE
     current_ece = expected_calibration_error(confidences, accuracies)
@@ -1635,7 +1570,7 @@ def calculate_comprehensive_retrieval_metrics(results: List[Dict[str, Any]]) -> 
         return {}
     
     # Basic retrieval metrics
-    basic_metrics = retrieval_quality_metrics_enhanced(results)
+    basic_metrics = retrieval_quality_metrics(results, include_enhanced=True)
     
     # Confidence gap metrics
     confidence_gap_metrics = calculate_retrieval_confidence_gap(results)
@@ -2048,6 +1983,7 @@ def print_metrics_summary():
     print("2. Enhanced metrics: calculate_all_enhanced_metrics(results)")
     print("3. Individual hypothesis metrics: calm_rag_h1_metrics(results)")
     print("4. Utility functions: calculate_hedge_effectiveness(results)")
+    print("5. Soft accuracy: calculate_soft_accuracy(prediction, gold_answers)")
     print("\n=== DATA SCHEMA REQUIRED ===")
     print("Each result should contain:")
     print("  - retrieved_docs: List of retrieved documents")
@@ -2059,6 +1995,327 @@ def print_metrics_summary():
     print("  - human_confidence: Human confidence score (optional)")
     print("  - no_retrieval_confidence: Confidence without retrieval (optional)")
     print("  - no_retrieval_accuracy: Accuracy without retrieval (optional)")
+
+
+# =====================================================================
+# UTILITY FUNCTIONS FOR DATA EXTRACTION
+# =====================================================================
+
+def extract_confidence_scores(results: List[Dict[str, Any]]) -> List[float]:
+    """Extract confidence scores from results list."""
+    return [r.get('confidence', 0.0) for r in results]
+
+
+def extract_accuracy_scores(results: List[Dict[str, Any]]) -> List[float]:
+    """Extract accuracy scores from results list."""
+    return [r.get('accuracy', 0.0) for r in results]
+
+
+def extract_retrieval_data(results: List[Dict[str, Any]]) -> Tuple[List[List], List[List]]:
+    """Extract retrieved and relevant documents from results list."""
+    retrieved_docs = [r.get('retrieved_docs', []) for r in results]
+    relevant_docs = [r.get('relevant_docs', []) for r in results]
+    return retrieved_docs, relevant_docs
+
+
+def extract_prediction_texts(results: List[Dict[str, Any]]) -> List[str]:
+    """Extract prediction texts from results list."""
+    return [r.get('prediction_text', '') for r in results]
+
+
+def calculate_correlation_cached(x_values: List[float], y_values: List[float], 
+                               cache: Dict[str, float] = None) -> float:
+    """Calculate correlation with optional caching to avoid repeated computation."""
+    if cache is None:
+        cache = {}
+    
+    # Create cache key from sorted values
+    cache_key = f"{hash(tuple(sorted(x_values)))}_{hash(tuple(sorted(y_values)))}"
+    
+    if cache_key in cache:
+        return cache[cache_key]
+    
+    # Calculate correlation
+    correlation = confidence_accuracy_correlation(x_values, y_values)
+    cache[cache_key] = correlation
+    return correlation
+
+
+# =====================================================================
+# SOFT ACCURACY FUNCTIONS
+# =====================================================================
+
+def normalize_text(text: str) -> str:
+    """
+    Normalize text for comparison: lowercase, strip punctuation, trim whitespace.
+    
+    Args:
+        text: Input text to normalize
+    
+    Returns:
+        Normalized text string
+    """
+    if not text:
+        return ""
+    
+    # Convert to lowercase
+    text = text.lower()
+    
+    # Remove punctuation
+    text = text.translate(str.maketrans('', '', string.punctuation))
+    
+    # Trim whitespace and normalize spaces
+    text = ' '.join(text.split())
+    
+    return text
+
+
+def calculate_token_overlap_f1(prediction_tokens: set, gold_tokens: set) -> float:
+    """
+    Calculate token overlap F1 score between prediction and gold answer tokens.
+    
+    Args:
+        prediction_tokens: Set of tokens in prediction
+        gold_tokens: Set of tokens in gold answer
+    
+    Returns:
+        F1 score between 0 and 1
+    """
+    if not prediction_tokens and not gold_tokens:
+        return 1.0  # Both empty = perfect match
+    
+    if not prediction_tokens or not gold_tokens:
+        return 0.0  # One empty, one not = no overlap
+    
+    # Calculate intersection
+    intersection = prediction_tokens.intersection(gold_tokens)
+    
+    # Calculate precision and recall
+    precision = len(intersection) / len(prediction_tokens)
+    recall = len(intersection) / len(gold_tokens)
+    
+    # Calculate F1 score
+    if precision + recall == 0:
+        return 0.0
+    
+    f1 = 2 * (precision * recall) / (precision + recall)
+    return f1
+
+
+def calculate_edit_distance_similarity(text1: str, text2: str) -> float:
+    """
+    Calculate edit distance similarity: 1 - (Levenshtein distance / max length).
+    
+    Args:
+        text1: First text string
+        text2: Second text string
+    
+    Returns:
+        Similarity score between 0 and 1
+    """
+    if not text1 and not text2:
+        return 1.0  # Both empty = perfect match
+    
+    if not text1 or not text2:
+        return 0.0  # One empty, one not = no similarity
+    
+    # Calculate Levenshtein distance
+    def levenshtein_distance(s1, s2):
+        if len(s1) < len(s2):
+            return levenshtein_distance(s2, s1)
+        
+        if len(s2) == 0:
+            return len(s1)
+        
+        previous_row = list(range(len(s2) + 1))
+        for i, c1 in enumerate(s1):
+            current_row = [i + 1]
+            for j, c2 in enumerate(s2):
+                insertions = previous_row[j + 1] + 1
+                deletions = current_row[j] + 1
+                substitutions = previous_row[j] + (c1 != c2)
+                current_row.append(min(insertions, deletions, substitutions))
+            previous_row = current_row
+        
+        return previous_row[-1]
+    
+    distance = levenshtein_distance(text1, text2)
+    max_length = max(len(text1), len(text2))
+    
+    # Calculate similarity: 1 - (distance / max_length)
+    similarity = 1.0 - (distance / max_length)
+    return max(0.0, similarity)  # Ensure non-negative
+
+
+def calculate_soft_accuracy(prediction: str, gold_answers: List[str], 
+                          token_weight: float = 0.8, edit_weight: float = 0.2) -> float:
+    """
+    Calculate non-binary answer accuracy (soft accuracy) for open-ended QA.
+    
+    This function computes a score between 0 and 1 representing how correct 
+    the prediction is compared to the gold answers, with partial credit for 
+    partially correct answers.
+    
+    Args:
+        prediction: Predicted answer string
+        gold_answers: List of acceptable gold answer strings
+        token_weight: Weight for token overlap F1 score (default: 0.8)
+        edit_weight: Weight for edit distance similarity (default: 0.2)
+    
+    Returns:
+        Soft accuracy score between 0 and 1
+    """
+    if not prediction:
+        return 0.0
+    
+    if not gold_answers:
+        return 0.0
+    
+    # Normalize prediction
+    normalized_prediction = normalize_text(prediction)
+    prediction_tokens = set(normalized_prediction.split())
+    
+    # Calculate similarity against each gold answer
+    gold_scores = []
+    
+    for gold_answer in gold_answers:
+        if not gold_answer:
+            continue
+            
+        # Normalize gold answer
+        normalized_gold = normalize_text(gold_answer)
+        gold_tokens = set(normalized_gold.split())
+        
+        # Calculate token overlap F1
+        token_f1 = calculate_token_overlap_f1(prediction_tokens, gold_tokens)
+        
+        # Calculate edit distance similarity
+        edit_similarity = calculate_edit_distance_similarity(normalized_prediction, normalized_gold)
+        
+        # Combine with weighted average
+        combined_score = (token_weight * token_f1) + (edit_weight * edit_similarity)
+        gold_scores.append(combined_score)
+    
+    # Return the maximum score across all gold answers
+    return max(gold_scores) if gold_scores else 0.0
+
+
+def calculate_soft_accuracy_batch(predictions: List[str], gold_answer_sets: List[List[str]], 
+                                 token_weight: float = 0.8, edit_weight: float = 0.2) -> List[float]:
+    """
+    Calculate soft accuracy for multiple predictions and gold answer sets (batch mode).
+    
+    Args:
+        predictions: List of predicted answer strings
+        gold_answer_sets: List of lists of acceptable gold answer strings
+        token_weight: Weight for token overlap F1 score (default: 0.8)
+        edit_weight: Weight for edit distance similarity (default: 0.2)
+    
+    Returns:
+        List of soft accuracy scores between 0 and 1
+    """
+    if len(predictions) != len(gold_answer_sets):
+        raise ValueError("Number of predictions must match number of gold answer sets")
+    
+    scores = []
+    for prediction, gold_answers in zip(predictions, gold_answer_sets):
+        score = calculate_soft_accuracy(prediction, gold_answers, token_weight, edit_weight)
+        scores.append(score)
+    
+    return scores
+
+
+def calculate_soft_accuracy_with_breakdown(prediction: str, gold_answers: List[str], 
+                                         token_weight: float = 0.8, edit_weight: float = 0.2) -> Dict[str, Any]:
+    """
+    Calculate soft accuracy with detailed breakdown of components.
+    
+    Args:
+        prediction: Predicted answer string
+        gold_answers: List of acceptable gold answer strings
+        token_weight: Weight for token overlap F1 score (default: 0.8)
+        edit_weight: Weight for edit distance similarity (default: 0.2)
+    
+    Returns:
+        Dictionary with detailed breakdown including:
+        - soft_accuracy: Final soft accuracy score
+        - best_gold_match: Index of best matching gold answer
+        - token_f1_scores: F1 scores for each gold answer
+        - edit_similarities: Edit similarities for each gold answer
+        - combined_scores: Combined scores for each gold answer
+        - normalized_prediction: Normalized prediction text
+        - normalized_gold_answers: List of normalized gold answer texts
+    """
+    if not prediction:
+        return {
+            'soft_accuracy': 0.0,
+            'best_gold_match': -1,
+            'token_f1_scores': [],
+            'edit_similarities': [],
+            'combined_scores': [],
+            'normalized_prediction': '',
+            'normalized_gold_answers': []
+        }
+    
+    if not gold_answers:
+        return {
+            'soft_accuracy': 0.0,
+            'best_gold_match': -1,
+            'token_f1_scores': [],
+            'edit_similarities': [],
+            'combined_scores': [],
+            'normalized_prediction': '',
+            'normalized_gold_answers': []
+        }
+    
+    # Normalize prediction
+    normalized_prediction = normalize_text(prediction)
+    prediction_tokens = set(normalized_prediction.split())
+    
+    # Calculate scores for each gold answer
+    token_f1_scores = []
+    edit_similarities = []
+    combined_scores = []
+    normalized_gold_answers = []
+    
+    for gold_answer in gold_answers:
+        if not gold_answer:
+            token_f1_scores.append(0.0)
+            edit_similarities.append(0.0)
+            combined_scores.append(0.0)
+            normalized_gold_answers.append('')
+            continue
+            
+        # Normalize gold answer
+        normalized_gold = normalize_text(gold_answer)
+        normalized_gold_answers.append(normalized_gold)
+        gold_tokens = set(normalized_gold.split())
+        
+        # Calculate token overlap F1
+        token_f1 = calculate_token_overlap_f1(prediction_tokens, gold_tokens)
+        token_f1_scores.append(token_f1)
+        
+        # Calculate edit distance similarity
+        edit_similarity = calculate_edit_distance_similarity(normalized_prediction, normalized_gold)
+        edit_similarities.append(edit_similarity)
+        
+        # Combine with weighted average
+        combined_score = (token_weight * token_f1) + (edit_weight * edit_similarity)
+        combined_scores.append(combined_score)
+    
+    # Find best match
+    best_score = max(combined_scores) if combined_scores else 0.0
+    best_gold_match = combined_scores.index(best_score) if combined_scores else -1
+    
+    return {
+        'soft_accuracy': best_score,
+        'best_gold_match': best_gold_match,
+        'token_f1_scores': token_f1_scores,
+        'edit_similarities': edit_similarities,
+        'combined_scores': combined_scores,
+        'normalized_prediction': normalized_prediction,
+        'normalized_gold_answers': normalized_gold_answers
+    }
 
 
 def calculate_continuous_uncertainty(entry: Dict[str, Any], retrieved_docs: List[Dict], 
@@ -2214,46 +2471,142 @@ def calculate_continuous_uncertainty(entry: Dict[str, Any], retrieved_docs: List
     return max(0.0, min(1.0, final_uncertainty))
 
 
-def hedge_precision_recall(predictions: List[str], true_uncertainties: List[float]) -> Tuple[float, float]:
+def test_soft_accuracy_functions():
     """
-    Calculate precision and recall for hedge detection using continuous hedge counts and uncertainty scores.
-    From CALM-RAG H3 hypothesis.
-    
-    Args:
-        predictions: List of prediction texts
-        true_uncertainties: List of uncertainty scores (0-1, where 1 = most it ought to beuncertain)
-    
-    Returns:
-        Tuple of (precision, recall)
+    Comprehensive test of soft accuracy functions with realistic examples.
     """
-    if len(predictions) != len(true_uncertainties):
-        raise ValueError("Predictions and uncertainties must have same length")
+    print("=== SOFT ACCURACY FUNCTIONS TESTING ===\n")
     
-    # Get hedge counts for each prediction (continuous values)
-    hedge_counts = [contains_hedge(pred) for pred in predictions]
+    # Test Case 1: Example from user specification
+    print("1. Testing Example from User Specification:")
+    prediction = "Alexander Fleming in 1928"
+    gold_answers = ["Alexander Fleming", "Fleming"]
     
-    # Calculate weighted precision and recall using continuous values
-    weighted_tp = 0.0  # Weighted true positives (hedge when should be uncertain)
-    weighted_fp = 0.0  # Weighted false positives (hedge when should be confident)
-    weighted_fn = 0.0  # Weighted false negatives (no hedge when should be uncertain)
-    weighted_tn = 0.0  # Weighted true negatives (no hedge when should be confident)
+    breakdown = calculate_soft_accuracy_with_breakdown(prediction, gold_answers)
+    soft_score = calculate_soft_accuracy(prediction, gold_answers)
     
-    for hedge_count, uncertainty in zip(hedge_counts, true_uncertainties):
-        if hedge_count > 0:  # System used hedging
-            if uncertainty > 0.5:  # Should be uncertain
-                weighted_tp += uncertainty * hedge_count  # Weight by both uncertainty and hedge intensity
-            else:  # Should be confident
-                weighted_fp += (1.0 - uncertainty) * hedge_count  # Weight by confidence and hedge intensity
-        else:  # System didn't use hedging
-            if uncertainty > 0.5:  # Should be uncertain
-                weighted_fn += uncertainty  # Weight by uncertainty level
-            else:  # Should be confident
-                weighted_tn += (1.0 - uncertainty)  # Weight by confidence level
+    print(f"   Prediction: '{prediction}'")
+    print(f"   Gold answers: {gold_answers}")
+    print(f"   Normalized prediction: '{breakdown['normalized_prediction']}'")
+    print(f"   Normalized gold answers: {breakdown['normalized_gold_answers']}")
+    print(f"   Token F1 scores: {[f'{score:.3f}' for score in breakdown['token_f1_scores']]}")
+    print(f"   Edit similarities: {[f'{score:.3f}' for score in breakdown['edit_similarities']]}")
+    print(f"   Combined scores: {[f'{score:.3f}' for score in breakdown['combined_scores']]}")
+    print(f"   Best gold match: {breakdown['best_gold_match']}")
+    print(f"   Final soft accuracy: {soft_score:.3f}")
+    print()
     
-    precision = weighted_tp / (weighted_tp + weighted_fp) if (weighted_tp + weighted_fp) > 0 else 0.0
-    recall = weighted_tp / (weighted_tp + weighted_fn) if (weighted_tp + weighted_fn) > 0 else 0.0
+    # Test Case 2: Perfect match
+    print("2. Testing Perfect Match:")
+    prediction2 = "Alexander Fleming"
+    gold_answers2 = ["Alexander Fleming", "Fleming"]
     
-    return precision, recall
+    score2 = calculate_soft_accuracy(prediction2, gold_answers2)
+    print(f"   Prediction: '{prediction2}'")
+    print(f"   Gold answers: {gold_answers2}")
+    print(f"   Soft accuracy: {score2:.3f}")
+    print()
+    
+    # Test Case 3: Partial match
+    print("3. Testing Partial Match:")
+    prediction3 = "Fleming discovered penicillin"
+    gold_answers3 = ["Alexander Fleming", "Fleming"]
+    
+    score3 = calculate_soft_accuracy(prediction3, gold_answers3)
+    print(f"   Prediction: '{prediction3}'")
+    print(f"   Gold answers: {gold_answers3}")
+    print(f"   Soft accuracy: {score3:.3f}")
+    print()
+    
+    # Test Case 4: No match
+    print("4. Testing No Match:")
+    prediction4 = "Louis Pasteur"
+    gold_answers4 = ["Alexander Fleming", "Fleming"]
+    
+    score4 = calculate_soft_accuracy(prediction4, gold_answers4)
+    print(f"   Prediction: '{prediction4}'")
+    print(f"   Gold answers: {gold_answers4}")
+    print(f"   Soft accuracy: {score4:.3f}")
+    print()
+    
+    # Test Case 5: Empty inputs
+    print("5. Testing Edge Cases:")
+    
+    # Empty prediction
+    score5a = calculate_soft_accuracy("", gold_answers)
+    print(f"   Empty prediction: {score5a:.3f}")
+    
+    # Empty gold answers
+    score5b = calculate_soft_accuracy(prediction, [])
+    print(f"   Empty gold answers: {score5b:.3f}")
+    
+    # Both empty
+    score5c = calculate_soft_accuracy("", [])
+    print(f"   Both empty: {score5c:.3f}")
+    print()
+    
+    # Test Case 6: Batch processing
+    print("6. Testing Batch Processing:")
+    predictions_batch = [
+        "Alexander Fleming in 1928",
+        "Alexander Fleming",
+        "Fleming discovered penicillin",
+        "Louis Pasteur"
+    ]
+    gold_answer_sets_batch = [
+        ["Alexander Fleming", "Fleming"],
+        ["Alexander Fleming", "Fleming"],
+        ["Alexander Fleming", "Fleming"],
+        ["Alexander Fleming", "Fleming"]
+    ]
+    
+    batch_scores = calculate_soft_accuracy_batch(predictions_batch, gold_answer_sets_batch)
+    print(f"   Batch predictions: {len(predictions_batch)}")
+    print(f"   Batch scores: {[f'{score:.3f}' for score in batch_scores]}")
+    print()
+    
+    # Test Case 7: Different weights
+    print("7. Testing Different Weight Configurations:")
+    weights_configs = [
+        (0.8, 0.2),  # Default
+        (0.6, 0.4),  # More edit distance weight
+        (1.0, 0.0),  # Only token overlap
+        (0.0, 1.0)   # Only edit distance
+    ]
+    
+    for token_weight, edit_weight in weights_configs:
+        score = calculate_soft_accuracy(prediction, gold_answers, token_weight, edit_weight)
+        print(f"   Weights (token={token_weight}, edit={edit_weight}): {score:.3f}")
+    print()
+    
+    # Test Case 8: Complex medical example
+    print("8. Testing Complex Medical Example:")
+    medical_prediction = "The patient was diagnosed with acute myocardial infarction and received thrombolytic therapy"
+    medical_gold_answers = [
+        "acute myocardial infarction",
+        "heart attack",
+        "AMI",
+        "myocardial infarction"
+    ]
+    
+    medical_breakdown = calculate_soft_accuracy_with_breakdown(medical_prediction, medical_gold_answers)
+    medical_score = calculate_soft_accuracy(medical_prediction, medical_gold_answers)
+    
+    print(f"   Prediction: '{medical_prediction}'")
+    print(f"   Gold answers: {medical_gold_answers}")
+    print(f"   Best match index: {medical_breakdown['best_gold_match']}")
+    print(f"   Soft accuracy: {medical_score:.3f}")
+    print()
+    
+    print("=== SOFT ACCURACY TESTING COMPLETE ===")
+    return {
+        'example_score': soft_score,
+        'perfect_score': score2,
+        'partial_score': score3,
+        'no_match_score': score4,
+        'batch_scores': batch_scores,
+        'medical_score': medical_score
+    }
 
 
 if __name__ == "__main__":
@@ -2273,7 +2626,13 @@ if __name__ == "__main__":
     print(f"Example - H3 Hedge Precision: {core_results.get('h3_hedge_precision', 0.0):.3f}")
     print(f"Example - Calibration Improvement: {enhanced_results.get('calibration_calibration_improvement_potential', 0.0):.3f}")
     
+    print("\n" + "="*60 + "\n")
+    
+    # Test soft accuracy functions
+    soft_accuracy_results = test_soft_accuracy_functions()
+    
     print("\n" + "="*60)
     print("CALM-RAG METRICS IMPLEMENTATION COMPLETE!")
     print("All hypotheses H1-H5 are now fully implemented with comprehensive metrics.")
+    print("Soft accuracy functions are now available for non-binary answer evaluation.")
     print("="*60)

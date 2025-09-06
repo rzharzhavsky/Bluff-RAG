@@ -42,39 +42,21 @@ Instructions:
 1. Answer the question based ONLY on the information provided in the sources above
 2. If the sources contain conflicting information, acknowledge this in your response
 3. If the sources don't contain enough information to answer confidently, say so
-4. Cite which sources you're using in your answer"""
+4. Use appropriate hedging language when uncertain (e.g., "likely", "probably", "possibly", ect)
+5. Do not exceed 75 words in your response.
+"""
 
     # Add confidence instruction based on model type
     if include_confidence:
-        if model_type == "openai":
+        if model_type == "gemini":
             confidence_prompt = """
-5. At the end of your response, provide a confidence score from 0.0 to 1.0 indicating how certain you are about your answer, formatted as: "Confidence: X.X"
-
-Please provide your answer now:"""
-        
-        elif model_type == "llama":
-            confidence_prompt = """
-5. Rate your confidence in this answer on a scale from 0.0 (not confident at all) to 1.0 (completely confident)
-6. Format your confidence as: "Confidence: X.X"
-
-Answer:"""
-        
-        elif model_type == "mistral":
-            confidence_prompt = """
-5. Provide a confidence level between 0.0 and 1.0 for your answer
-6. Use the format: "Confidence: X.X"
-
-Response:"""
-        
-        elif model_type == "gemini":
-            confidence_prompt = """
-5. Include a confidence score (0.0 to 1.0) at the end: "Confidence: X.X"
+6. Include a confidence score (0.0 to 1.0) at the end: "Confidence: X.X"
 
 Please answer:"""
         
         else:
             confidence_prompt = """
-5. Provide a confidence score from 0.0 to 1.0: "Confidence: X.X"
+6. Provide a confidence score from 0.0 to 1.0: "Confidence: X.X"
 
 Answer:"""
     else:
