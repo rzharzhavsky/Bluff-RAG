@@ -4,12 +4,12 @@
   ],
   "comparison_metrics": {
     "gpt-4o": {
-      "overconfidence_index": 0.0,
-      "ece_with_retrieval": 0.0,
-      "ece_without_retrieval": 0.20000000000000007,
-      "hedge_f1": 0.7499999999999999,
-      "expected_calibration_error": 0.0,
-      "source_quality_confidence_correlation": 0.0
+      "overconfidence_index": "N/A",
+      "ece_with_retrieval": "N/A",
+      "ece_without_retrieval": "N/A",
+      "hedge_f1": "N/A",
+      "expected_calibration_error": "N/A",
+      "source_quality_confidence_correlation": "N/A"
     }
   },
   "model_performance": {

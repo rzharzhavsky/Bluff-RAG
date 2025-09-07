@@ -8,7 +8,7 @@ import json
 import os
 import time
 import openai
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Union
 from tqdm import tqdm
 
 try:
@@ -33,7 +33,7 @@ except ImportError:
     MISTRAL_AVAILABLE = False
 from metrics import (
     compute_all_calm_rag_metrics,
-    calculate_all_enhanced_metrics,
+    calculate_all_utility_metrics,
     calm_rag_h1_metrics,
     calm_rag_h2_metrics,
     calm_rag_h3_metrics,
@@ -44,6 +44,282 @@ from metrics import (
     calculate_soft_accuracy
 )
 from prompts import format_prompt, extract_confidence_from_response
+
+def round_metrics(data: Union[Dict, List, float], precision: int = 3) -> Union[Dict, List, float]:
+    """
+    Recursively round all numeric values in a nested data structure.
+    
+    Args:
+        data: The data structure to round
+        precision: Number of decimal places to round to
+    
+    Returns:
+        Data structure with rounded numeric values
+    """
+    if isinstance(data, dict):
+        return {key: round_metrics(value, precision) for key, value in data.items()}
+    elif isinstance(data, list):
+        return [round_metrics(item, precision) for item in data]
+    elif isinstance(data, (int, float)):
+        return round(data, precision)
+    else:
+        return data
+
+def make_json_serializable(data: Any) -> Any:
+    """
+    Convert data to JSON-serializable format by handling numpy types and other non-serializable objects.
+    
+    Args:
+        data: The data to make JSON serializable
+    
+    Returns:
+        JSON-serializable version of the data
+    """
+    if isinstance(data, dict):
+        return {key: make_json_serializable(value) for key, value in data.items()}
+    elif isinstance(data, list):
+        return [make_json_serializable(item) for item in data]
+    elif isinstance(data, (int, float)):
+        # Handle numpy types
+        if hasattr(data, 'item'):
+            return data.item()
+        return data
+    elif hasattr(data, 'tolist'):  # numpy arrays
+        return data.tolist()
+    elif data is None or isinstance(data, (str, bool)):
+        return data
+    else:
+        # Convert other types to string as fallback
+        return str(data)
+
+def simplify_metric_names(metrics: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Simplify metric names by removing redundant prefixes and making them more readable.
+    
+    Args:
+        metrics: Dictionary of metrics with potentially long names
+    
+    Returns:
+        Dictionary with simplified metric names
+    """
+    simplified = {}
+    
+    # Define mapping for common metric name simplifications
+    name_mappings = {
+        # H1 metrics
+        'h1_retrieval_recall_confidence_correlation': 'retrieval_recall_confidence_corr',
+        'h1_avg_retrieval_recall': 'avg_retrieval_recall',
+        'h1_overconfidence_index': 'overconfidence_index',
+        'h1_wrong_answer_rate': 'wrong_answer_rate',
+        'h1_refusal_rate': 'refusal_rate',
+        
+        # H2 metrics
+        'h2_ece_with_retrieval': 'ece_with_retrieval',
+        'h2_ece_without_retrieval': 'ece_without_retrieval',
+        'h2_ece_difference': 'ece_improvement',
+        'h2_brier_with_retrieval': 'brier_with_retrieval',
+        'h2_brier_without_retrieval': 'brier_without_retrieval',
+        'h2_brier_difference': 'brier_improvement',
+        'h2_confidence_accuracy_corr_with_retrieval': 'confidence_accuracy_corr_with_retrieval',
+        'h2_confidence_accuracy_corr_without_retrieval': 'confidence_accuracy_corr_without_retrieval',
+        'h2_correlation_difference': 'correlation_improvement',
+        
+        # H3 metrics
+        'h3_hedge_precision': 'hedge_precision',
+        'h3_hedge_recall': 'hedge_recall',
+        'h3_hedge_f1': 'hedge_f1',
+        'h3_lexical_overconfidence_index': 'lexical_overconfidence_index',
+        'h3_uncertainty_confidence_correlation': 'uncertainty_confidence_corr',
+        'h3_hedge_density': 'hedge_density',
+        'h3_confident_wrong_rate': 'confident_wrong_rate',
+        'h3_hedge_sophistication': 'hedge_sophistication',
+        'h3_advanced_hedge_detection_rate': 'advanced_hedge_detection_rate',
+        
+        # H4 metrics
+        'h4_expected_calibration_error': 'expected_calibration_error',
+        'h4_brier_score': 'brier_score',
+        'h4_confidence_accuracy_correlation': 'confidence_accuracy_correlation',
+        'h4_calibration_ece_after_isotonic': 'calibration_ece_after_isotonic',
+        'h4_calibration_improvement': 'calibration_improvement',
+        'h4_confidence_distribution_entropy': 'confidence_distribution_entropy',
+        'h4_human_model_confidence_correlation': 'human_model_confidence_corr',
+        
+        # H5 metrics
+        'h5_source_quality_confidence_correlation': 'source_quality_confidence_corr',
+        'h5_source_diversity_calibration_correlation': 'source_diversity_calibration_corr',
+        'h5_quality_weighted_ece': 'quality_weighted_ece',
+        'h5_high_quality_source_ece': 'high_quality_source_ece',
+        'h5_low_quality_source_ece': 'low_quality_source_ece',
+        'h5_quality_calibration_gap': 'quality_calibration_gap',
+        
+        # Retrieval metrics
+        'retrieval_avg_retrieval_recall': 'avg_retrieval_recall',
+        'retrieval_avg_retrieval_precision': 'avg_retrieval_precision',
+        'retrieval_avg_retrieval_f1': 'avg_retrieval_f1',
+        'retrieval_recall_confidence_correlation': 'recall_confidence_correlation',
+        'retrieval_accuracy_confidence_correlation': 'accuracy_confidence_correlation',
+        'retrieval_avg_source_quality': 'avg_source_quality',
+        'retrieval_source_quality_std': 'source_quality_std',
+        'retrieval_source_quality_confidence_correlation': 'source_quality_confidence_correlation',
+        'retrieval_avg_source_diversity': 'avg_source_diversity',
+        'retrieval_source_diversity_std': 'source_diversity_std',
+        'retrieval_source_diversity_accuracy_correlation': 'source_diversity_accuracy_correlation',
+    }
+    
+    for key, value in metrics.items():
+        # Use mapping if available, otherwise keep original name
+        simplified_key = name_mappings.get(key, key)
+        simplified[simplified_key] = value
+    
+    return simplified
+
+def add_metric_descriptions(metrics: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Add descriptions to metrics to make them more interpretable.
+    
+    Args:
+        metrics: Dictionary of metrics
+    
+    Returns:
+        Dictionary with metric descriptions added
+    """
+    descriptions = {
+        # H1 metrics
+        'retrieval_recall_confidence_corr': 'Correlation between retrieval recall and confidence (higher is better)',
+        'avg_retrieval_recall': 'Average percentage of relevant documents retrieved (0-1, higher is better)',
+        'overconfidence_index': 'Measure of overconfidence in retrieval (0-1, lower is better)',
+        'wrong_answer_rate': 'Percentage of wrong answers given (0-1, lower is better)',
+        'refusal_rate': 'Percentage of questions refused to answer (0-1, context-dependent)',
+        
+        # H2 metrics
+        'ece_with_retrieval': 'Expected Calibration Error with retrieval (0-1, lower is better)',
+        'ece_without_retrieval': 'Expected Calibration Error without retrieval (0-1, lower is better)',
+        'ece_improvement': 'Improvement in calibration from retrieval (negative is better)',
+        'brier_with_retrieval': 'Brier score with retrieval (0-1, lower is better)',
+        'brier_without_retrieval': 'Brier score without retrieval (0-1, lower is better)',
+        'brier_improvement': 'Improvement in Brier score from retrieval (negative is better)',
+        'confidence_accuracy_corr_with_retrieval': 'Correlation between confidence and accuracy with retrieval (higher is better)',
+        'confidence_accuracy_corr_without_retrieval': 'Correlation between confidence and accuracy without retrieval (higher is better)',
+        'correlation_improvement': 'Improvement in confidence-accuracy correlation from retrieval (positive is better)',
+        
+        # H3 metrics
+        'hedge_precision': 'Precision of hedge detection (0-1, higher is better)',
+        'hedge_recall': 'Recall of hedge detection (0-1, higher is better)',
+        'hedge_f1': 'F1 score of hedge detection (0-1, higher is better)',
+        'lexical_overconfidence_index': 'Measure of overconfidence in language (0-1, lower is better)',
+        'uncertainty_confidence_corr': 'Correlation between uncertainty and confidence (higher is better)',
+        'hedge_density': 'Density of hedging language in responses (0-1, context-dependent)',
+        'confident_wrong_rate': 'Rate of confident but wrong answers (0-1, lower is better)',
+        'hedge_sophistication': 'Sophistication of hedging language (0-1, higher is better)',
+        'advanced_hedge_detection_rate': 'Rate of advanced hedge pattern detection (0-1, higher is better)',
+        
+        # H4 metrics
+        'expected_calibration_error': 'Overall expected calibration error (0-1, lower is better)',
+        'brier_score': 'Overall Brier score (0-1, lower is better)',
+        'confidence_accuracy_correlation': 'Overall confidence-accuracy correlation (higher is better)',
+        'calibration_ece_after_isotonic': 'ECE after isotonic calibration (0-1, lower is better)',
+        'calibration_improvement': 'Improvement from calibration (positive is better)',
+        'confidence_distribution_entropy': 'Entropy of confidence distribution (higher indicates more uncertainty)',
+        'human_model_confidence_corr': 'Correlation between human and model confidence (higher is better)',
+        
+        # H5 metrics
+        'source_quality_confidence_corr': 'Correlation between source quality and confidence (higher is better)',
+        'source_diversity_calibration_corr': 'Correlation between source diversity and calibration (higher is better)',
+        'quality_weighted_ece': 'Quality-weighted expected calibration error (0-1, lower is better)',
+        'high_quality_source_ece': 'ECE for high-quality sources (0-1, lower is better)',
+        'low_quality_source_ece': 'ECE for low-quality sources (0-1, lower is better)',
+        'quality_calibration_gap': 'Gap in calibration between quality levels (lower is better)',
+        
+        # Retrieval metrics
+        'avg_retrieval_precision': 'Average precision of retrieved documents (0-1, higher is better)',
+        'avg_retrieval_f1': 'Average F1 score of retrieval (0-1, higher is better)',
+        'recall_confidence_correlation': 'Correlation between recall and confidence (higher is better)',
+        'accuracy_confidence_correlation': 'Correlation between accuracy and confidence (higher is better)',
+        'avg_source_quality': 'Average quality of retrieved sources (0-1, higher is better)',
+        'source_quality_std': 'Standard deviation of source quality (lower indicates more consistent quality)',
+        'source_quality_confidence_correlation': 'Correlation between source quality and confidence (higher is better)',
+        'avg_source_diversity': 'Average diversity of retrieved sources (0-1, higher is better)',
+        'source_diversity_std': 'Standard deviation of source diversity (lower indicates more consistent diversity)',
+        'source_diversity_accuracy_correlation': 'Correlation between source diversity and accuracy (higher is better)',
+    }
+    
+    # Add descriptions to metrics
+    result = {}
+    for key, value in metrics.items():
+        result[key] = {
+            'value': value,
+            'description': descriptions.get(key, 'No description available')
+        }
+    
+    return result
+
+def generate_calm_rag_report(evaluation_summary: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Generate a minimal CALM-RAG report focusing only on the core hypotheses.
+    
+    Args:
+        evaluation_summary: Full evaluation summary
+    
+    Returns:
+        Streamlined CALM-RAG report
+    """
+    calm_rag_metrics = evaluation_summary.get('calm_rag_metrics', {})
+    
+    # Extract only the core CALM-RAG metrics for the 5 hypotheses
+    core_report = {
+        'model': evaluation_summary['model'],
+        'total_evaluations': evaluation_summary['successful_evaluations'],
+        'calm_rag_score': 0.0,  # Will calculate overall score
+        
+        # H1: Overconfidence under sparse/noisy evidence
+        'h1_overconfidence': {
+            'avg_retrieval_recall': calm_rag_metrics.get('avg_retrieval_recall', {}).get('value', 0.0),
+            'overconfidence_index': calm_rag_metrics.get('overconfidence_index', {}).get('value', 0.0),
+            'wrong_answer_rate': calm_rag_metrics.get('wrong_answer_rate', {}).get('value', 0.0)
+        },
+        
+        # H2: Calibration difference with and without retrieval
+        'h2_calibration': {
+            'ece_with_retrieval': calm_rag_metrics.get('ece_with_retrieval', {}).get('value', 0.0),
+            'ece_without_retrieval': calm_rag_metrics.get('ece_without_retrieval', {}).get('value', 0.0),
+            'ece_improvement': calm_rag_metrics.get('ece_improvement', {}).get('value', 0.0)
+        },
+        
+        # H3: Hedging language as signal of uncertainty
+        'h3_hedging': {
+            'hedge_precision': calm_rag_metrics.get('hedge_precision', {}).get('value', 0.0),
+            'hedge_recall': calm_rag_metrics.get('hedge_recall', {}).get('value', 0.0),
+            'hedge_f1': calm_rag_metrics.get('hedge_f1', {}).get('value', 0.0)
+        },
+        
+        # H4: Self-assessment and numeric calibration
+        'h4_self_assessment': {
+            'expected_calibration_error': calm_rag_metrics.get('expected_calibration_error', {}).get('value', 0.0),
+            'brier_score': calm_rag_metrics.get('brier_score', {}).get('value', 0.0),
+            'confidence_accuracy_correlation': calm_rag_metrics.get('confidence_accuracy_correlation', {}).get('value', 0.0)
+        },
+        
+        # H5: Source quality impact on calibration
+        'h5_source_quality': {
+            'source_quality_confidence_corr': calm_rag_metrics.get('source_quality_confidence_corr', {}).get('value', 0.0),
+            'quality_weighted_ece': calm_rag_metrics.get('quality_weighted_ece', {}).get('value', 0.0),
+            'quality_calibration_gap': calm_rag_metrics.get('quality_calibration_gap', {}).get('value', 0.0)
+        }
+    }
+    
+    # Calculate overall CALM-RAG score (weighted average of key metrics)
+    key_metrics = [
+        core_report['h1_overconfidence']['avg_retrieval_recall'],
+        1 - core_report['h1_overconfidence']['overconfidence_index'],  # Lower is better
+        1 - core_report['h2_calibration']['ece_with_retrieval'],  # Lower is better
+        core_report['h3_hedging']['hedge_f1'],
+        1 - core_report['h4_self_assessment']['expected_calibration_error'],  # Lower is better
+        core_report['h5_source_quality']['source_quality_confidence_corr']
+    ]
+    
+    core_report['calm_rag_score'] = round(sum(key_metrics) / len(key_metrics), 3)
+    
+    return core_report
 
 class RAGModelEvaluator:
     """Evaluates RAG models on the CALM-RAG dataset."""
@@ -528,7 +804,7 @@ class RAGModelEvaluator:
             'prediction_text': result['response'],
             'log_probs': result.get('log_probs', []),  # Store log probabilities
             'continuous_uncertainty': continuous_uncertainty,  # New continuous uncertainty score
-            'is_uncertain': result['confidence'] < 0.6 if result['confidence'] else True,
+            'is_uncertain': bool(result.get('confidence', 0) < 0.6) if result.get('confidence') is not None else True,
             'human_confidence': entry.get('human_confidence'),
             'no_retrieval_confidence': 0.5,  # Mock value
             'no_retrieval_accuracy': 0.3,    # Mock value
@@ -621,8 +897,8 @@ class RAGModelEvaluator:
         # Core CALM-RAG metrics
         calm_rag_metrics = compute_all_calm_rag_metrics(results)
         
-        # Enhanced metrics
-        enhanced_metrics = calculate_all_enhanced_metrics(results)
+        # Utility metrics
+        utility_metrics = calculate_all_utility_metrics(results)
         
         # Individual hypothesis metrics
         h1_metrics = calm_rag_h1_metrics(results)
@@ -632,6 +908,7 @@ class RAGModelEvaluator:
         h5_metrics = calm_rag_h5_metrics(results)
         
         
+        # Build streamlined evaluation summary (CALM-RAG focused)
         evaluation_summary = {
             'model': model_name,
             'total_entries': len(dataset_subset),
@@ -643,7 +920,6 @@ class RAGModelEvaluator:
                 'used_calibrated_results': len(results) == len(raw_results) if self.is_calibrated else False
             },
             'calm_rag_metrics': calm_rag_metrics,
-            'enhanced_metrics': enhanced_metrics,
             'hypothesis_metrics': {
                 'h1_overconfidence': h1_metrics,
                 'h2_calibration_difference': h2_metrics,
@@ -651,16 +927,45 @@ class RAGModelEvaluator:
                 'h4_self_assessment': h4_metrics,
                 'h5_source_quality': h5_metrics
             },
-            'raw_results': results,
-            'original_raw_results': raw_results
+            # Keep only essential result data (no verbose logging)
+            'summary_results': [
+                {
+                    'entry_id': result['entry_id'],
+                    'question': result['question'][:100] + '...' if len(result['question']) > 100 else result['question'],
+                    'confidence': result['confidence'],
+                    'accuracy': result['accuracy'],
+                    'is_uncertain': result['is_uncertain'],
+                    'retrieval_recall': result.get('retrieval_recall', 0.0),
+                    'has_hedging': 'hedge' in result.get('prediction_text', '').lower()
+                }
+                for result in results
+            ]
         }
         
-        # Save results
+        # Simplify metric names, add descriptions, and round numeric values for better readability
+        if 'calm_rag_metrics' in evaluation_summary:
+            simplified_metrics = simplify_metric_names(evaluation_summary['calm_rag_metrics'])
+            evaluation_summary['calm_rag_metrics'] = add_metric_descriptions(simplified_metrics)
+        evaluation_summary = round_metrics(evaluation_summary, precision=3)
+        
+        # Ensure all data is JSON serializable
+        evaluation_summary = make_json_serializable(evaluation_summary)
+        
+        # Generate streamlined CALM-RAG report
+        calm_rag_report = generate_calm_rag_report(evaluation_summary)
+        
+        # Save full results
         output_file = os.path.join(self.output_dir, f"{model_name}_evaluation.json")
         with open(output_file, 'w') as f:
             json.dump(evaluation_summary, f, indent=2)
         
+        # Save streamlined CALM-RAG report
+        report_file = os.path.join(self.output_dir, f"{model_name}_calm_rag_report.json")
+        with open(report_file, 'w') as f:
+            json.dump(calm_rag_report, f, indent=2)
+        
         print(f"Results saved to {output_file}")
+        print(f"Streamlined CALM-RAG report saved to {report_file}")
         
         return evaluation_summary
     
@@ -704,6 +1009,10 @@ class RAGModelEvaluator:
                 'expected_calibration_error': calm_rag.get('h4_expected_calibration_error', 'N/A'),
                 'source_quality_confidence_correlation': calm_rag.get('h5_source_quality_confidence_correlation', 'N/A')
             }
+        
+        # Round all numeric values for better readability and ensure JSON serialization
+        comparison_summary = round_metrics(comparison_summary, precision=3)
+        comparison_summary = make_json_serializable(comparison_summary)
         
         # Save comparison
         comparison_file = os.path.join(self.output_dir, "model_comparison.json")

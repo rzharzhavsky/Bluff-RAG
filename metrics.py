@@ -203,17 +203,22 @@ def recall_confidence_correlation(recalls: List[float], confidences: List[float]
         return 0.0
     
     valid_recalls, valid_confidences = zip(*valid_pairs)
+    
+    # Check if arrays are constant (all values the same)
+    if len(set(valid_recalls)) == 1 or len(set(valid_confidences)) == 1:
+        return 0.0
+    
     correlation, _ = pearsonr(valid_recalls, valid_confidences)
     return correlation if not np.isnan(correlation) else 0.0
 
 
-def retrieval_quality_metrics(results: List[Dict[str, Any]], include_enhanced: bool = True) -> Dict[str, float]:
+def retrieval_quality_metrics(results: List[Dict[str, Any]], include_correlations: bool = True) -> Dict[str, float]:
     """
-    Compute comprehensive retrieval quality metrics with optional enhanced features.
+    Compute comprehensive retrieval quality metrics with optional correlation features.
     
     Args:
         results: List of result dicts with CALM-RAG schema
-        include_enhanced: Whether to include enhanced metrics (correlations, etc.)
+        include_correlations: Whether to include correlation metrics
     
     Returns:
         Dictionary of retrieval quality metrics
@@ -223,7 +228,7 @@ def retrieval_quality_metrics(results: List[Dict[str, Any]], include_enhanced: b
     
     # Extract data using utility functions
     confidences = extract_confidence_scores(results)
-    accuracies = extract_accuracy_scores(results) if include_enhanced else []
+    accuracies = extract_accuracy_scores(results) if include_correlations else []
     retrieved_docs_list, relevant_docs_list = extract_retrieval_data(results)
     
     # Calculate basic retrieval metrics
@@ -260,21 +265,21 @@ def retrieval_quality_metrics(results: List[Dict[str, Any]], include_enhanced: b
     # Add confidence-recall correlation
     metrics['recall_confidence_correlation'] = recall_confidence_correlation(recalls, confidences)
     
-    # Add enhanced metrics if requested
-    if include_enhanced and accuracies:
+    # Add correlation metrics if requested
+    if include_correlations and accuracies:
         metrics['accuracy_confidence_correlation'] = confidence_accuracy_correlation(confidences, accuracies)
     
     # Add source quality metrics (if available)
     if quality_scores:
         metrics['avg_source_quality'] = np.mean(quality_scores)
         metrics['source_quality_std'] = np.std(quality_scores)
-        if include_enhanced:
+        if include_correlations:
             metrics['source_quality_confidence_correlation'] = confidence_accuracy_correlation(quality_scores, confidences)
     
     if diversity_scores:
         metrics['avg_source_diversity'] = np.mean(diversity_scores)
         metrics['source_diversity_std'] = np.std(diversity_scores)
-        if include_enhanced:
+        if include_correlations:
             metrics['source_diversity_accuracy_correlation'] = confidence_accuracy_correlation(diversity_scores, accuracies)
     
     return metrics
@@ -471,6 +476,11 @@ def confidence_accuracy_correlation(confidences: List[float], accuracies: List[f
         return 0.0
     
     valid_confidences, valid_accuracies = zip(*valid_pairs)
+    
+    # Check if arrays are constant (all values the same)
+    if len(set(valid_confidences)) == 1 or len(set(valid_accuracies)) == 1:
+        return 0.0
+    
     correlation, _ = pearsonr(valid_confidences, valid_accuracies)
     return correlation if not np.isnan(correlation) else 0.0
 
@@ -747,7 +757,7 @@ def calm_rag_h3_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
     """
     Complete H3 hypothesis metrics: Hedging Language as a Signal of Uncertainty.
     
-    Implements enhanced metrics from CALM-RAG proposal section H3:
+    Implements advanced metrics from CALM-RAG proposal section H3:
     - Hedge term precision/recall
     - Lexical overconfidence detection
     - Uncertainty expression correlation
@@ -773,7 +783,7 @@ def calm_rag_h3_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
             'hedge_density': 0.0,
             'confident_wrong_rate': 0.0,
             'hedge_sophistication': 0.0,
-            'enhanced_hedge_detection_rate': 0.0
+            'advanced_hedge_detection_rate': 0.0
         }
     
     # Extract data using utility functions
@@ -787,18 +797,18 @@ def calm_rag_h3_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
     hedge_prec, hedge_rec = hedge_precision_recall(predictions, uncertainties)
     hedge_f1 = 2 * (hedge_prec * hedge_rec) / (hedge_prec + hedge_rec) if (hedge_prec + hedge_rec) > 0 else 0.0
     
-    # Enhanced hedge detection
-    enhanced_hedge_count = 0
+    # Advanced hedge detection
+    advanced_hedge_count = 0
     total_predictions = 0
     
     for prediction in predictions:
         if prediction:
             total_predictions += 1
-            has_enhanced_hedge, _ = contains_enhanced_hedge(prediction)
-            if has_enhanced_hedge:
-                enhanced_hedge_count += 1
+            has_advanced_hedge, _ = contains_advanced_hedge(prediction)
+            if has_advanced_hedge:
+                advanced_hedge_count += 1
     
-    enhanced_hedge_detection_rate = enhanced_hedge_count / total_predictions if total_predictions > 0 else 0.0
+    advanced_hedge_detection_rate = advanced_hedge_count / total_predictions if total_predictions > 0 else 0.0
     
     # Lexical overconfidence
     lexical_oci = lexical_overconfidence_index(predictions, accuracies)
@@ -825,7 +835,7 @@ def calm_rag_h3_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
         'hedge_density': hedge_density,
         'confident_wrong_rate': confident_wrong_rate,
         'hedge_sophistication': hedge_sophistication,
-        'enhanced_hedge_detection_rate': enhanced_hedge_detection_rate
+        'advanced_hedge_detection_rate': advanced_hedge_detection_rate
     }
 
 
@@ -974,7 +984,7 @@ def calm_rag_h5_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
     }
 
 
-# Enhanced hedge detection functions
+# Advanced hedge detection functions
 def calculate_hedge_density(texts: List[str]) -> float:
     """
     Calculate average hedge term density across texts.
@@ -1125,8 +1135,8 @@ def calculate_quality_separated_ece(source_qualities: List[float], confidences: 
     return high_quality_ece, low_quality_ece
 
 
-# Enhanced retrieval quality metrics
-# This function has been consolidated into retrieval_quality_metrics() with include_enhanced=True
+# Retrieval quality metrics
+# This function has been consolidated into retrieval_quality_metrics() with include_correlations=True
 
 
 def compute_all_calm_rag_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
@@ -1169,10 +1179,12 @@ def compute_all_calm_rag_metrics(results: List[Dict[str, Any]]) -> Dict[str, flo
     for key, value in h5_metrics.items():
         metrics[f'h5_{key}'] = value
     
-    # Enhanced retrieval quality metrics
-    retrieval_metrics = retrieval_quality_metrics(results, include_enhanced=True)
+    # Retrieval quality metrics (avoid duplicates with hypothesis metrics)
+    retrieval_metrics = retrieval_quality_metrics(results, include_correlations=True)
     for key, value in retrieval_metrics.items():
-        metrics[f'retrieval_{key}'] = value
+        # Skip metrics that are already included in hypothesis metrics
+        if key not in ['avg_retrieval_recall', 'recall_confidence_correlation']:
+            metrics[f'retrieval_{key}'] = value
     
     return metrics
 
@@ -1570,7 +1582,7 @@ def calculate_comprehensive_retrieval_metrics(results: List[Dict[str, Any]]) -> 
         return {}
     
     # Basic retrieval metrics
-    basic_metrics = retrieval_quality_metrics(results, include_enhanced=True)
+    basic_metrics = retrieval_quality_metrics(results, include_correlations=True)
     
     # Confidence gap metrics
     confidence_gap_metrics = calculate_retrieval_confidence_gap(results)
@@ -1587,15 +1599,15 @@ def calculate_comprehensive_retrieval_metrics(results: List[Dict[str, Any]]) -> 
     return comprehensive_metrics
 
 
-def calculate_all_enhanced_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
+def calculate_all_utility_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
     """
-    Calculate all enhanced CALM-RAG metrics including utility functions.
+    Calculate all CALM-RAG metrics including utility functions.
     
     Args:
         results: List of result dicts with CALM-RAG schema
     
     Returns:
-        Dictionary with all enhanced metrics
+        Dictionary with all utility metrics
     """
     if not results:
         return {}
@@ -1630,10 +1642,10 @@ def calculate_all_enhanced_metrics(results: List[Dict[str, Any]]) -> Dict[str, f
     return all_metrics
 
 
-# Enhanced hedge detection with more sophisticated patterns
-def contains_enhanced_hedge(text: str) -> Tuple[bool, List[str]]:
+# Advanced hedge detection with more sophisticated patterns
+def contains_advanced_hedge(text: str) -> Tuple[bool, List[str]]:
     """
-    Enhanced hedge detection with pattern matching and confidence scoring.
+    Advanced hedge detection with pattern matching and confidence scoring.
     
     Args:
         text: Input text to analyze
@@ -1652,8 +1664,8 @@ def contains_enhanced_hedge(text: str) -> Tuple[bool, List[str]]:
         if hedge in text_lower:
             found_hedges.append(hedge)
     
-    # Enhanced patterns
-    enhanced_patterns = [
+    # Advanced patterns
+    advanced_patterns = [
         r'\b(?:it\s+(?:appears|seems|looks))\b',
         r'\b(?:based\s+on\s+(?:the\s+)?(?:evidence|data|research))\b',
         r'\b(?:according\s+to\s+(?:some|recent|preliminary))\b',
@@ -1667,7 +1679,7 @@ def contains_enhanced_hedge(text: str) -> Tuple[bool, List[str]]:
     ]
     
     import re
-    for pattern in enhanced_patterns:
+    for pattern in advanced_patterns:
         if re.search(pattern, text_lower):
             found_hedges.append(f"pattern_{pattern[:20]}...")
     
@@ -1701,7 +1713,7 @@ def calculate_hedge_sophistication(texts: List[str]) -> Dict[str, float]:
         if not text:
             continue
         
-        has_hedge, hedge_terms = contains_enhanced_hedge(text)
+        has_hedge, hedge_terms = contains_advanced_hedge(text)
         if has_hedge:
             total_hedge_count += len(hedge_terms)
             all_hedge_types.update(hedge_terms)
@@ -1720,7 +1732,7 @@ def calculate_hedge_sophistication(texts: List[str]) -> Dict[str, float]:
     }
 
 
-# Enhanced testing examples with all new metrics
+# Advanced testing examples with all new metrics
 def test_all_metrics():
     """
     Comprehensive test of all CALM-RAG metrics with realistic examples.
@@ -1826,21 +1838,21 @@ def test_all_metrics():
         if key.startswith('h5_'):
             print(f"  {key}: {value:.3f}")
     
-    print("\n2. Testing Enhanced Utility Metrics...")
-    enhanced_metrics = calculate_all_enhanced_metrics(comprehensive_test_data)
+    print("\n2. Testing Utility Metrics...")
+    utility_metrics = calculate_all_utility_metrics(comprehensive_test_data)
     
     print("\nHedge Effectiveness:")
-    for key, value in enhanced_metrics.items():
+    for key, value in utility_metrics.items():
         if key.startswith('hedge_'):
             print(f"  {key}: {value:.3f}")
     
     print("\nCalibration Improvement Potential:")
-    for key, value in enhanced_metrics.items():
+    for key, value in utility_metrics.items():
         if key.startswith('calibration_'):
             print(f"  {key}: {value:.3f}")
     
     print("\nComprehensive Retrieval Metrics:")
-    for key, value in enhanced_metrics.items():
+    for key, value in utility_metrics.items():
         if key.startswith('retrieval_') and key not in core_metrics:
             print(f"  {key}: {value:.3f}")
     
@@ -1857,10 +1869,10 @@ def test_all_metrics():
     print(f"\nHedge Detection Test:")
     for text in test_texts:
         has_hedge = contains_hedge(text)
-        has_enhanced, hedge_terms = contains_enhanced_hedge(text)
+        has_advanced, hedge_terms = contains_advanced_hedge(text)
         print(f"  Text: '{text[:50]}...'")
         print(f"    Basic hedge: {has_hedge}")
-        print(f"    Enhanced hedge: {has_enhanced} (terms: {hedge_terms})")
+        print(f"    Advanced hedge: {has_advanced} (terms: {hedge_terms})")
     
     # Test source quality analysis
     print(f"\nSource Quality Analysis:")
@@ -1869,7 +1881,7 @@ def test_all_metrics():
         print(f"  {key}: {value:.3f}")
     
     print("\n=== METRICS TESTING COMPLETE ===")
-    return core_metrics, enhanced_metrics
+    return core_metrics, utility_metrics
 
 
 def get_metrics_summary() -> Dict[str, List[str]]:
@@ -1907,7 +1919,7 @@ def get_metrics_summary() -> Dict[str, List[str]]:
             "hedge_density",
             "confident_wrong_rate",
             "hedge_sophistication",
-            "enhanced_hedge_detection_rate"
+            "advanced_hedge_detection_rate"
         ],
         "H4 - Self-Assessment and Numeric Confidence Calibration": [
             "expected_calibration_error",
@@ -1926,7 +1938,7 @@ def get_metrics_summary() -> Dict[str, List[str]]:
             "low_quality_source_ece",
             "quality_calibration_gap"
         ],
-        "Enhanced Retrieval Metrics": [
+        "Retrieval Metrics": [
             "avg_retrieval_recall",
             "avg_retrieval_precision", 
             "avg_retrieval_f1",
@@ -1980,7 +1992,7 @@ def print_metrics_summary():
     print(f"TOTAL METRICS IMPLEMENTED: {total_metrics}")
     print("\n=== USAGE EXAMPLES ===")
     print("1. Core CALM-RAG metrics: compute_all_calm_rag_metrics(results)")
-    print("2. Enhanced metrics: calculate_all_enhanced_metrics(results)")
+    print("2. Utility metrics: calculate_all_utility_metrics(results)")
     print("3. Individual hypothesis metrics: calm_rag_h1_metrics(results)")
     print("4. Utility functions: calculate_hedge_effectiveness(results)")
     print("5. Soft accuracy: calculate_soft_accuracy(prediction, gold_answers)")
@@ -2616,15 +2628,15 @@ if __name__ == "__main__":
     print("\n" + "="*60 + "\n")
     
     # Run comprehensive testing
-    core_results, enhanced_results = test_all_metrics()
+    core_results, utility_results = test_all_metrics()
     
     print(f"\nTotal Core Metrics: {len(core_results)}")
-    print(f"Total Enhanced Metrics: {len(enhanced_results)}")
+    print(f"Total Utility Metrics: {len(utility_results)}")
     
     # Example usage of specific metrics
     print(f"\nExample - H1 Retrieval Recall: {core_results.get('h1_avg_retrieval_recall', 0.0):.3f}")
     print(f"Example - H3 Hedge Precision: {core_results.get('h3_hedge_precision', 0.0):.3f}")
-    print(f"Example - Calibration Improvement: {enhanced_results.get('calibration_calibration_improvement_potential', 0.0):.3f}")
+    print(f"Example - Calibration Improvement: {utility_results.get('calibration_calibration_improvement_potential', 0.0):.3f}")
     
     print("\n" + "="*60 + "\n")
     
