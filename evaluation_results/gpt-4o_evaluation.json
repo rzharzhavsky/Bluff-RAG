@@ -3,331 +3,922 @@
   "total_entries": 10,
   "successful_evaluations": 10,
   "calibration_info": {
-    "was_calibrated": 1,
+    "was_calibrated": true,
     "raw_results_count": 10,
     "calibrated_results_count": 10,
-    "used_calibrated_results": 1
+    "used_calibrated_results": true
   },
   "calm_rag_metrics": {
-    "retrieval_recall_confidence_corr": {
-      "value": 0.0,
-      "description": "Correlation between retrieval recall and confidence (higher is better)"
-    },
-    "avg_retrieval_recall": {
-      "value": 1.0,
-      "description": "Average percentage of relevant documents retrieved (0-1, higher is better)"
-    },
-    "overconfidence_index": {
-      "value": 0.0,
-      "description": "Measure of overconfidence in retrieval (0-1, lower is better)"
-    },
-    "wrong_answer_rate": {
-      "value": 0.0,
-      "description": "Percentage of wrong answers given (0-1, lower is better)"
-    },
-    "refusal_rate": {
-      "value": 0.0,
-      "description": "Percentage of questions refused to answer (0-1, context-dependent)"
-    },
-    "ece_with_retrieval": {
-      "value": 0.013,
-      "description": "Expected Calibration Error with retrieval (0-1, lower is better)"
-    },
-    "ece_without_retrieval": {
-      "value": 0.2,
-      "description": "Expected Calibration Error without retrieval (0-1, lower is better)"
-    },
-    "ece_improvement": {
-      "value": -0.187,
-      "description": "Improvement in calibration from retrieval (negative is better)"
-    },
-    "brier_with_retrieval": {
-      "value": 0.009,
-      "description": "Brier score with retrieval (0-1, lower is better)"
-    },
-    "brier_without_retrieval": {
-      "value": 0.04,
-      "description": "Brier score without retrieval (0-1, lower is better)"
-    },
-    "brier_improvement": {
-      "value": -0.031,
-      "description": "Improvement in Brier score from retrieval (negative is better)"
-    },
-    "confidence_accuracy_corr_with_retrieval": {
-      "value": 0.0,
-      "description": "Correlation between confidence and accuracy with retrieval (higher is better)"
-    },
-    "confidence_accuracy_corr_without_retrieval": {
-      "value": 0.0,
-      "description": "Correlation between confidence and accuracy without retrieval (higher is better)"
-    },
-    "correlation_improvement": {
-      "value": 0.0,
-      "description": "Improvement in confidence-accuracy correlation from retrieval (positive is better)"
-    },
-    "hedge_precision": {
-      "value": 0.0,
-      "description": "Precision of hedge detection (0-1, higher is better)"
-    },
-    "hedge_recall": {
-      "value": 0.0,
-      "description": "Recall of hedge detection (0-1, higher is better)"
-    },
-    "hedge_f1": {
-      "value": 0.0,
-      "description": "F1 score of hedge detection (0-1, higher is better)"
-    },
-    "lexical_overconfidence_index": {
-      "value": 0.0,
-      "description": "Measure of overconfidence in language (0-1, lower is better)"
-    },
-    "uncertainty_confidence_corr": {
-      "value": 0.0,
-      "description": "Correlation between uncertainty and confidence (higher is better)"
-    },
-    "hedge_density": {
-      "value": 0.023,
-      "description": "Density of hedging language in responses (0-1, context-dependent)"
-    },
-    "confident_wrong_rate": {
-      "value": 0.0,
-      "description": "Rate of confident but wrong answers (0-1, lower is better)"
-    },
-    "hedge_sophistication": {
-      "value": 0.071,
-      "description": "Sophistication of hedging language (0-1, higher is better)"
-    },
-    "advanced_hedge_detection_rate": {
-      "value": 0.8,
-      "description": "Rate of advanced hedge pattern detection (0-1, higher is better)"
-    },
-    "expected_calibration_error": {
-      "value": 0.013,
-      "description": "Overall expected calibration error (0-1, lower is better)"
-    },
-    "brier_score": {
-      "value": 0.009,
-      "description": "Overall Brier score (0-1, lower is better)"
-    },
-    "confidence_accuracy_correlation": {
-      "value": 0.0,
-      "description": "Overall confidence-accuracy correlation (higher is better)"
-    },
-    "calibration_ece_after_isotonic": {
-      "value": 0.0,
-      "description": "ECE after isotonic calibration (0-1, lower is better)"
-    },
-    "calibration_improvement": {
-      "value": 0.013,
-      "description": "Improvement from calibration (positive is better)"
-    },
-    "confidence_distribution_entropy": {
-      "value": -0.0,
-      "description": "Entropy of confidence distribution (higher indicates more uncertainty)"
-    },
-    "human_model_confidence_corr": {
-      "value": 0.0,
-      "description": "Correlation between human and model confidence (higher is better)"
-    },
-    "source_quality_confidence_corr": {
-      "value": 0.0,
-      "description": "Correlation between source quality and confidence (higher is better)"
-    },
-    "source_diversity_calibration_corr": {
-      "value": -0.575,
-      "description": "Correlation between source diversity and calibration (higher is better)"
-    },
-    "quality_weighted_ece": {
-      "value": 0.079,
-      "description": "Quality-weighted expected calibration error (0-1, lower is better)"
-    },
-    "high_quality_source_ece": {
-      "value": 0.013,
-      "description": "ECE for high-quality sources (0-1, lower is better)"
-    },
-    "low_quality_source_ece": {
-      "value": 0.0,
-      "description": "ECE for low-quality sources (0-1, lower is better)"
-    },
-    "quality_calibration_gap": {
-      "value": 0.013,
-      "description": "Gap in calibration between quality levels (lower is better)"
-    },
-    "avg_retrieval_precision": {
-      "value": 0.5,
-      "description": "Average precision of retrieved documents (0-1, higher is better)"
-    },
-    "avg_retrieval_f1": {
-      "value": 0.667,
-      "description": "Average F1 score of retrieval (0-1, higher is better)"
-    },
-    "accuracy_confidence_correlation": {
-      "value": 0.0,
-      "description": "Correlation between accuracy and confidence (higher is better)"
-    },
-    "avg_source_quality": {
-      "value": 0.6,
-      "description": "Average quality of retrieved sources (0-1, higher is better)"
-    },
-    "source_quality_std": {
-      "value": 0.0,
-      "description": "Standard deviation of source quality (lower indicates more consistent quality)"
-    },
-    "source_quality_confidence_correlation": {
-      "value": 0.0,
-      "description": "Correlation between source quality and confidence (higher is better)"
-    },
-    "avg_source_diversity": {
-      "value": 0.82,
-      "description": "Average diversity of retrieved sources (0-1, higher is better)"
-    },
-    "source_diversity_std": {
-      "value": 0.108,
-      "description": "Standard deviation of source diversity (lower indicates more consistent diversity)"
-    },
-    "source_diversity_accuracy_correlation": {
-      "value": -0.575,
-      "description": "Correlation between source diversity and accuracy (higher is better)"
-    }
+    "h1_retrieval_recall_confidence_correlation": 0.0,
+    "h1_avg_retrieval_recall": 1.0,
+    "h1_overconfidence_index": 0.013325520540461062,
+    "h1_wrong_answer_rate": 0.0,
+    "h1_refusal_rate": 0.0,
+    "h2_ece_with_retrieval": 0.0006163501708164265,
+    "h2_ece_without_retrieval": 0.20000000000000007,
+    "h2_ece_difference": -0.19938364982918363,
+    "h2_brier_with_retrieval": 0.048969874259839286,
+    "h2_brier_without_retrieval": 0.040000000000000015,
+    "h2_brier_difference": 0.00896987425983927,
+    "h2_confidence_accuracy_corr_with_retrieval": 0.4018473465735465,
+    "h2_confidence_accuracy_corr_without_retrieval": 0.0,
+    "h2_correlation_difference": 0.4018473465735465,
+    "h3_hedge_precision": 0.0,
+    "h3_hedge_recall": 0.0,
+    "h3_hedge_f1": 0.0,
+    "h3_lexical_overconfidence_index": 0.0,
+    "h3_uncertainty_confidence_correlation": 0.2244700631531144,
+    "h3_hedge_density": 0.022452504317789293,
+    "h3_confident_wrong_rate": 0.0,
+    "h3_hedge_sophistication": 0.07692307692307693,
+    "h3_enhanced_hedge_detection_rate": 0.8,
+    "h4_expected_calibration_error": 0.0006163501708164265,
+    "h4_brier_score": 0.048969874259839286,
+    "h4_confidence_accuracy_correlation": 0.4018473465735465,
+    "h4_calibration_ece_after_isotonic": 0.0,
+    "h4_calibration_improvement": 0.0006163501708164265,
+    "h4_confidence_distribution_entropy": 0.7219280948873623,
+    "h4_human_model_confidence_correlation": 0.0,
+    "h5_source_quality_confidence_correlation": 0.0,
+    "h5_source_diversity_calibration_correlation": -0.007684127768066665,
+    "h5_quality_weighted_ece": 0.1718121878941889,
+    "h5_high_quality_source_ece": 0.0006163501708164265,
+    "h5_low_quality_source_ece": 0.0,
+    "h5_quality_calibration_gap": 0.0006163501708164265,
+    "retrieval_avg_retrieval_recall": 1.0,
+    "retrieval_avg_retrieval_precision": 0.5,
+    "retrieval_avg_retrieval_f1": 0.6666666666666667,
+    "retrieval_recall_confidence_correlation": 0.0,
+    "retrieval_accuracy_confidence_correlation": 0.4018473465735465,
+    "retrieval_avg_source_quality": 0.5999999999999999,
+    "retrieval_source_quality_std": 1.1102230246251565e-16,
+    "retrieval_source_quality_confidence_correlation": 0.0,
+    "retrieval_avg_source_diversity": 0.82,
+    "retrieval_source_diversity_std": 0.1077032961426901,
+    "retrieval_source_diversity_accuracy_correlation": -0.007684127768066665
+  },
+  "enhanced_metrics": {
+    "h1_retrieval_recall_confidence_correlation": 0.0,
+    "h1_avg_retrieval_recall": 1.0,
+    "h1_overconfidence_index": 0.013325520540461062,
+    "h1_wrong_answer_rate": 0.0,
+    "h1_refusal_rate": 0.0,
+    "h2_ece_with_retrieval": 0.0006163501708164265,
+    "h2_ece_without_retrieval": 0.20000000000000007,
+    "h2_ece_difference": -0.19938364982918363,
+    "h2_brier_with_retrieval": 0.048969874259839286,
+    "h2_brier_without_retrieval": 0.040000000000000015,
+    "h2_brier_difference": 0.00896987425983927,
+    "h2_confidence_accuracy_corr_with_retrieval": 0.4018473465735465,
+    "h2_confidence_accuracy_corr_without_retrieval": 0.0,
+    "h2_correlation_difference": 0.4018473465735465,
+    "h3_hedge_precision": 0.0,
+    "h3_hedge_recall": 0.0,
+    "h3_hedge_f1": 0.0,
+    "h3_lexical_overconfidence_index": 0.0,
+    "h3_uncertainty_confidence_correlation": 0.2244700631531144,
+    "h3_hedge_density": 0.022452504317789293,
+    "h3_confident_wrong_rate": 0.0,
+    "h3_hedge_sophistication": 0.07692307692307693,
+    "h3_enhanced_hedge_detection_rate": 0.8,
+    "h4_expected_calibration_error": 0.0006163501708164265,
+    "h4_brier_score": 0.048969874259839286,
+    "h4_confidence_accuracy_correlation": 0.4018473465735465,
+    "h4_calibration_ece_after_isotonic": 0.0,
+    "h4_calibration_improvement": 0.0006163501708164265,
+    "h4_confidence_distribution_entropy": 0.7219280948873623,
+    "h4_human_model_confidence_correlation": 0.0,
+    "h5_source_quality_confidence_correlation": 0.0,
+    "h5_source_diversity_calibration_correlation": -0.007684127768066665,
+    "h5_quality_weighted_ece": 0.1718121878941889,
+    "h5_high_quality_source_ece": 0.0006163501708164265,
+    "h5_low_quality_source_ece": 0.0,
+    "h5_quality_calibration_gap": 0.0006163501708164265,
+    "retrieval_avg_retrieval_recall": 1.0,
+    "retrieval_avg_retrieval_precision": 0.5,
+    "retrieval_avg_retrieval_f1": 0.6666666666666667,
+    "retrieval_recall_confidence_correlation": 0.0,
+    "retrieval_accuracy_confidence_correlation": 0.4018473465735465,
+    "retrieval_avg_source_quality": 0.6,
+    "retrieval_source_quality_std": 1.1102230246251565e-16,
+    "retrieval_source_quality_confidence_correlation": 0.0,
+    "retrieval_avg_source_diversity": 0.82,
+    "retrieval_source_diversity_std": 0.1077032961426901,
+    "retrieval_source_diversity_accuracy_correlation": -0.007684127768066665,
+    "hedge_hedge_uncertainty_correlation": 0.0,
+    "hedge_hedge_accuracy_correlation": -0.4965635331614208,
+    "hedge_hedge_confidence_correlation": -0.7159961849604182,
+    "hedge_effective_hedge_rate": 0.0,
+    "calibration_calibration_improvement_potential": 0.0006163501708164265,
+    "calibration_overconfidence_severity": 0.2155356725812567,
+    "calibration_underconfidence_severity": 0.14266319810281045,
+    "calibration_calibration_consistency": 0.8605351429540359,
+    "retrieval_avg_confidence_gap": -0.23938364982918361,
+    "retrieval_overconfidence_rate": 0.0,
+    "retrieval_underconfidence_rate": 0.8,
+    "retrieval_reliable_source_rate": 0.5,
+    "retrieval_unreliable_source_rate": 0.3,
+    "retrieval_unknown_source_rate": 0.0,
+    "retrieval_source_quality_variance": 0.19000000000000006
   },
   "hypothesis_metrics": {
     "h1_overconfidence": {
       "retrieval_recall_confidence_correlation": 0.0,
       "avg_retrieval_recall": 1.0,
-      "overconfidence_index": 0.0,
+      "overconfidence_index": 0.013325520540461062,
       "wrong_answer_rate": 0.0,
       "refusal_rate": 0.0
     },
     "h2_calibration_difference": {
-      "ece_with_retrieval": 0.013,
-      "ece_without_retrieval": 0.2,
-      "ece_difference": -0.187,
-      "brier_with_retrieval": 0.009,
-      "brier_without_retrieval": 0.04,
-      "brier_difference": -0.031,
-      "confidence_accuracy_corr_with_retrieval": 0.0,
+      "ece_with_retrieval": 0.0006163501708164265,
+      "ece_without_retrieval": 0.20000000000000007,
+      "ece_difference": -0.19938364982918363,
+      "brier_with_retrieval": 0.048969874259839286,
+      "brier_without_retrieval": 0.040000000000000015,
+      "brier_difference": 0.00896987425983927,
+      "confidence_accuracy_corr_with_retrieval": 0.4018473465735465,
       "confidence_accuracy_corr_without_retrieval": 0.0,
-      "correlation_difference": 0.0
+      "correlation_difference": 0.4018473465735465
     },
     "h3_hedging_language": {
       "hedge_precision": 0.0,
       "hedge_recall": 0.0,
       "hedge_f1": 0.0,
       "lexical_overconfidence_index": 0.0,
-      "uncertainty_confidence_correlation": 0.0,
-      "hedge_density": 0.023,
+      "uncertainty_confidence_correlation": 0.2244700631531144,
+      "hedge_density": 0.022452504317789293,
       "confident_wrong_rate": 0.0,
-      "hedge_sophistication": 0.071,
-      "advanced_hedge_detection_rate": 0.8
+      "hedge_sophistication": 0.07692307692307693,
+      "enhanced_hedge_detection_rate": 0.8
     },
     "h4_self_assessment": {
-      "expected_calibration_error": 0.013,
-      "brier_score": 0.009,
-      "confidence_accuracy_correlation": 0.0,
+      "expected_calibration_error": 0.0006163501708164265,
+      "brier_score": 0.048969874259839286,
+      "confidence_accuracy_correlation": 0.4018473465735465,
       "calibration_ece_after_isotonic": 0.0,
-      "calibration_improvement": 0.013,
-      "confidence_distribution_entropy": -0.0,
+      "calibration_improvement": 0.0006163501708164265,
+      "confidence_distribution_entropy": 0.7219280948873623,
       "human_model_confidence_correlation": 0.0
     },
     "h5_source_quality": {
       "source_quality_confidence_correlation": 0.0,
-      "source_diversity_calibration_correlation": -0.575,
-      "quality_weighted_ece": 0.079,
-      "high_quality_source_ece": 0.013,
+      "source_diversity_calibration_correlation": -0.007684127768066665,
+      "quality_weighted_ece": 0.1718121878941889,
+      "high_quality_source_ece": 0.0006163501708164265,
       "low_quality_source_ece": 0.0,
-      "quality_calibration_gap": 0.013
+      "quality_calibration_gap": 0.0006163501708164265
     }
   },
   "summary_results": [
     {
       "entry_id": "public_health_000",
       "question": "How do regulatory measures impact the management of hazardous substances in public health?",
-      "confidence": 0.415,
-      "accuracy": 0.414,
-      "is_uncertain": 1,
-      "retrieval_recall": 0.0,
-      "has_hedging": 0
+      "gold_answer": "Regulatory measures provide guidelines and standards that ensure the safe handling, exposure limits, and management of hazardous substances to protect public health. These regulations often require regular monitoring, reporting, and compliance with safety protocols to minimize health risks associated with exposure to toxic materials.",
+      "retrieved_docs": [
+        {
+          "url": "https://wwwn.cdc.gov/TSP/MMG/MMGDetails.aspx?mmgid=216&toxid=39",
+          "domain": "wwwn.cdc.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://environment.ec.europa.eu/topics/waste-and-recycling/rohs-directive_en",
+          "domain": "environment.ec.europa.eu",
+          "category": "reliable"
+        },
+        {
+          "url": "https://www.epa.gov/risk/conducting-human-health-risk-assessment",
+          "domain": "epa.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://www.niehs.nih.gov/health/topics/agents/haz-waste",
+          "domain": "niehs.nih.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://papersowl.com/examples/how-to-prevent-water-pollution/",
+          "domain": "papersowl.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://www.cdc.gov/infection-control/hcp/environmental-control/regulated-medical-waste.html",
+          "domain": "cdc.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://reddit.com/r/conspiracy/comments/fso5bl/forever_chemical_pollution_immune_systems_low_in/",
+          "domain": "reddit.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://reddit.com/r/Health/comments/1iziem/doctors_heres_some_news_bisphenol_a_and/",
+          "domain": "reddit.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/List_of_effects",
+          "domain": "en.wikipedia.org",
+          "category": "distraction"
+        },
+        {
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7560223/",
+          "domain": "pmc.ncbi.nlm.nih.gov",
+          "category": "distraction"
+        }
+      ],
+      "relevant_docs": [
+        "https://wwwn.cdc.gov/TSP/MMG/MMGDetails.aspx?mmgid=216&toxid=39",
+        "https://environment.ec.europa.eu/topics/waste-and-recycling/rohs-directive_en",
+        "https://www.epa.gov/risk/conducting-human-health-risk-assessment",
+        "https://www.niehs.nih.gov/health/topics/agents/haz-waste",
+        "https://papersowl.com/examples/how-to-prevent-water-pollution/"
+      ],
+      "confidence": 0.7125,
+      "accuracy": 0.8,
+      "prediction_text": "Regulatory measures likely impact the management of hazardous substances in public health by restricting their use and promoting safe disposal. For example, the EU's RoHS Directive limits hazardous substances in electronic equipment to prevent environmental and health issues (Source 2). Additionally, guidelines for decontaminating laboratory waste help manage biological hazards (Source 6). These measures aim to reduce exposure and mitigate health risks associated with hazardous substances.",
+      "continuous_uncertainty": 0.22800000000000004,
+      "is_uncertain": "False",
+      "human_confidence": "None",
+      "no_retrieval_confidence": 0.5,
+      "no_retrieval_accuracy": 0.3,
+      "model": "gpt-4o",
+      "tokens_used": 2753,
+      "accuracy_method": "llm"
     },
     {
       "entry_id": "public_health_001",
-      "question": "How can managing cholesterol levels impact the risk of cardiovascular complications in individuals w...",
-      "confidence": 0.415,
-      "accuracy": 0.456,
-      "is_uncertain": 1,
-      "retrieval_recall": 0.0,
-      "has_hedging": 0
+      "question": "How can managing cholesterol levels impact the risk of cardiovascular complications in individuals with diabetes?",
+      "gold_answer": "Managing cholesterol levels can significantly reduce the risk of cardiovascular complications in individuals with diabetes by preventing the build-up of plaque in the arteries, which can lead to heart attacks and strokes.",
+      "retrieved_docs": [
+        {
+          "url": "https://www.mayoclinic.org/diseases-conditions/type-1-diabetes/diagnosis-treatment/drc-20353017",
+          "domain": "mayoclinic.org",
+          "category": "reliable"
+        },
+        {
+          "url": "https://www.ncbi.nlm.nih.gov/books/NBK279093/",
+          "domain": "ncbi.nlm.nih.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://www.who.int/news-room/fact-sheets/detail/diabetes",
+          "domain": "who.int",
+          "category": "reliable"
+        },
+        {
+          "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/what-is-diabetes",
+          "domain": "niddk.nih.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://wellwisp.com/when-should-diabetics-check-their-blood-sugar/",
+          "domain": "wellwisp.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://www.healthline.com/health/diabetes/blood-sugar-level-chart",
+          "domain": "healthline.com",
+          "category": "reliable"
+        },
+        {
+          "url": "https://wellwisp.com/american-diabetes-association-recommended-blood-glucose-levels/",
+          "domain": "wellwisp.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://reddit.com/r/Fitness/comments/4wgai3/the_keto_diet_is_a_very_low_carb_high_fat_diet/",
+          "domain": "reddit.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/List_of_effects",
+          "domain": "en.wikipedia.org",
+          "category": "distraction"
+        },
+        {
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5367643/",
+          "domain": "pmc.ncbi.nlm.nih.gov",
+          "category": "distraction"
+        }
+      ],
+      "relevant_docs": [
+        "https://www.mayoclinic.org/diseases-conditions/type-1-diabetes/diagnosis-treatment/drc-20353017",
+        "https://www.ncbi.nlm.nih.gov/books/NBK279093/",
+        "https://www.who.int/news-room/fact-sheets/detail/diabetes",
+        "https://www.niddk.nih.gov/health-information/diabetes/overview/what-is-diabetes",
+        "https://wellwisp.com/when-should-diabetics-check-their-blood-sugar/"
+      ],
+      "confidence": 0.7125,
+      "accuracy": 0.7,
+      "prediction_text": "Managing cholesterol levels can likely reduce the risk of cardiovascular complications in individuals with diabetes. Source 1 suggests that controlling cholesterol, along with blood pressure, is crucial for preventing diabetes-related complications such as heart attack and stroke. However, the sources do not provide detailed mechanisms or specific studies linking cholesterol management to reduced cardiovascular risk in diabetic individuals.",
+      "continuous_uncertainty": 0.25600000000000006,
+      "is_uncertain": "False",
+      "human_confidence": "None",
+      "no_retrieval_confidence": 0.5,
+      "no_retrieval_accuracy": 0.3,
+      "model": "gpt-4o",
+      "tokens_used": 2762,
+      "accuracy_method": "llm"
     },
     {
       "entry_id": "public_health_002",
-      "question": "Is the concept of a threshold level of exposure for toxic chemicals universally accepted in public h...",
-      "confidence": 0.415,
-      "accuracy": 0.276,
-      "is_uncertain": 1,
-      "retrieval_recall": 0.0,
-      "has_hedging": 0
+      "question": "Is the concept of a threshold level of exposure for toxic chemicals universally accepted in public health risk assessments?",
+      "gold_answer": "No, the concept of a threshold for exposure is debated; some experts argue that even low levels of exposure can have cumulative adverse effects over time, especially for vulnerable populations.",
+      "retrieved_docs": [
+        {
+          "url": "https://assessments.epa.gov/risk/document/&deid=20873",
+          "domain": "assessments.epa.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://www.epw.senate.gov/105th/epab10-1.htm",
+          "domain": "epw.senate.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://pubmed.ncbi.nlm.nih.gov/12635727/",
+          "domain": "pubmed.ncbi.nlm.nih.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://pubmed.ncbi.nlm.nih.gov/15220074/",
+          "domain": "pubmed.ncbi.nlm.nih.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://biologyinsights.com/what-is-a-threshold-dose-and-why-is-it-important/",
+          "domain": "biologyinsights.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://iris.epa.gov/ChemicalLanding/&substance_nmbr=370",
+          "domain": "iris.epa.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://reddit.com/r/Supplements/comments/pwhur7/how_vitamin_d_and_magnesium_work_together_50_of/",
+          "domain": "reddit.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://reddit.com/r/Health/comments/12fw24/poisened_wheat_gluten_in_2007_my_best_friend_my/",
+          "domain": "reddit.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/List_of_effects",
+          "domain": "en.wikipedia.org",
+          "category": "distraction"
+        },
+        {
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10510179/",
+          "domain": "pmc.ncbi.nlm.nih.gov",
+          "category": "distraction"
+        }
+      ],
+      "relevant_docs": [
+        "https://assessments.epa.gov/risk/document/&deid=20873",
+        "https://www.epw.senate.gov/105th/epab10-1.htm",
+        "https://pubmed.ncbi.nlm.nih.gov/12635727/",
+        "https://pubmed.ncbi.nlm.nih.gov/15220074/",
+        "https://biologyinsights.com/what-is-a-threshold-dose-and-why-is-it-important/"
+      ],
+      "confidence": 0.7125,
+      "accuracy": 0.9,
+      "prediction_text": "The concept of a threshold level of exposure for toxic chemicals is not universally accepted in public health risk assessments. Source 1 indicates ongoing scientific discussion about safe exposure levels for methylmercury, while Source 5 explains the threshold dose concept, suggesting it is foundational but not universally applied. Therefore, acceptance may vary depending on the chemical and context.",
+      "continuous_uncertainty": 0.21200000000000002,
+      "is_uncertain": "False",
+      "human_confidence": "None",
+      "no_retrieval_confidence": 0.5,
+      "no_retrieval_accuracy": 0.3,
+      "model": "gpt-4o",
+      "tokens_used": 3002,
+      "accuracy_method": "llm"
     },
     {
       "entry_id": "public_health_003",
-      "question": "How does the eligibility for premium-free Medicare Part A differ between individuals who work for mo...",
-      "confidence": 0.415,
-      "accuracy": 0.319,
-      "is_uncertain": 1,
-      "retrieval_recall": 0.0,
-      "has_hedging": 0
+      "question": "How does the eligibility for premium-free Medicare Part A differ between individuals who work for most employers and those who are certain government employees?",
+      "gold_answer": "Most individuals earn quarters of coverage (QCs) through the full payment of FICA taxes, which count towards both monthly Social Security benefits and premium-free Medicare Part A. However, certain government employees only pay the Part A portion of FICA taxes, so their QCs can only be used to meet the requirements for premium-free Medicare Part A, not for monthly Social Security benefits.",
+      "retrieved_docs": [
+        {
+          "url": "https://www.cms.gov/training-education/find-provider-type/employers-unions/top-five-medicare-enrollment",
+          "domain": "cms.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://www.usa.gov/medicare",
+          "domain": "usa.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://www.medicaid.gov/medicaid/eligibility/seniors-medicare-and-medicaid-enrollees",
+          "domain": "medicaid.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://www.medicare.gov/basics/costs/help/medicaid",
+          "domain": "medicare.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://reddit.com/r/nutrition/comments/3swqts/xpost_from_radvancedfitness_research_review_do/",
+          "domain": "reddit.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://www.investopedia.com/terms/m/medicare.asp",
+          "domain": "investopedia.com",
+          "category": "reliable"
+        },
+        {
+          "url": "https://wellwisp.com/does-medicare-cover-blood-glucose-monitors/",
+          "domain": "wellwisp.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://www.reddit.com/r/explainlikeimfive/comments/1lpy649/eli5_what_are_the_actual_specific_differences/",
+          "domain": "reddit.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4776780/",
+          "domain": "pmc.ncbi.nlm.nih.gov",
+          "category": "distraction"
+        },
+        {
+          "url": "https://www.frontiersin.org/journals/aging/articles/10.3389/fragi.2025.1513936/pdf",
+          "domain": "frontiersin.org",
+          "category": "distraction"
+        }
+      ],
+      "relevant_docs": [
+        "https://www.cms.gov/training-education/find-provider-type/employers-unions/top-five-medicare-enrollment",
+        "https://www.usa.gov/medicare",
+        "https://www.medicaid.gov/medicaid/eligibility/seniors-medicare-and-medicaid-enrollees",
+        "https://www.medicare.gov/basics/costs/help/medicaid",
+        "https://reddit.com/r/nutrition/comments/3swqts/xpost_from_radvancedfitness_research_review_do/"
+      ],
+      "confidence": 0.7125,
+      "accuracy": 0.3,
+      "prediction_text": "The eligibility for premium-free Medicare Part A for individuals who work for most employers is based on whether they or their spouse paid Medicare taxes while working. However, the sources do not provide specific information on how this eligibility might differ for certain government employees. Therefore, it is unclear how the eligibility criteria differ for these groups based on the provided sources.",
+      "continuous_uncertainty": 0.224,
+      "is_uncertain": "False",
+      "human_confidence": "None",
+      "no_retrieval_confidence": 0.5,
+      "no_retrieval_accuracy": 0.3,
+      "model": "gpt-4o",
+      "tokens_used": 2747,
+      "accuracy_method": "llm"
     },
     {
       "entry_id": "public_health_004",
-      "question": "How might interdisciplinary knowledge enhance the effectiveness of a health education specialist in ...",
-      "confidence": 0.415,
-      "accuracy": 0.246,
-      "is_uncertain": 1,
-      "retrieval_recall": 0.0,
-      "has_hedging": 0
+      "question": "How might interdisciplinary knowledge enhance the effectiveness of a health education specialist in addressing obesity-related health issues?",
+      "gold_answer": "Interdisciplinary knowledge allows health education specialists to understand and address the multifaceted factors contributing to obesity, such as mental health and genetics, enabling them to develop more comprehensive and effective health promotion strategies.",
+      "retrieved_docs": [
+        {
+          "url": "https://nursing.maryville.edu/blog/certified-health-education-specialist",
+          "domain": "nursing.maryville.edu",
+          "category": "reliable"
+        },
+        {
+          "url": "https://www.scuhs.edu/certificates/health-education-certificate/",
+          "domain": "scuhs.edu",
+          "category": "reliable"
+        },
+        {
+          "url": "https://www.snhu.edu/about-us/newsroom/health/how-do-i-become-a-certified-health-education-specialist",
+          "domain": "snhu.edu",
+          "category": "reliable"
+        },
+        {
+          "url": "https://www.waldenu.edu/online-masters-programs/ms-in-health-education-and-promotion/resource/what-is-ches-certification",
+          "domain": "waldenu.edu",
+          "category": "reliable"
+        },
+        {
+          "url": "https://wellwisp.com/why-obesity-is-not-a-disease/",
+          "domain": "wellwisp.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://hhd.fullerton.edu/pubh/current-student/ches-cph.html",
+          "domain": "hhd.fullerton.edu",
+          "category": "reliable"
+        },
+        {
+          "url": "https://www.linkedin.com/pulse/new-page-book-weight-loss-health-and-wellness-marketing-expert-mpzff",
+          "domain": "linkedin.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://reddit.com/r/conspiracy/comments/16ailcn/2_years_of_compiled_reddit_data_on_vaccine_side/",
+          "domain": "reddit.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://www.cardiosmart.org/news/2017/6/lack-of-evidence-on-herbal-remedies-and-heart-disease",
+          "domain": "cardiosmart.org",
+          "category": "distraction"
+        },
+        {
+          "url": "https://clinphytoscience.springeropen.com/articles/10.1186/s40816-021-00294-0",
+          "domain": "clinphytoscience.springeropen.com",
+          "category": "distraction"
+        }
+      ],
+      "relevant_docs": [
+        "https://nursing.maryville.edu/blog/certified-health-education-specialist",
+        "https://www.scuhs.edu/certificates/health-education-certificate/",
+        "https://www.snhu.edu/about-us/newsroom/health/how-do-i-become-a-certified-health-education-specialist",
+        "https://www.waldenu.edu/online-masters-programs/ms-in-health-education-and-promotion/resource/what-is-ches-certification",
+        "https://wellwisp.com/why-obesity-is-not-a-disease/"
+      ],
+      "confidence": 0.7125,
+      "accuracy": 0.9,
+      "prediction_text": "Interdisciplinary knowledge likely enhances a health education specialist's effectiveness in addressing obesity-related issues by integrating insights from psychology, epidemiology, community health, and technology. This broad understanding can help design comprehensive programs that address behavioral, social, and environmental factors influencing obesity, as suggested by the focus on psycho-social aspects, community initiatives, and technology in the sources.",
+      "continuous_uncertainty": 0.24400000000000002,
+      "is_uncertain": "False",
+      "human_confidence": "None",
+      "no_retrieval_confidence": 0.5,
+      "no_retrieval_accuracy": 0.3,
+      "model": "gpt-4o",
+      "tokens_used": 2525,
+      "accuracy_method": "llm"
     },
     {
       "entry_id": "public_health_005",
-      "question": "What was a major societal influence that led to the establishment of a publicly accessible database ...",
-      "confidence": 0.415,
-      "accuracy": 0.36,
-      "is_uncertain": 1,
-      "retrieval_recall": 0.0,
-      "has_hedging": 0
+      "question": "What was a major societal influence that led to the establishment of a publicly accessible database of clinical trials in the United States?",
+      "gold_answer": "Advocacy from HIV-infected individuals in the gay community significantly influenced the establishment of a publicly accessible database of clinical trials, as they demanded better access to clinical trials.",
+      "retrieved_docs": [
+        {
+          "url": "https://www.investopedia.com/terms/f/fda.asp",
+          "domain": "investopedia.com",
+          "category": "reliable"
+        },
+        {
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10023071/",
+          "domain": "pmc.ncbi.nlm.nih.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://www.nih.gov/health-information/nih-clinical-research-trials-you/basics",
+          "domain": "nih.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3272827/",
+          "domain": "pmc.ncbi.nlm.nih.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://reddit.com/r/Supplements/comments/ojqn5v/what_i_doctor_really_think_when_you_come_to_me/",
+          "domain": "reddit.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://extendedstudies.ucsd.edu/news-events/extended-studies-blog/learning-to-navigate-the-four-phases-of-clinical-trials",
+          "domain": "extendedstudies.ucsd.edu",
+          "category": "reliable"
+        },
+        {
+          "url": "https://reddit.com/r/nutrition/comments/1ineoqk/are_any_protein_powders_safe/",
+          "domain": "reddit.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://reddit.com/r/nutrition/comments/hahelq/which_frying_oils_are_best_smoke_point_actually/",
+          "domain": "reddit.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://www.cdc.gov/school-nutrition/education/index.html",
+          "domain": "cdc.gov",
+          "category": "distraction"
+        },
+        {
+          "url": "https://www.ielts.net/impact-of-nutrition-on-public-health/",
+          "domain": "ielts.net",
+          "category": "distraction"
+        }
+      ],
+      "relevant_docs": [
+        "https://www.investopedia.com/terms/f/fda.asp",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC10023071/",
+        "https://www.nih.gov/health-information/nih-clinical-research-trials-you/basics",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC3272827/",
+        "https://reddit.com/r/Supplements/comments/ojqn5v/what_i_doctor_really_think_when_you_come_to_me/"
+      ],
+      "confidence": 0.7125,
+      "accuracy": 0.3,
+      "prediction_text": "The establishment of a publicly accessible database of clinical trials in the United States was likely influenced by the need for transparency and ethical oversight in clinical trials, as highlighted in Source 4. This source emphasizes the importance of rigorous methodology and ethical principles in trial design and oversight, which could drive the demand for accessible trial information to ensure public trust and safety.",
+      "continuous_uncertainty": 0.22000000000000003,
+      "is_uncertain": "False",
+      "human_confidence": "None",
+      "no_retrieval_confidence": 0.5,
+      "no_retrieval_accuracy": 0.3,
+      "model": "gpt-4o",
+      "tokens_used": 2606,
+      "accuracy_method": "llm"
     },
     {
       "entry_id": "public_health_006",
-      "question": "Why is the fortification of cereal grains with folic acid considered a significant public health int...",
-      "confidence": 0.415,
-      "accuracy": 0.507,
-      "is_uncertain": 1,
-      "retrieval_recall": 0.0,
-      "has_hedging": 0
+      "question": "Why is the fortification of cereal grains with folic acid considered a significant public health intervention?",
+      "gold_answer": "The fortification of cereal grains with folic acid is considered a significant public health intervention because it helps reduce the occurrence of neural tube defects (NTDs) in newborns, addressing a critical health need by ensuring that more women of childbearing age receive adequate folic acid, which is essential for fetal development.",
+      "retrieved_docs": [
+        {
+          "url": "https://www.healthline.com/health/pregnancy/pregnancy-symptoms-week-1",
+          "domain": "healthline.com",
+          "category": "reliable"
+        },
+        {
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9875360/",
+          "domain": "pmc.ncbi.nlm.nih.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9505829/",
+          "domain": "pmc.ncbi.nlm.nih.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://www.cdc.gov/folic-acid/hcp/clinical-overview/index.html",
+          "domain": "cdc.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://wellwisp.com/how-much-folate-before-pregnancy/",
+          "domain": "wellwisp.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://edis.ifas.ufl.edu/publication/fs265",
+          "domain": "edis.ifas.ufl.edu",
+          "category": "reliable"
+        },
+        {
+          "url": "https://wellwisp.com/folic-acid-how-many-mg-per-day/",
+          "domain": "wellwisp.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://snuggymom.com/how-much-folic-acid-is-too-much-pregnant/",
+          "domain": "snuggymom.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://www.cambridge.org/core/journals/journal-of-nutritional-science/article/impact-of-glutenfree-diet-gfd-on-some-of-cardiovascular-risk-factors-a-systematic-review-and-metaanalysis/3F53DCDE63A9761A3E51F27BB2DE08E6",
+          "domain": "cambridge.org",
+          "category": "distraction"
+        },
+        {
+          "url": "https://www.mdpi.com/2072-6643/16/14/2265",
+          "domain": "mdpi.com",
+          "category": "distraction"
+        }
+      ],
+      "relevant_docs": [
+        "https://www.healthline.com/health/pregnancy/pregnancy-symptoms-week-1",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC9875360/",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC9505829/",
+        "https://www.cdc.gov/folic-acid/hcp/clinical-overview/index.html",
+        "https://wellwisp.com/how-much-folate-before-pregnancy/"
+      ],
+      "confidence": 0.9246426903250267,
+      "accuracy": 0.9,
+      "prediction_text": "The fortification of cereal grains with folic acid is considered a significant public health intervention because it is a cost-effective way to reduce micronutrient deficiencies and prevent neural tube defects (NTDs). It is relatively inexpensive, with significant cost savings reported, such as $11.80 saved for every $1.00 spent in Chile, and a cost-benefit ratio of 30 to 1 in South Africa (Source 2).",
+      "continuous_uncertainty": 0.23200000000000004,
+      "is_uncertain": "False",
+      "human_confidence": "None",
+      "no_retrieval_confidence": 0.5,
+      "no_retrieval_accuracy": 0.3,
+      "model": "gpt-4o",
+      "tokens_used": 2997,
+      "accuracy_method": "llm"
     },
     {
       "entry_id": "public_health_007",
       "question": "Why might measles outbreaks occur in a country where the disease has been officially eliminated?",
-      "confidence": 0.415,
-      "accuracy": 0.428,
-      "is_uncertain": 1,
-      "retrieval_recall": 0.0,
-      "has_hedging": 0
+      "gold_answer": "Measles outbreaks can occur in a country where the disease has been officially eliminated due to its reintroduction by unvaccinated travelers and subsequent spread in under-immunized communities.",
+      "retrieved_docs": [
+        {
+          "url": "https://www.nbcnews.com/health/health-news/thousands-possibly-exposed-measles-texas-outbreak-grows-rcna194191",
+          "domain": "nbcnews.com",
+          "category": "reliable"
+        },
+        {
+          "url": "https://cdphe.colorado.gov/dcphr/communicable-disease-manual/measles",
+          "domain": "cdphe.colorado.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://www.who.int/news-room/fact-sheets/detail/measles",
+          "domain": "who.int",
+          "category": "reliable"
+        },
+        {
+          "url": "https://www.cdc.gov/han/php/notices/han00522.html",
+          "domain": "cdc.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://snuggymom.com/what-are-red-measles/",
+          "domain": "snuggymom.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://www.cdc.gov/surv-manual/php/table-of-contents/chapter-7-measles.html",
+          "domain": "cdc.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://wellwisp.com/what-is-measles-incubation-period/",
+          "domain": "wellwisp.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://snuggymom.com/how-do-measles-start-out/",
+          "domain": "snuggymom.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://www.academia.edu/65674813/HOW_URBAN_POLLUTION_AFFECTS_RESPIRATORY_DISEASE",
+          "domain": "academia.edu",
+          "category": "distraction"
+        },
+        {
+          "url": "https://ajpojournals.org/journals/index.php/EJHS/article/view/2490",
+          "domain": "ajpojournals.org",
+          "category": "distraction"
+        }
+      ],
+      "relevant_docs": [
+        "https://www.nbcnews.com/health/health-news/thousands-possibly-exposed-measles-texas-outbreak-grows-rcna194191",
+        "https://cdphe.colorado.gov/dcphr/communicable-disease-manual/measles",
+        "https://www.who.int/news-room/fact-sheets/detail/measles",
+        "https://www.cdc.gov/han/php/notices/han00522.html",
+        "https://snuggymom.com/what-are-red-measles/"
+      ],
+      "confidence": 0.7125,
+      "accuracy": 0.9,
+      "prediction_text": "Measles outbreaks in a country where the disease has been officially eliminated might occur due to low immunization rates, vaccine hesitancy, and immunity gaps. Unvaccinated individuals, especially children, are at risk, and imported cases can lead to outbreaks if rapid public health responses are not implemented. Strengthening immunization programs and surveillance systems is crucial to prevent such outbreaks (Sources 3, 5, 6).",
+      "continuous_uncertainty": 0.23600000000000004,
+      "is_uncertain": "False",
+      "human_confidence": "None",
+      "no_retrieval_confidence": 0.5,
+      "no_retrieval_accuracy": 0.3,
+      "model": "gpt-4o",
+      "tokens_used": 2503,
+      "accuracy_method": "llm"
     },
     {
       "entry_id": "public_health_008",
-      "question": "Can an adult born before 1957 be considered immune to measles, mumps, and rubella without vaccinatio...",
-      "confidence": 0.415,
-      "accuracy": 0.55,
-      "is_uncertain": 1,
-      "retrieval_recall": 0.0,
-      "has_hedging": 0
+      "question": "Can an adult born before 1957 be considered immune to measles, mumps, and rubella without vaccination, and why might this be the case?",
+      "gold_answer": "Yes, an adult born before 1957 can be considered immune to measles, mumps, and rubella without vaccination because it is presumed they were exposed to and developed natural immunity due to the prevalence of these diseases before the introduction of widespread vaccination programs.",
+      "retrieved_docs": [
+        {
+          "url": "https://edition.cnn.com/2019/05/07/health/measles-rockland-county/",
+          "domain": "edition.cnn.com",
+          "category": "reliable"
+        },
+        {
+          "url": "https://www.cdc.gov/measles/vaccines/index.html",
+          "domain": "cdc.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://www.cdc.gov/vaccines/hcp/imz-best-practices/timing-spacing-immunobiologics.html",
+          "domain": "cdc.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-notes.html",
+          "domain": "cdc.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://wellwisp.com/what-are-the-recommended-ages-for-the-mmr-vaccine/",
+          "domain": "wellwisp.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://www.cdc.gov/mumps/vaccines/index.html",
+          "domain": "cdc.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://snuggymom.com/what-age-are-kids-vaccinated-for-measles/",
+          "domain": "snuggymom.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://childrenshealthdefense.org/defender/new-mexico-health-officials-adult-died-measles/",
+          "domain": "childrenshealthdefense.org",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12266402/",
+          "domain": "pmc.ncbi.nlm.nih.gov",
+          "category": "distraction"
+        },
+        {
+          "url": "https://www.cdc.gov/respiratory-viruses/data/vaccination-trends.html",
+          "domain": "cdc.gov",
+          "category": "distraction"
+        }
+      ],
+      "relevant_docs": [
+        "https://edition.cnn.com/2019/05/07/health/measles-rockland-county/",
+        "https://www.cdc.gov/measles/vaccines/index.html",
+        "https://www.cdc.gov/vaccines/hcp/imz-best-practices/timing-spacing-immunobiologics.html",
+        "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-notes.html",
+        "https://wellwisp.com/what-are-the-recommended-ages-for-the-mmr-vaccine/"
+      ],
+      "confidence": 0.7125,
+      "accuracy": 0.9,
+      "prediction_text": "An adult born before 1957 is likely considered immune to measles, mumps, and rubella without vaccination because they were probably exposed to these diseases naturally during childhood, as widespread vaccination was not available until later. This natural exposure likely provided immunity. However, the sources do not explicitly confirm this, so this conclusion is based on general historical context.",
+      "continuous_uncertainty": 0.21200000000000005,
+      "is_uncertain": "False",
+      "human_confidence": "None",
+      "no_retrieval_confidence": 0.5,
+      "no_retrieval_accuracy": 0.3,
+      "model": "gpt-4o",
+      "tokens_used": 2686,
+      "accuracy_method": "llm"
     },
     {
       "entry_id": "public_health_009",
       "question": "How does the source of dietary sodium primarily differ from common perceptions about its origin?",
-      "confidence": 0.415,
-      "accuracy": 0.461,
-      "is_uncertain": 1,
-      "retrieval_recall": 0.0,
-      "has_hedging": 0
+      "gold_answer": "While many people think most dietary sodium comes from table salt added during cooking or eating, the majority actually comes from packaged and prepared foods.",
+      "retrieved_docs": [
+        {
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10614668/",
+          "domain": "pmc.ncbi.nlm.nih.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11279030/",
+          "domain": "pmc.ncbi.nlm.nih.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://www.mayoclinic.org/healthy-lifestyle/nutrition-and-healthy-eating/in-depth/sodium/art-20045479",
+          "domain": "mayoclinic.org",
+          "category": "reliable"
+        },
+        {
+          "url": "https://www.cdc.gov/salt/about/index.html",
+          "domain": "cdc.gov",
+          "category": "reliable"
+        },
+        {
+          "url": "https://reddit.com/r/Supplements/comments/1lmvkqu/magnesium_is_great_but_are_you_getting_enough/",
+          "domain": "reddit.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://lpi.oregonstate.edu/mic/minerals/sodium",
+          "domain": "lpi.oregonstate.edu",
+          "category": "reliable"
+        },
+        {
+          "url": "https://www.verywellhealth.com/sodium-sodium-or-salt-sodium-functions-sodium-and-diet-5085108",
+          "domain": "verywellhealth.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://reddit.com/r/Fitness/comments/4wgai3/the_keto_diet_is_a_very_low_carb_high_fat_diet/",
+          "domain": "reddit.com",
+          "category": "unreliable"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/List_of_effects",
+          "domain": "en.wikipedia.org",
+          "category": "distraction"
+        },
+        {
+          "url": "https://salinity.oceansciences.org/highlights10.htm",
+          "domain": "salinity.oceansciences.org",
+          "category": "distraction"
+        }
+      ],
+      "relevant_docs": [
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC10614668/",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC11279030/",
+        "https://www.mayoclinic.org/healthy-lifestyle/nutrition-and-healthy-eating/in-depth/sodium/art-20045479",
+        "https://www.cdc.gov/salt/about/index.html",
+        "https://reddit.com/r/Supplements/comments/1lmvkqu/magnesium_is_great_but_are_you_getting_enough/"
+      ],
+      "confidence": 0.9815208113831374,
+      "accuracy": 1.0,
+      "prediction_text": "The primary source of dietary sodium differs from common perceptions as most sodium consumed comes from processed and restaurant foods, rather than from salt added during cooking or at the table (Source 4).",
+      "continuous_uncertainty": 0.24000000000000005,
+      "is_uncertain": "False",
+      "human_confidence": "None",
+      "no_retrieval_confidence": 0.5,
+      "no_retrieval_accuracy": 0.3,
+      "model": "gpt-4o",
+      "tokens_used": 2722,
+      "accuracy_method": "llm"
     }
   ]
 }

@@ -2054,6 +2054,265 @@ def calculate_correlation_cached(x_values: List[float], y_values: List[float],
 
 
 # =====================================================================
+# LLM-BASED GRADING FUNCTIONS
+# =====================================================================
+
+import openai
+import json
+import time
+from typing import Optional, Dict, Any, List
+
+class LLMGrader:
+    """LLM-based grading system for evaluating answer accuracy."""
+    
+    def __init__(self, api_key: str, model: str = "gpt-4o", temperature: float = 0.0):
+        """
+        Initialize LLM grader.
+        
+        Args:
+            api_key: OpenAI API key
+            model: Model to use for grading (default: gpt-4o)
+            temperature: Temperature for grading (default: 0.0 for consistency)
+        """
+        self.client = openai.OpenAI(api_key=api_key)
+        self.model = model
+        self.temperature = temperature
+        self.grading_cache = {}  # Cache for grading results
+        
+    def create_grading_prompt(self, question: str, prediction: str, gold_answer: str, 
+                            context: Optional[str] = None) -> str:
+        """
+        Create a grading prompt for the LLM.
+        
+        Args:
+            question: The original question
+            prediction: The model's prediction
+            gold_answer: The correct answer
+            context: Optional context information
+            
+        Returns:
+            Formatted grading prompt
+        """
+        prompt = f"""You are an expert evaluator tasked with grading the accuracy of AI model responses to questions. Your job is to provide a numerical accuracy score between 0.0 and 1.0, where:
+- 1.0 = Perfectly correct answer
+- 0.8-0.9 = Mostly correct with minor issues
+- 0.6-0.7 = Partially correct with some errors
+- 0.4-0.5 = Somewhat correct but significant issues
+- 0.2-0.3 = Mostly incorrect but some relevant content
+- 0.0-0.1 = Completely incorrect or irrelevant
+
+Question: {question}
+
+Correct Answer: {gold_answer}
+
+Model's Answer: {prediction}"""
+
+        if context:
+            prompt += f"\n\nAdditional Context: {context}"
+            
+        prompt += """
+
+Please evaluate the model's answer and provide:
+1. An accuracy score between 0.0 and 1.0
+2. A brief explanation of your reasoning
+
+IMPORTANT: Respond ONLY with valid JSON in the following format (no markdown, no code blocks, no additional text):
+{
+    "accuracy_score": 0.85,
+    "explanation": "The answer is mostly correct but includes some additional irrelevant information."
+}"""
+        
+        return prompt
+    
+    def grade_answer(self, question: str, prediction: str, gold_answer: str, 
+                    context: Optional[str] = None, use_cache: bool = True) -> Dict[str, Any]:
+        """
+        Grade an answer using LLM.
+        
+        Args:
+            question: The original question
+            prediction: The model's prediction
+            gold_answer: The correct answer
+            context: Optional context information
+            use_cache: Whether to use cached results
+            
+        Returns:
+            Dictionary with accuracy score and explanation
+        """
+        # Create cache key
+        cache_key = f"{hash(question)}_{hash(prediction)}_{hash(gold_answer)}"
+        
+        if use_cache and cache_key in self.grading_cache:
+            return self.grading_cache[cache_key]
+        
+        try:
+            # Create grading prompt
+            prompt = self.create_grading_prompt(question, prediction, gold_answer, context)
+            
+            # Call LLM
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=self.temperature,
+                max_tokens=500
+            )
+            
+            response_text = response.choices[0].message.content.strip()
+            
+            # Clean response text - remove markdown code blocks if present
+            if response_text.startswith('```json'):
+                response_text = response_text[7:]  # Remove ```json
+            if response_text.startswith('```'):
+                response_text = response_text[3:]   # Remove ```
+            if response_text.endswith('```'):
+                response_text = response_text[:-3]  # Remove trailing ```
+            
+            response_text = response_text.strip()
+            
+            # Parse JSON response
+            try:
+                result = json.loads(response_text)
+                accuracy_score = float(result.get('accuracy_score', 0.0))
+                explanation = result.get('explanation', 'No explanation provided')
+                
+                # Validate accuracy score
+                accuracy_score = max(0.0, min(1.0, accuracy_score))
+                
+                grading_result = {
+                    'accuracy_score': accuracy_score,
+                    'explanation': explanation,
+                    'grading_method': 'llm',
+                    'model_used': self.model,
+                    'cached': False
+                }
+                
+            except json.JSONDecodeError as e:
+                # Try to extract accuracy score from the response text even if JSON parsing fails
+                accuracy_score = 0.5  # Default fallback
+                explanation = f'Failed to parse LLM response: {response_text[:200]}...'
+                
+                # Try to extract accuracy score using regex
+                import re
+                score_match = re.search(r'"accuracy_score":\s*([0-9.]+)', response_text)
+                if score_match:
+                    try:
+                        accuracy_score = float(score_match.group(1))
+                        accuracy_score = max(0.0, min(1.0, accuracy_score))
+                        explanation = f'Extracted score from malformed JSON: {response_text[:200]}...'
+                    except ValueError:
+                        pass
+                
+                grading_result = {
+                    'accuracy_score': accuracy_score,
+                    'explanation': explanation,
+                    'grading_method': 'llm_fallback',
+                    'model_used': self.model,
+                    'cached': False,
+                    'json_error': str(e)
+                }
+            
+            # Cache the result
+            if use_cache:
+                self.grading_cache[cache_key] = grading_result
+                grading_result['cached'] = True
+            
+            return grading_result
+            
+        except Exception as e:
+            # Fallback to soft accuracy if LLM call fails
+            soft_score = calculate_soft_accuracy(prediction, [gold_answer])
+            
+            return {
+                'accuracy_score': soft_score,
+                'explanation': f'LLM grading failed, used soft accuracy: {str(e)}',
+                'grading_method': 'soft_accuracy_fallback',
+                'model_used': 'soft_accuracy',
+                'cached': False,
+                'error': str(e)
+            }
+    
+    def grade_batch(self, questions: List[str], predictions: List[str], 
+                   gold_answers: List[str], contexts: Optional[List[str]] = None,
+                   delay: float = 1.0) -> List[Dict[str, Any]]:
+        """
+        Grade multiple answers in batch.
+        
+        Args:
+            questions: List of questions
+            predictions: List of predictions
+            gold_answers: List of gold answers
+            contexts: Optional list of contexts
+            delay: Delay between API calls (seconds)
+            
+        Returns:
+            List of grading results
+        """
+        if len(questions) != len(predictions) or len(predictions) != len(gold_answers):
+            raise ValueError("All input lists must have the same length")
+        
+        if contexts and len(contexts) != len(questions):
+            raise ValueError("Contexts list must have same length as other lists")
+        
+        results = []
+        for i, (question, prediction, gold_answer) in enumerate(zip(questions, predictions, gold_answers)):
+            context = contexts[i] if contexts else None
+            
+            result = self.grade_answer(question, prediction, gold_answer, context)
+            results.append(result)
+            
+            # Rate limiting
+            if i < len(questions) - 1:  # Don't delay after last call
+                time.sleep(delay)
+        
+        return results
+    
+    def clear_cache(self):
+        """Clear the grading cache."""
+        self.grading_cache.clear()
+    
+    def get_cache_stats(self) -> Dict[str, int]:
+        """Get cache statistics."""
+        return {
+            'cache_size': len(self.grading_cache),
+            'cache_keys': list(self.grading_cache.keys())[:10]  # First 10 keys
+        }
+
+
+def create_llm_grader(api_key: str, model: str = "gpt-4o", temperature: float = 0.0) -> LLMGrader:
+    """
+    Create an LLM grader instance.
+    
+    Args:
+        api_key: OpenAI API key
+        model: Model to use for grading
+        temperature: Temperature for grading
+        
+    Returns:
+        LLMGrader instance
+    """
+    return LLMGrader(api_key, model, temperature)
+
+
+def calculate_llm_accuracy(question: str, prediction: str, gold_answer: str, 
+                          grader: LLMGrader, context: Optional[str] = None) -> float:
+    """
+    Calculate accuracy using LLM grading.
+    
+    Args:
+        question: The original question
+        prediction: The model's prediction
+        gold_answer: The correct answer
+        grader: LLMGrader instance
+        context: Optional context information
+        
+    Returns:
+        Accuracy score between 0.0 and 1.0
+    """
+    result = grader.grade_answer(question, prediction, gold_answer, context)
+    return result['accuracy_score']
+
+
+# =====================================================================
 # SOFT ACCURACY FUNCTIONS
 # =====================================================================
 

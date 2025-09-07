@@ -41,7 +41,10 @@ from metrics import (
     calm_rag_h5_metrics,
     expected_calibration_error,
     calculate_continuous_uncertainty,
-    calculate_soft_accuracy
+    calculate_soft_accuracy,
+    LLMGrader,
+    create_llm_grader,
+    calculate_llm_accuracy
 )
 from prompts import format_prompt, extract_confidence_from_response
 
@@ -325,10 +328,14 @@ class RAGModelEvaluator:
     """Evaluates RAG models on the CALM-RAG dataset."""
     
     def __init__(self, dataset_path: str = "calmrag_dataset.json", output_dir: str = "evaluation_results", 
-                 use_soft_accuracy: bool = True):
+                 use_soft_accuracy: bool = True, use_llm_grading: bool = False, 
+                 llm_grading_model: str = "gpt-4o", llm_grading_temperature: float = 0.0):
         self.dataset_path = dataset_path
         self.output_dir = output_dir
         self.use_soft_accuracy = use_soft_accuracy
+        self.use_llm_grading = use_llm_grading
+        self.llm_grading_model = llm_grading_model
+        self.llm_grading_temperature = llm_grading_temperature
         self.dataset = self._load_dataset()
         
         # Create output directory
@@ -340,6 +347,21 @@ class RAGModelEvaluator:
         self.google_client = None
         self.mistral_client = None
         self.llama_client = None
+        
+        # Initialize LLM grader if enabled
+        self.llm_grader = None
+        if self.use_llm_grading:
+            openai_api_key = os.getenv("OPENAI_API_KEY")
+            if openai_api_key:
+                self.llm_grader = create_llm_grader(
+                    openai_api_key, 
+                    self.llm_grading_model, 
+                    self.llm_grading_temperature
+                )
+                print(f"LLM grader initialized with model: {self.llm_grading_model}")
+            else:
+                print("Warning: LLM grading enabled but no OpenAI API key found. Falling back to soft accuracy.")
+                self.use_llm_grading = False
         
         # Calibration state
         self.calibration_function = None
@@ -420,9 +442,18 @@ class RAGModelEvaluator:
         # Calculate average probability (higher = more confident)
         avg_prob = np.mean(probs)
         
-        # Normalize to 0-1 range (rough calibration)
-        # This is a simple approach - will be refined by isotonic regression
-        confidence = min(1.0, avg_prob * 2)
+        # Better normalization that preserves more variation
+        # Use the geometric mean of probabilities for better sensitivity
+        if len(probs) > 1:
+            # Geometric mean gives more sensitivity to low probabilities
+            geom_mean = np.exp(np.mean([np.log(p) for p in probs]))
+            confidence = geom_mean
+        else:
+            confidence = avg_prob
+        
+        # Scale to 0-1 range with more sensitivity
+        # Most probabilities are between 0.1-0.9, so we can use a more direct mapping
+        confidence = max(0.0, min(1.0, confidence))
         
         return confidence
     
@@ -456,17 +487,23 @@ class RAGModelEvaluator:
         
         return calibrate_confidence
     
-    def update_calibration(self, evaluation_results: List[Dict[str, Any]]):
+    def update_calibration(self, evaluation_results: List[Dict[str, Any]], raw_results: List[Dict[str, Any]]):
         """
         Update calibration function using evaluation results.
+        Uses raw_results (with log_probs) for calibration, not the cleaned evaluation_results.
         """
         log_probs_list = []
         accuracies = []
         
-        for result in evaluation_results:
+        # Use raw_results for log_probs and evaluation_results for accuracy values
+        for i, result in enumerate(raw_results):
             if result and 'log_probs' in result and result['log_probs']:
                 log_probs_list.append(result['log_probs'])
-                accuracies.append(result.get('accuracy', 0.5))
+                # Get accuracy from evaluation_results, not raw_results
+                if i < len(evaluation_results):
+                    accuracies.append(evaluation_results[i].get('accuracy', 0.5))
+                else:
+                    accuracies.append(0.5)
         
         if len(log_probs_list) >= 10:  # Need minimum data for calibration
             self.calibration_function = self.calibrate_log_probs_to_confidence(
@@ -781,17 +818,59 @@ class RAGModelEvaluator:
         # Calculate accuracy by comparing prediction with gold answer
         gold_answer = entry.get('gold_answer', '')
         prediction_text = result['response']
+        question = entry.get('question', '')
         
         if gold_answer and prediction_text:
-            if self.use_soft_accuracy:
+            if self.use_llm_grading and self.llm_grader:
+                # Use LLM grading for more nuanced evaluation
+                try:
+                    # Create context from retrieved sources
+                    context_parts = []
+                    for doc in retrieved_docs:
+                        if isinstance(doc, dict) and 'url' in doc:
+                            context_parts.append(f"Source: {doc['url']}")
+                    
+                    context = "\n".join(context_parts) if context_parts else None
+                    
+                    grading_result = self.llm_grader.grade_answer(
+                        question, prediction_text, gold_answer, context
+                    )
+                    accuracy = grading_result['accuracy_score']
+                    grading_info = grading_result
+                except Exception as e:
+                    print(f"LLM grading failed for entry {entry['id']}: {e}")
+                    # Fallback to soft accuracy
+                    accuracy = calculate_soft_accuracy(prediction_text, [gold_answer])
+                    grading_info = {
+                        'accuracy_score': accuracy,
+                        'explanation': f'LLM grading failed, used soft accuracy: {str(e)}',
+                        'grading_method': 'soft_accuracy_fallback',
+                        'error': str(e)
+                    }
+            elif self.use_soft_accuracy:
                 # Use soft accuracy to compare prediction with gold answer
                 accuracy = calculate_soft_accuracy(prediction_text, [gold_answer])
+                grading_info = {
+                    'accuracy_score': accuracy,
+                    'explanation': 'Used soft accuracy calculation',
+                    'grading_method': 'soft_accuracy'
+                }
             else:
                 # Use binary accuracy (exact match)
                 accuracy = 1.0 if prediction_text.strip().lower() == gold_answer.strip().lower() else 0.0
+                grading_info = {
+                    'accuracy_score': accuracy,
+                    'explanation': 'Used binary accuracy (exact match)',
+                    'grading_method': 'binary_accuracy'
+                }
         else:
             # Fallback to confidence-based heuristic if no gold answer available
             accuracy = 0.8 if result['confidence'] and result['confidence'] > 0.7 else 0.5
+            grading_info = {
+                'accuracy_score': accuracy,
+                'explanation': 'No gold answer available, used confidence-based heuristic',
+                'grading_method': 'confidence_heuristic'
+            }
         
         evaluation_result = {
             'entry_id': entry['id'],
@@ -802,7 +881,7 @@ class RAGModelEvaluator:
             'confidence': result['confidence'] or 0.5,
             'accuracy': accuracy,
             'prediction_text': result['response'],
-            'log_probs': result.get('log_probs', []),  # Store log probabilities
+            # Note: log_probs removed from raw results to reduce file size
             'continuous_uncertainty': continuous_uncertainty,  # New continuous uncertainty score
             'is_uncertain': bool(result.get('confidence', 0) < 0.6) if result.get('confidence') is not None else True,
             'human_confidence': entry.get('human_confidence'),
@@ -810,16 +889,10 @@ class RAGModelEvaluator:
             'no_retrieval_accuracy': 0.3,    # Mock value
             'model': model_name,
             'tokens_used': result['tokens_used'],
-            'accuracy_method': 'soft_accuracy' if self.use_soft_accuracy else 'binary_accuracy',
-            'accuracy_calculation': {
-                'method': 'soft_accuracy' if self.use_soft_accuracy else 'binary_accuracy',
-                'gold_answer': gold_answer,
-                'prediction': prediction_text,
-                'score': accuracy
-            }
+            'accuracy_method': grading_info.get('grading_method', 'unknown')
         }
         
-        return evaluation_result
+        return evaluation_result, result  # Return both cleaned result and original model response
     
     def evaluate_model(self, model_name: str, max_entries: Optional[int] = None) -> Dict[str, Any]:
         """Evaluate a model on the dataset."""
@@ -831,13 +904,15 @@ class RAGModelEvaluator:
             dataset_subset = self.dataset
         
         results = []
+        original_model_responses = []
         successful_evaluations = 0
         
         for entry in tqdm(dataset_subset, desc=f"Evaluating {model_name}"):
             try:
-                result = self.evaluate_single_entry(entry, model_name)
-                if result:
-                    results.append(result)
+                evaluation_result, original_response = self.evaluate_single_entry(entry, model_name)
+                if evaluation_result:
+                    results.append(evaluation_result)
+                    original_model_responses.append(original_response)
                     successful_evaluations += 1
                 
                 # Rate limiting
@@ -854,14 +929,18 @@ class RAGModelEvaluator:
             print("No successful evaluations!")
             return {}
         
-        # Store original results
-        raw_results = results.copy()
-        print(f"Stored {len(raw_results)} original results for backup")
+        print(f"Stored {len(original_model_responses)} original model responses for backup")
         
         # Update calibration after collecting initial results
         if len(results) >= 10:
             print(f"Updating calibration with {len(results)} samples...")
-            self.update_calibration(results)
+            
+            # Clear LLM grader cache to ensure fresh accuracy calculations
+            if self.llm_grader:
+                print("Clearing LLM grader cache for fresh accuracy calculations...")
+                self.llm_grader.clear_cache()
+            
+            self.update_calibration(results, original_model_responses)  # Pass original model responses for calibration
             
             # Re-evaluate with calibrated confidence if calibration was successful
             if self.is_calibrated:
@@ -871,9 +950,9 @@ class RAGModelEvaluator:
                 
                 for entry in tqdm(dataset_subset, desc=f"Re-evaluating {model_name} with calibration"):
                     try:
-                        result = self.evaluate_single_entry(entry, model_name)
-                        if result:
-                            calibrated_results.append(result)
+                        evaluation_result, original_response = self.evaluate_single_entry(entry, model_name)
+                        if evaluation_result:
+                            calibrated_results.append(evaluation_result)
                             successful_re_evaluations += 1
                         time.sleep(1)  # Rate limiting
                     except Exception as e:
@@ -883,12 +962,11 @@ class RAGModelEvaluator:
                 print(f"Re-evaluation completed: {successful_re_evaluations}/{len(dataset_subset)} entries successful")
                 
                 # Only use calibrated results if we have the same number as original
-                if len(calibrated_results) == len(raw_results):
+                if len(calibrated_results) == len(results):
                     results = calibrated_results
                     print("Using calibrated results for final metrics")
                 else:
-                    print(f"Warning: Re-evaluation incomplete ({len(calibrated_results)} vs {len(raw_results)}). Using raw results.")
-                    results = raw_results
+                    print(f"Warning: Re-evaluation incomplete ({len(calibrated_results)} vs {len(results)}). Using original results.")
         
         # Compute all metrics
         print("Computing CALM-RAG metrics...")
@@ -915,9 +993,9 @@ class RAGModelEvaluator:
             'successful_evaluations': successful_evaluations,
             'calibration_info': {
                 'was_calibrated': self.is_calibrated,
-                'raw_results_count': len(raw_results),
+                'raw_results_count': len(results),
                 'calibrated_results_count': len(results) if self.is_calibrated else 0,
-                'used_calibrated_results': len(results) == len(raw_results) if self.is_calibrated else False
+                'used_calibrated_results': self.is_calibrated
             },
             'calm_rag_metrics': calm_rag_metrics,
             'hypothesis_metrics': {
@@ -956,8 +1034,30 @@ class RAGModelEvaluator:
         
         # Save full results
         output_file = os.path.join(self.output_dir, f"{model_name}_evaluation.json")
-        with open(output_file, 'w') as f:
-            json.dump(evaluation_summary, f, indent=2)
+        
+        # Save with error handling for non-serializable objects
+        try:
+            with open(output_file, 'w') as f:
+                json.dump(evaluation_summary, f, indent=2)
+        except TypeError as e:
+            print(f"JSON serialization error: {e}")
+            print("Attempting to fix serialization issues...")
+            
+            # Recursively convert problematic objects to strings
+            def fix_serialization(obj):
+                if isinstance(obj, dict):
+                    return {k: fix_serialization(v) for k, v in obj.items()}
+                elif isinstance(obj, list):
+                    return [fix_serialization(item) for item in obj]
+                elif isinstance(obj, (bool, int, float, str)):
+                    return obj
+                else:
+                    return str(obj)
+            
+            evaluation_summary_fixed = fix_serialization(evaluation_summary)
+            
+            with open(output_file, 'w') as f:
+                json.dump(evaluation_summary_fixed, f, indent=2)
         
         # Save streamlined CALM-RAG report
         report_file = os.path.join(self.output_dir, f"{model_name}_calm_rag_report.json")
@@ -966,6 +1066,16 @@ class RAGModelEvaluator:
         
         print(f"Results saved to {output_file}")
         print(f"Streamlined CALM-RAG report saved to {report_file}")
+        
+        # Add grading statistics if using LLM grading
+        if self.use_llm_grading and self.llm_grader:
+            cache_stats = self.llm_grader.get_cache_stats()
+            evaluation_summary['grading_statistics'] = {
+                'grading_method': 'llm',
+                'model_used': self.llm_grading_model,
+                'cache_size': cache_stats['cache_size'],
+                'total_evaluations': len(results)
+            }
         
         return evaluation_summary
     
@@ -1028,10 +1138,21 @@ def main():
     print("CALM-RAG Model Evaluation")
     print("=" * 50)
     
-    # Initialize evaluator with soft accuracy enabled by default
-    evaluator = RAGModelEvaluator(use_soft_accuracy=True)
+    # Initialize evaluator with LLM grading enabled by default
+    evaluator = RAGModelEvaluator(
+        use_soft_accuracy=True, 
+        use_llm_grading=True,  
+        llm_grading_model="gpt-4o",
+        llm_grading_temperature=0.0
+    )
     
-    print(f"Using {'soft accuracy' if evaluator.use_soft_accuracy else 'binary accuracy'} for evaluation")
+    # Print grading method being used
+    if evaluator.use_llm_grading and evaluator.llm_grader:
+        print(f"Using LLM grading with model: {evaluator.llm_grading_model}")
+    elif evaluator.use_soft_accuracy:
+        print("Using soft accuracy for evaluation")
+    else:
+        print("Using binary accuracy for evaluation")
     print()
     
     # Try to get API keys
@@ -1059,20 +1180,32 @@ def main():
     
     print(f"Models to evaluate: {models_to_evaluate}")
     
-    # Evaluate models (start with small subset for testing)
-    print("\nStarting evaluation with first 10 entries for testing...")
+    # Evaluate single model with first 10 entries
+    print("\nStarting evaluation with first 10 entries...")
     
     try:
-        comparison = evaluator.compare_models(models_to_evaluate, max_entries=10)
+        # Evaluate just the first model (gpt-4o) with 10 entries
+        result = evaluator.evaluate_model("gpt-4o", max_entries=10)
         
-        if comparison:
+        if result:
             print("\nEvaluation completed successfully!")
             print(f"Results saved in: {evaluator.output_dir}/")
             
             # Print key findings
-            print("\nKey Findings:")
-            for model_name, performance in comparison['model_performance'].items():
-                print(f"  {model_name}: {performance['successful_evaluations']}/{performance['total_entries']} entries evaluated")
+            print(f"\nKey Findings:")
+            print(f"  Model: gpt-4o")
+            print(f"  Entries evaluated: {result['successful_evaluations']}/{result['total_entries']}")
+            print(f"  Success rate: {result['successful_evaluations']/result['total_entries']:.1%}")
+            
+            # Print some key metrics
+            calm_rag = result['calm_rag_metrics']
+            print(f"\nKey CALM-RAG Metrics:")
+            print(f"  Overconfidence Index: {calm_rag.get('h1_overconfidence_index', 'N/A'):.3f}")
+            print(f"  ECE with Retrieval: {calm_rag.get('h2_ece_with_retrieval', 'N/A'):.3f}")
+            print(f"  Hedge F1: {calm_rag.get('h3_hedge_f1', 'N/A'):.3f}")
+            print(f"  Expected Calibration Error: {calm_rag.get('h4_expected_calibration_error', 'N/A'):.3f}")
+        else:
+            print("Evaluation failed - no results returned")
         
     except Exception as e:
         print(f"Evaluation failed: {e}")
