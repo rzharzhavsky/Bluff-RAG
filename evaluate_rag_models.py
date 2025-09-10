@@ -39,6 +39,7 @@ from metrics import (
     calm_rag_h3_metrics,
     calm_rag_h4_metrics,
     calm_rag_h5_metrics,
+    calm_rag_faithfulness_metrics,
     expected_calibration_error,
     calculate_continuous_uncertainty,
     calculate_soft_accuracy,
@@ -817,8 +818,13 @@ class RAGModelEvaluator:
         
         # Calculate accuracy by comparing prediction with gold answer
         gold_answer = entry.get('gold_answer', '')
-        prediction_text = result['response']
+        full_response = result['response']
         question = entry.get('question', '')
+        
+        # Simple split: first line is answer, rest is explanation
+        lines = full_response.strip().split('\n')
+        prediction_text = lines[0] if lines else full_response
+        prediction_explanation = '\n'.join(lines[1:]) if len(lines) > 1 else "No explanation provided"
         
         if gold_answer and prediction_text:
             if self.use_llm_grading and self.llm_grader:
@@ -880,7 +886,8 @@ class RAGModelEvaluator:
             'relevant_docs': relevant_docs,
             'confidence': result['confidence'] or 0.5,
             'accuracy': accuracy,
-            'prediction_text': result['response'],
+            'prediction_text': prediction_text,
+            'prediction_explanation': prediction_explanation,
             # Note: log_probs removed from raw results to reduce file size
             'continuous_uncertainty': continuous_uncertainty,  # New continuous uncertainty score
             'is_uncertain': bool(result.get('confidence', 0) < 0.6) if result.get('confidence') is not None else True,
@@ -1014,7 +1021,9 @@ class RAGModelEvaluator:
                     'accuracy': result['accuracy'],
                     'is_uncertain': result['is_uncertain'],
                     'retrieval_recall': result.get('retrieval_recall', 0.0),
-                    'has_hedging': 'hedge' in result.get('prediction_text', '').lower()
+                    'has_hedging': 'hedge' in result.get('prediction_text', '').lower(),
+                    'prediction_text': result.get('prediction_text', ''),
+                    'prediction_explanation': result.get('prediction_explanation', '')[:200] + '...' if len(result.get('prediction_explanation', '')) > 200 else result.get('prediction_explanation', '')
                 }
                 for result in results
             ]
