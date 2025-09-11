@@ -1625,6 +1625,296 @@ def calm_rag_faithfulness_metrics(results: List[Dict[str, Any]]) -> Dict[str, fl
     return metrics
 
 
+# =============================================================================
+# AMBIGUITY SENSITIVITY INDEX (ASI) METRICS
+# =============================================================================
+
+def calculate_ambiguity_sensitivity_index(clear_entry: Dict[str, Any], ambiguous_entry: Dict[str, Any]) -> Dict[str, float]:
+    """
+    Calculate the Ambiguity Sensitivity Index (ASI) for a question with both clear and ambiguous evidence.
+    
+    ASI measures whether the model adapts appropriately when evidence is ambiguous, conflicting, or misleading
+    compared to when evidence is clear and credible.
+    
+    Args:
+        clear_entry: Dictionary containing clear set results with keys:
+                    - prediction_text: model's answer
+                    - confidence: scalar probability 0-1
+                    - prediction_explanation: model reasoning (optional)
+                    - verbal_uncertainty_flags: list of hedging words
+                    - faithfulness_score: 0, 0.5, or 1
+                    - abstain_flag: true if model explicitly abstained
+                    - set_type: "clear"
+        ambiguous_entry: Dictionary containing ambiguous set results with same keys plus:
+                        - ambiguity_type: "unanswerable" or "conflicting"
+    
+    Returns:
+        Dictionary containing ASI components and final score:
+        - cdr: Confidence Dampening Ratio (0-1)
+        - vhl: Verbal Hedging Lift (0-1)
+        - ha: Hallucination Avoidance (0-1)
+        - aq: Abstention Quality (0-1)
+        - asi: Final ASI score (0-1)
+        - components: Detailed breakdown for debugging
+    """
+    
+    # Extract confidence scores with fallback handling
+    conf_c = clear_entry.get('confidence', 0.0)
+    conf_a = ambiguous_entry.get('confidence', 0.0)
+    
+    # Ensure confidence values are valid floats in [0,1] range
+    conf_c = max(0.0, min(1.0, float(conf_c) if conf_c is not None else 0.0))
+    conf_a = max(0.0, min(1.0, float(conf_a) if conf_a is not None else 0.0))
+    
+    # 1. CONFIDENCE DAMPENING RATIO (CDR)
+    # Expect confidence to drop on ambiguous set compared to clear set
+    if conf_c == 0:
+        cdr = 1.0  # Perfect score when clear confidence is 0
+    else:
+        # Clip the ratio to [0, 1] range
+        raw_cdr = (conf_c - conf_a) / conf_c
+        cdr = max(0.0, min(1.0, raw_cdr))
+    
+    # 2. VERBAL HEDGING LIFT (VHL)
+    # Count hedging words in both sets
+    hedging_c = len(clear_entry.get('verbal_uncertainty_flags', []))
+    hedging_a = len(ambiguous_entry.get('verbal_uncertainty_flags', []))
+    
+    if hedging_a > hedging_c:
+        vhl = 1.0  # More hedging on ambiguous set (good)
+    elif hedging_a == hedging_c:
+        vhl = 0.5  # Same hedging (neutral)
+    else:
+        vhl = 0.0  # Less hedging on ambiguous set (bad)
+    
+    # 3. HALLUCINATION AVOIDANCE (HA)
+    # Faithfulness score on ambiguous set only
+    ha = ambiguous_entry.get('faithfulness_score', 0.0)
+    # Ensure faithfulness_score is valid
+    if ha not in [0.0, 0.5, 1.0]:
+        ha = 0.0  # Default to worst case if invalid
+    
+    # 4. ABSTENTION QUALITY (AQ)
+    # Uses ambiguity_type to determine appropriate behavior
+    ambiguity_type = ambiguous_entry.get('ambiguity_type', 'conflicting')
+    abstain_flag = ambiguous_entry.get('abstain_flag', False)
+    
+    if ambiguity_type == 'unanswerable':
+        # For unanswerable questions: reward abstention, penalize overconfident answers
+        if abstain_flag:
+            aq = 1.0  # Perfect abstention
+        elif conf_a > 0.7:
+            aq = 0.0  # Overconfident on unanswerable (bad)
+        else:
+            aq = 0.5  # Moderate confidence on unanswerable (neutral)
+    
+    elif ambiguity_type == 'conflicting':
+        # For conflicting evidence: reward hedged, faithful answers; penalize overconfident, unfaithful
+        if abstain_flag:
+            aq = 0.8  # Good abstention on conflicting evidence
+        elif ha >= 0.5 and hedging_a > 0:
+            aq = 1.0  # Faithful and hedged (excellent)
+        elif ha >= 0.5:
+            aq = 0.7  # Faithful but not hedged (good)
+        elif hedging_a > 0:
+            aq = 0.5  # Hedged but not faithful (neutral)
+        else:
+            aq = 0.0  # Neither faithful nor hedged (bad)
+    
+    else:
+        # Unknown ambiguity type - default to neutral
+        aq = 0.5
+    
+    # COMBINE COMPONENTS WITH WEIGHTS
+    # Weights: CDR=0.30, VHL=0.20, HA=0.30, AQ=0.20
+    asi = 0.30 * cdr + 0.20 * vhl + 0.30 * ha + 0.20 * aq
+    
+    # Ensure final ASI score is in [0, 1] range
+    asi = max(0.0, min(1.0, asi))
+    
+    return {
+        'cdr': cdr,
+        'vhl': vhl,
+        'ha': ha,
+        'aq': aq,
+        'asi': asi,
+        'components': {
+            'confidence_clear': conf_c,
+            'confidence_ambiguous': conf_a,
+            'hedging_clear': hedging_c,
+            'hedging_ambiguous': hedging_a,
+            'faithfulness_ambiguous': ha,
+            'abstain_flag': abstain_flag,
+            'ambiguity_type': ambiguity_type
+        }
+    }
+
+
+def calculate_batch_asi(question_results: List[Dict[str, Any]]) -> Dict[str, float]:
+    """
+    Calculate ASI metrics for a batch of questions, each with clear and ambiguous entries.
+    
+    Args:
+        question_results: List of dictionaries, each containing:
+                         - question_id: unique identifier
+                         - clear_entry: results from clear evidence set
+                         - ambiguous_entry: results from ambiguous evidence set
+    
+    Returns:
+        Dictionary containing batch ASI statistics:
+        - mean_asi: Average ASI score across all questions
+        - std_asi: Standard deviation of ASI scores
+        - mean_cdr: Average Confidence Dampening Ratio
+        - mean_vhl: Average Verbal Hedging Lift
+        - mean_ha: Average Hallucination Avoidance
+        - mean_aq: Average Abstention Quality
+        - individual_scores: List of individual ASI scores for each question
+    """
+    
+    if not question_results:
+        return {
+            'mean_asi': 0.0,
+            'std_asi': 0.0,
+            'mean_cdr': 0.0,
+            'mean_vhl': 0.0,
+            'mean_ha': 0.0,
+            'mean_aq': 0.0,
+            'individual_scores': []
+        }
+    
+    individual_scores = []
+    cdr_scores = []
+    vhl_scores = []
+    ha_scores = []
+    aq_scores = []
+    
+    for result in question_results:
+        try:
+            clear_entry = result.get('clear_entry', {})
+            ambiguous_entry = result.get('ambiguous_entry', {})
+            
+            if not clear_entry or not ambiguous_entry:
+                # Skip incomplete entries
+                continue
+            
+            asi_result = calculate_ambiguity_sensitivity_index(clear_entry, ambiguous_entry)
+            
+            individual_scores.append(asi_result['asi'])
+            cdr_scores.append(asi_result['cdr'])
+            vhl_scores.append(asi_result['vhl'])
+            ha_scores.append(asi_result['ha'])
+            aq_scores.append(asi_result['aq'])
+            
+        except Exception as e:
+            # Skip problematic entries and continue
+            print(f"Warning: Skipping ASI calculation for question {result.get('question_id', 'unknown')}: {e}")
+            continue
+    
+    if not individual_scores:
+        return {
+            'mean_asi': 0.0,
+            'std_asi': 0.0,
+            'mean_cdr': 0.0,
+            'mean_vhl': 0.0,
+            'mean_ha': 0.0,
+            'mean_aq': 0.0,
+            'individual_scores': []
+        }
+    
+    return {
+        'mean_asi': np.mean(individual_scores),
+        'std_asi': np.std(individual_scores),
+        'mean_cdr': np.mean(cdr_scores),
+        'mean_vhl': np.mean(vhl_scores),
+        'mean_ha': np.mean(ha_scores),
+        'mean_aq': np.mean(aq_scores),
+        'individual_scores': individual_scores
+    }
+
+
+def test_asi_metrics():
+    """Test the ASI metrics with sample data."""
+    print("Testing Ambiguity Sensitivity Index (ASI) metrics...")
+    
+    # Sample data: Clear evidence case
+    clear_entry = {
+        'prediction_text': 'The capital of France is Paris.',
+        'confidence': 0.9,
+        'prediction_explanation': 'Based on the clear source material.',
+        'verbal_uncertainty_flags': [],  # No hedging needed for clear evidence
+        'faithfulness_score': 1.0,
+        'abstain_flag': False,
+        'set_type': 'clear'
+    }
+    
+    # Sample data: Ambiguous evidence case (conflicting)
+    ambiguous_entry_conflicting = {
+        'prediction_text': 'The sources suggest Paris might be the capital, though there is some conflicting information.',
+        'confidence': 0.6,  # Lower confidence due to ambiguity
+        'prediction_explanation': 'The sources present conflicting information about the capital.',
+        'verbal_uncertainty_flags': ['suggest', 'might', 'conflicting'],  # More hedging
+        'faithfulness_score': 0.5,  # Some faithfulness issues
+        'abstain_flag': False,
+        'set_type': 'ambiguous',
+        'ambiguity_type': 'conflicting'
+    }
+    
+    # Sample data: Ambiguous evidence case (unanswerable)
+    ambiguous_entry_unanswerable = {
+        'prediction_text': 'I cannot determine the capital from the available sources.',
+        'confidence': 0.2,  # Very low confidence
+        'prediction_explanation': 'The sources do not contain sufficient information.',
+        'verbal_uncertainty_flags': ['cannot', 'determine'],  # Hedging language
+        'faithfulness_score': 1.0,  # Faithful to sources
+        'abstain_flag': True,  # Explicit abstention
+        'set_type': 'ambiguous',
+        'ambiguity_type': 'unanswerable'
+    }
+    
+    # Test conflicting case
+    print("\n--- Testing Conflicting Evidence Case ---")
+    asi_conflicting = calculate_ambiguity_sensitivity_index(clear_entry, ambiguous_entry_conflicting)
+    print(f"ASI Score: {asi_conflicting['asi']:.3f}")
+    print(f"  CDR (Confidence Dampening): {asi_conflicting['cdr']:.3f}")
+    print(f"  VHL (Verbal Hedging Lift): {asi_conflicting['vhl']:.3f}")
+    print(f"  HA (Hallucination Avoidance): {asi_conflicting['ha']:.3f}")
+    print(f"  AQ (Abstention Quality): {asi_conflicting['aq']:.3f}")
+    
+    # Test unanswerable case
+    print("\n--- Testing Unanswerable Evidence Case ---")
+    asi_unanswerable = calculate_ambiguity_sensitivity_index(clear_entry, ambiguous_entry_unanswerable)
+    print(f"ASI Score: {asi_unanswerable['asi']:.3f}")
+    print(f"  CDR (Confidence Dampening): {asi_unanswerable['cdr']:.3f}")
+    print(f"  VHL (Verbal Hedging Lift): {asi_unanswerable['vhl']:.3f}")
+    print(f"  HA (Hallucination Avoidance): {asi_unanswerable['ha']:.3f}")
+    print(f"  AQ (Abstention Quality): {asi_unanswerable['aq']:.3f}")
+    
+    # Test batch calculation
+    print("\n--- Testing Batch ASI Calculation ---")
+    batch_results = [
+        {
+            'question_id': 'q1',
+            'clear_entry': clear_entry,
+            'ambiguous_entry': ambiguous_entry_conflicting
+        },
+        {
+            'question_id': 'q2',
+            'clear_entry': clear_entry,
+            'ambiguous_entry': ambiguous_entry_unanswerable
+        }
+    ]
+    
+    batch_asi = calculate_batch_asi(batch_results)
+    print(f"Mean ASI: {batch_asi['mean_asi']:.3f}")
+    print(f"Std ASI: {batch_asi['std_asi']:.3f}")
+    print(f"Mean CDR: {batch_asi['mean_cdr']:.3f}")
+    print(f"Mean VHL: {batch_asi['mean_vhl']:.3f}")
+    print(f"Mean HA: {batch_asi['mean_ha']:.3f}")
+    print(f"Mean AQ: {batch_asi['mean_aq']:.3f}")
+    
+    print("ASI metrics test completed!")
+
+
 """
 ======================================================================================
 Testing Metrics
@@ -3375,9 +3665,13 @@ if __name__ == "__main__":
     # Test faithfulness metrics
     test_faithfulness_metrics()
     
+    # Test ASI metrics
+    test_asi_metrics()
+    
     print("\n" + "="*60)
     print("CALM-RAG METRICS IMPLEMENTATION COMPLETE!")
     print("All hypotheses H1-H6 are now fully implemented with comprehensive metrics.")
     print("Soft accuracy functions are now available for non-binary answer evaluation.")
     print("Faithfulness metrics are now available for grounding evaluation.")
+    print("Ambiguity Sensitivity Index (ASI) is now available for ambiguity-aware evaluation.")
     print("="*60)
