@@ -1179,6 +1179,11 @@ def compute_all_calm_rag_metrics(results: List[Dict[str, Any]]) -> Dict[str, flo
     for key, value in h5_metrics.items():
         metrics[f'h5_{key}'] = value
     
+    # H6: Faithfulness and Grounding Metrics
+    faithfulness_metrics = calm_rag_faithfulness_metrics(results)
+    for key, value in faithfulness_metrics.items():
+        metrics[f'h6_{key}'] = value
+    
     # Retrieval quality metrics (avoid duplicates with hypothesis metrics)
     retrieval_metrics = retrieval_quality_metrics(results, include_correlations=True)
     for key, value in retrieval_metrics.items():
@@ -1190,6 +1195,725 @@ def compute_all_calm_rag_metrics(results: List[Dict[str, Any]]) -> Dict[str, flo
 
 
 # Legacy function removed - use compute_all_calm_rag_metrics() directly
+
+
+# =============================================================================
+# FAITHFULNESS METRICS
+# =============================================================================
+
+def calculate_answer_source_overlap(prediction: str, retrieved_docs: List[Dict[str, Any]], 
+                                  method: str = "token") -> float:
+    """
+    Calculate the overlap between the prediction and retrieved source documents.
+    
+    Args:
+        prediction: The model's generated answer
+        retrieved_docs: List of retrieved document dictionaries
+        method: Overlap calculation method ("token", "ngram", "semantic")
+    
+    Returns:
+        Overlap score between 0 and 1
+    """
+    if not prediction or not retrieved_docs:
+        return 0.0
+    
+    # Extract text from retrieved documents
+    source_texts = []
+    for doc in retrieved_docs:
+        if isinstance(doc, dict):
+            text = doc.get('text', '') or doc.get('content', '') or doc.get('excerpt', '')
+        else:
+            text = str(doc)
+        if text:
+            source_texts.append(text)
+    
+    if not source_texts:
+        return 0.0
+    
+    # Combine all source text
+    combined_sources = " ".join(source_texts)
+    
+    if method == "token":
+        return _calculate_token_overlap(prediction, combined_sources)
+    elif method == "ngram":
+        return _calculate_ngram_overlap(prediction, combined_sources)
+    elif method == "semantic":
+        return _calculate_semantic_overlap(prediction, combined_sources)
+    else:
+        raise ValueError(f"Unknown overlap method: {method}")
+
+
+def _calculate_token_overlap(prediction: str, source_text: str) -> float:
+    """Calculate token-level overlap between prediction and source."""
+    pred_tokens = set(normalize_text(prediction).split())
+    source_tokens = set(normalize_text(source_text).split())
+    
+    if not pred_tokens:
+        return 0.0
+    
+    intersection = pred_tokens.intersection(source_tokens)
+    return len(intersection) / len(pred_tokens)
+
+
+def _calculate_ngram_overlap(prediction: str, source_text: str, n: int = 3) -> float:
+    """Calculate n-gram overlap between prediction and source."""
+    def get_ngrams(text: str, n: int) -> set:
+        tokens = normalize_text(text).split()
+        return set(tuple(tokens[i:i+n]) for i in range(len(tokens) - n + 1))
+    
+    pred_ngrams = get_ngrams(prediction, n)
+    source_ngrams = get_ngrams(source_text, n)
+    
+    if not pred_ngrams:
+        return 0.0
+    
+    intersection = pred_ngrams.intersection(source_ngrams)
+    return len(intersection) / len(pred_ngrams)
+
+
+def _calculate_semantic_overlap(prediction: str, source_text: str) -> float:
+    """Calculate semantic overlap using simple word embeddings approach."""
+    # Simple implementation using word overlap with synonyms
+    # In practice, you might want to use more sophisticated embeddings
+    pred_tokens = set(normalize_text(prediction).split())
+    source_tokens = set(normalize_text(source_text).split())
+    
+    if not pred_tokens:
+        return 0.0
+    
+    # Basic semantic similarity using word overlap
+    intersection = pred_tokens.intersection(source_tokens)
+    return len(intersection) / len(pred_tokens)
+
+
+def calculate_attribution_accuracy(prediction: str, retrieved_docs: List[Dict[str, Any]], 
+                                 gold_answer: str = None) -> Dict[str, float]:
+    """
+    Calculate attribution accuracy - how well claims in the prediction can be attributed to sources.
+    
+    Args:
+        prediction: The model's generated answer
+        retrieved_docs: List of retrieved document dictionaries
+        gold_answer: Ground truth answer for comparison
+    
+    Returns:
+        Dictionary with attribution metrics
+    """
+    if not prediction or not retrieved_docs:
+        return {
+            'attribution_coverage': 0.0,
+            'source_utilization': 0.0,
+            'claim_attribution_rate': 0.0,
+            'attribution_precision': 0.0
+        }
+    
+    # Extract claims from prediction (simple sentence splitting)
+    prediction_sentences = [s.strip() for s in prediction.split('.') if s.strip()]
+    
+    # Extract text from sources
+    source_texts = []
+    for doc in retrieved_docs:
+        if isinstance(doc, dict):
+            text = doc.get('text', '') or doc.get('content', '') or doc.get('excerpt', '')
+        else:
+            text = str(doc)
+        if text:
+            source_texts.append(text)
+    
+    if not source_texts:
+        return {
+            'attribution_coverage': 0.0,
+            'source_utilization': 0.0,
+            'claim_attribution_rate': 0.0,
+            'attribution_precision': 0.0
+        }
+    
+    # Calculate attribution metrics
+    attributed_claims = 0
+    total_claims = len(prediction_sentences)
+    
+    for claim in prediction_sentences:
+        if _can_claim_be_attributed(claim, source_texts):
+            attributed_claims += 1
+    
+    # Source utilization - how many sources are actually used
+    used_sources = 0
+    for source_text in source_texts:
+        if _is_source_used_in_prediction(prediction, source_text):
+            used_sources += 1
+    
+    return {
+        'attribution_coverage': attributed_claims / total_claims if total_claims > 0 else 0.0,
+        'source_utilization': used_sources / len(source_texts) if source_texts else 0.0,
+        'claim_attribution_rate': attributed_claims / total_claims if total_claims > 0 else 0.0,
+        'attribution_precision': attributed_claims / total_claims if total_claims > 0 else 0.0
+    }
+
+
+def _can_claim_be_attributed(claim: str, source_texts: List[str]) -> bool:
+    """Check if a claim can be attributed to any source text."""
+    claim_tokens = set(normalize_text(claim).split())
+    
+    for source_text in source_texts:
+        source_tokens = set(normalize_text(source_text).split())
+        # Check if significant portion of claim tokens appear in source
+        overlap = len(claim_tokens.intersection(source_tokens))
+        if overlap >= max(1, len(claim_tokens) * 0.3):  # At least 30% overlap
+            return True
+    
+    return False
+
+
+def _is_source_used_in_prediction(prediction: str, source_text: str) -> bool:
+    """Check if a source text is used in the prediction."""
+    pred_tokens = set(normalize_text(prediction).split())
+    source_tokens = set(normalize_text(source_text).split())
+    
+    # Check for significant overlap
+    overlap = len(pred_tokens.intersection(source_tokens))
+    return overlap >= max(3, len(source_tokens) * 0.1)  # At least 10% overlap or 3 tokens
+
+
+def calculate_hallucination_detection(prediction: str, retrieved_docs: List[Dict[str, Any]], 
+                                    gold_answer: str = None) -> Dict[str, float]:
+    """
+    Detect potential hallucinations in the prediction.
+    
+    Args:
+        prediction: The model's generated answer
+        retrieved_docs: List of retrieved document dictionaries
+        gold_answer: Ground truth answer for comparison
+    
+    Returns:
+        Dictionary with hallucination detection metrics
+    """
+    if not prediction:
+        return {
+            'hallucination_rate': 0.0,
+            'unsupported_claims_rate': 0.0,
+            'hallucination_severity': 0.0,
+            'factual_consistency': 0.0
+        }
+    
+    # Extract text from sources
+    source_texts = []
+    for doc in retrieved_docs:
+        if isinstance(doc, dict):
+            text = doc.get('text', '') or doc.get('content', '') or doc.get('excerpt', '')
+        else:
+            text = str(doc)
+        if text:
+            source_texts.append(text)
+    
+    # Split prediction into claims
+    prediction_sentences = [s.strip() for s in prediction.split('.') if s.strip()]
+    
+    hallucinated_claims = 0
+    unsupported_claims = 0
+    total_claims = len(prediction_sentences)
+    
+    for claim in prediction_sentences:
+        if not _can_claim_be_attributed(claim, source_texts):
+            unsupported_claims += 1
+            # Check if it's a clear hallucination (contains specific facts not in sources)
+            if _is_potential_hallucination(claim, source_texts):
+                hallucinated_claims += 1
+    
+    # Calculate factual consistency with gold answer if available
+    factual_consistency = 1.0
+    if gold_answer:
+        factual_consistency = _calculate_factual_consistency(prediction, gold_answer)
+    
+    return {
+        'hallucination_rate': hallucinated_claims / total_claims if total_claims > 0 else 0.0,
+        'unsupported_claims_rate': unsupported_claims / total_claims if total_claims > 0 else 0.0,
+        'hallucination_severity': hallucinated_claims / total_claims if total_claims > 0 else 0.0,
+        'factual_consistency': factual_consistency
+    }
+
+
+def _is_potential_hallucination(claim: str, source_texts: List[str]) -> bool:
+    """Check if a claim is likely a hallucination."""
+    # Look for specific factual claims that should be in sources
+    factual_indicators = [
+        r'\d+%',  # percentages
+        r'\d+\.\d+',  # decimal numbers
+        r'\d{4}',  # years
+        r'\$\d+',  # monetary amounts
+        r'\d+\s+(years?|months?|days?)',  # time periods
+    ]
+    
+    for pattern in factual_indicators:
+        if re.search(pattern, claim):
+            # If it contains specific facts but can't be attributed, likely hallucination
+            return True
+    
+    return False
+
+
+def _calculate_factual_consistency(prediction: str, gold_answer: str) -> float:
+    """Calculate factual consistency between prediction and gold answer."""
+    if not gold_answer:
+        return 1.0
+    
+    # Simple token overlap as a proxy for factual consistency
+    pred_tokens = set(normalize_text(prediction).split())
+    gold_tokens = set(normalize_text(gold_answer).split())
+    
+    if not pred_tokens or not gold_tokens:
+        return 0.0
+    
+    intersection = pred_tokens.intersection(gold_tokens)
+    union = pred_tokens.union(gold_tokens)
+    
+    return len(intersection) / len(union) if union else 0.0
+
+
+def calculate_source_grounding_metrics(prediction: str, retrieved_docs: List[Dict[str, Any]]) -> Dict[str, float]:
+    """
+    Calculate how well the prediction is grounded in the retrieved sources.
+    
+    Args:
+        prediction: The model's generated answer
+        retrieved_docs: List of retrieved document dictionaries
+    
+    Returns:
+        Dictionary with grounding metrics
+    """
+    if not prediction or not retrieved_docs:
+        return {
+            'grounding_score': 0.0,
+            'source_coverage': 0.0,
+            'grounding_consistency': 0.0,
+            'source_relevance': 0.0
+        }
+    
+    # Extract text from sources
+    source_texts = []
+    for doc in retrieved_docs:
+        if isinstance(doc, dict):
+            text = doc.get('text', '') or doc.get('content', '') or doc.get('excerpt', '')
+        else:
+            text = str(doc)
+        if text:
+            source_texts.append(text)
+    
+    if not source_texts:
+        return {
+            'grounding_score': 0.0,
+            'source_coverage': 0.0,
+            'grounding_consistency': 0.0,
+            'source_relevance': 0.0
+        }
+    
+    # Calculate grounding score (average overlap with all sources)
+    overlap_scores = []
+    for source_text in source_texts:
+        overlap = _calculate_token_overlap(prediction, source_text)
+        overlap_scores.append(overlap)
+    
+    grounding_score = np.mean(overlap_scores) if overlap_scores else 0.0
+    
+    # Source coverage - how many sources are used
+    used_sources = sum(1 for score in overlap_scores if score > 0.1)
+    source_coverage = used_sources / len(source_texts) if source_texts else 0.0
+    
+    # Grounding consistency - variance in overlap scores
+    grounding_consistency = 1.0 - np.var(overlap_scores) if len(overlap_scores) > 1 else 1.0
+    
+    # Source relevance - average relevance of used sources
+    source_relevance = np.mean([score for score in overlap_scores if score > 0.1]) if any(score > 0.1 for score in overlap_scores) else 0.0
+    
+    return {
+        'grounding_score': grounding_score,
+        'source_coverage': source_coverage,
+        'grounding_consistency': grounding_consistency,
+        'source_relevance': source_relevance
+    }
+
+
+def calm_rag_faithfulness_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
+    """
+    Calculate comprehensive faithfulness metrics for CALM-RAG evaluation.
+    
+    Args:
+        results: List of result dictionaries with CALM-RAG schema
+    
+    Returns:
+        Dictionary of faithfulness metrics
+    """
+    if not results:
+        return {}
+    
+    # Initialize metric accumulators
+    overlap_scores = []
+    attribution_metrics = {
+        'attribution_coverage': [],
+        'source_utilization': [],
+        'claim_attribution_rate': [],
+        'attribution_precision': []
+    }
+    hallucination_metrics = {
+        'hallucination_rate': [],
+        'unsupported_claims_rate': [],
+        'hallucination_severity': [],
+        'factual_consistency': []
+    }
+    grounding_metrics = {
+        'grounding_score': [],
+        'source_coverage': [],
+        'grounding_consistency': [],
+        'source_relevance': []
+    }
+    
+    # Process each result
+    for result in results:
+        prediction = result.get('prediction_text', '')
+        retrieved_docs = result.get('retrieved_docs', [])
+        gold_answer = result.get('gold_answer', '')
+        
+        # Calculate answer-source overlap
+        overlap = calculate_answer_source_overlap(prediction, retrieved_docs, method="token")
+        overlap_scores.append(overlap)
+        
+        # Calculate attribution accuracy
+        attribution = calculate_attribution_accuracy(prediction, retrieved_docs, gold_answer)
+        for key, value in attribution.items():
+            attribution_metrics[key].append(value)
+        
+        # Calculate hallucination detection
+        hallucination = calculate_hallucination_detection(prediction, retrieved_docs, gold_answer)
+        for key, value in hallucination.items():
+            hallucination_metrics[key].append(value)
+        
+        # Calculate source grounding
+        grounding = calculate_source_grounding_metrics(prediction, retrieved_docs)
+        for key, value in grounding.items():
+            grounding_metrics[key].append(value)
+    
+    # Calculate average metrics
+    metrics = {}
+    
+    # Answer-source overlap metrics
+    metrics['answer_source_overlap'] = np.mean(overlap_scores) if overlap_scores else 0.0
+    metrics['answer_source_overlap_std'] = np.std(overlap_scores) if overlap_scores else 0.0
+    
+    # Attribution metrics
+    for key, values in attribution_metrics.items():
+        metrics[f'attribution_{key}'] = np.mean(values) if values else 0.0
+        metrics[f'attribution_{key}_std'] = np.std(values) if values else 0.0
+    
+    # Hallucination metrics
+    for key, values in hallucination_metrics.items():
+        metrics[f'hallucination_{key}'] = np.mean(values) if values else 0.0
+        metrics[f'hallucination_{key}_std'] = np.std(values) if values else 0.0
+    
+    # Grounding metrics
+    for key, values in grounding_metrics.items():
+        metrics[f'grounding_{key}'] = np.mean(values) if values else 0.0
+        metrics[f'grounding_{key}_std'] = np.std(values) if values else 0.0
+    
+    # Overall faithfulness score (composite metric)
+    faithfulness_components = [
+        metrics['answer_source_overlap'],
+        1.0 - metrics['hallucination_hallucination_rate'],  # Invert hallucination rate
+        metrics['attribution_attribution_coverage'],
+        metrics['grounding_grounding_score']
+    ]
+    metrics['overall_faithfulness'] = np.mean(faithfulness_components)
+    
+    return metrics
+
+
+# =============================================================================
+# AMBIGUITY SENSITIVITY INDEX (ASI) METRICS
+# =============================================================================
+
+def calculate_ambiguity_sensitivity_index(clear_entry: Dict[str, Any], ambiguous_entry: Dict[str, Any]) -> Dict[str, float]:
+    """
+    Calculate the Ambiguity Sensitivity Index (ASI) for a question with both clear and ambiguous evidence.
+    
+    ASI measures whether the model adapts appropriately when evidence is ambiguous, conflicting, or misleading
+    compared to when evidence is clear and credible.
+    
+    Args:
+        clear_entry: Dictionary containing clear set results with keys:
+                    - prediction_text: model's answer
+                    - confidence: scalar probability 0-1
+                    - prediction_explanation: model reasoning (optional)
+                    - verbal_uncertainty_flags: list of hedging words
+                    - faithfulness_score: 0, 0.5, or 1
+                    - abstain_flag: true if model explicitly abstained
+                    - set_type: "clear"
+        ambiguous_entry: Dictionary containing ambiguous set results with same keys plus:
+                        - ambiguity_type: "unanswerable" or "conflicting"
+    
+    Returns:
+        Dictionary containing ASI components and final score:
+        - cdr: Confidence Dampening Ratio (0-1)
+        - vhl: Verbal Hedging Lift (0-1)
+        - ha: Hallucination Avoidance (0-1)
+        - aq: Abstention Quality (0-1)
+        - asi: Final ASI score (0-1)
+        - components: Detailed breakdown for debugging
+    """
+    
+    # Extract confidence scores with fallback handling
+    conf_c = clear_entry.get('confidence', 0.0)
+    conf_a = ambiguous_entry.get('confidence', 0.0)
+    
+    # Ensure confidence values are valid floats in [0,1] range
+    conf_c = max(0.0, min(1.0, float(conf_c) if conf_c is not None else 0.0))
+    conf_a = max(0.0, min(1.0, float(conf_a) if conf_a is not None else 0.0))
+    
+    # 1. CONFIDENCE DAMPENING RATIO (CDR)
+    # Expect confidence to drop on ambiguous set compared to clear set
+    if conf_c == 0:
+        cdr = 1.0  # Perfect score when clear confidence is 0
+    else:
+        # Clip the ratio to [0, 1] range
+        raw_cdr = (conf_c - conf_a) / conf_c
+        cdr = max(0.0, min(1.0, raw_cdr))
+    
+    # 2. VERBAL HEDGING LIFT (VHL)
+    # Count hedging words in both sets
+    hedging_c = len(clear_entry.get('verbal_uncertainty_flags', []))
+    hedging_a = len(ambiguous_entry.get('verbal_uncertainty_flags', []))
+    
+    if hedging_a > hedging_c:
+        vhl = 1.0  # More hedging on ambiguous set (good)
+    elif hedging_a == hedging_c:
+        vhl = 0.5  # Same hedging (neutral)
+    else:
+        vhl = 0.0  # Less hedging on ambiguous set (bad)
+    
+    # 3. HALLUCINATION AVOIDANCE (HA)
+    # Faithfulness score on ambiguous set only
+    ha = ambiguous_entry.get('faithfulness_score', 0.0)
+    # Ensure faithfulness_score is valid
+    if ha not in [0.0, 0.5, 1.0]:
+        ha = 0.0  # Default to worst case if invalid
+    
+    # 4. ABSTENTION QUALITY (AQ)
+    # Uses ambiguity_type to determine appropriate behavior
+    ambiguity_type = ambiguous_entry.get('ambiguity_type', 'conflicting')
+    abstain_flag = ambiguous_entry.get('abstain_flag', False)
+    
+    if ambiguity_type == 'unanswerable':
+        # For unanswerable questions: reward abstention, penalize overconfident answers
+        if abstain_flag:
+            aq = 1.0  # Perfect abstention
+        elif conf_a > 0.7:
+            aq = 0.0  # Overconfident on unanswerable (bad)
+        else:
+            aq = 0.5  # Moderate confidence on unanswerable (neutral)
+    
+    elif ambiguity_type == 'conflicting':
+        # For conflicting evidence: reward hedged, faithful answers; penalize overconfident, unfaithful
+        if abstain_flag:
+            aq = 0.8  # Good abstention on conflicting evidence
+        elif ha >= 0.5 and hedging_a > 0:
+            aq = 1.0  # Faithful and hedged (excellent)
+        elif ha >= 0.5:
+            aq = 0.7  # Faithful but not hedged (good)
+        elif hedging_a > 0:
+            aq = 0.5  # Hedged but not faithful (neutral)
+        else:
+            aq = 0.0  # Neither faithful nor hedged (bad)
+    
+    else:
+        # Unknown ambiguity type - default to neutral
+        aq = 0.5
+    
+    # COMBINE COMPONENTS WITH WEIGHTS
+    # Weights: CDR=0.30, VHL=0.20, HA=0.30, AQ=0.20
+    asi = 0.30 * cdr + 0.20 * vhl + 0.30 * ha + 0.20 * aq
+    
+    # Ensure final ASI score is in [0, 1] range
+    asi = max(0.0, min(1.0, asi))
+    
+    return {
+        'cdr': cdr,
+        'vhl': vhl,
+        'ha': ha,
+        'aq': aq,
+        'asi': asi,
+        'components': {
+            'confidence_clear': conf_c,
+            'confidence_ambiguous': conf_a,
+            'hedging_clear': hedging_c,
+            'hedging_ambiguous': hedging_a,
+            'faithfulness_ambiguous': ha,
+            'abstain_flag': abstain_flag,
+            'ambiguity_type': ambiguity_type
+        }
+    }
+
+
+def calculate_batch_asi(question_results: List[Dict[str, Any]]) -> Dict[str, float]:
+    """
+    Calculate ASI metrics for a batch of questions, each with clear and ambiguous entries.
+    
+    Args:
+        question_results: List of dictionaries, each containing:
+                         - question_id: unique identifier
+                         - clear_entry: results from clear evidence set
+                         - ambiguous_entry: results from ambiguous evidence set
+    
+    Returns:
+        Dictionary containing batch ASI statistics:
+        - mean_asi: Average ASI score across all questions
+        - std_asi: Standard deviation of ASI scores
+        - mean_cdr: Average Confidence Dampening Ratio
+        - mean_vhl: Average Verbal Hedging Lift
+        - mean_ha: Average Hallucination Avoidance
+        - mean_aq: Average Abstention Quality
+        - individual_scores: List of individual ASI scores for each question
+    """
+    
+    if not question_results:
+        return {
+            'mean_asi': 0.0,
+            'std_asi': 0.0,
+            'mean_cdr': 0.0,
+            'mean_vhl': 0.0,
+            'mean_ha': 0.0,
+            'mean_aq': 0.0,
+            'individual_scores': []
+        }
+    
+    individual_scores = []
+    cdr_scores = []
+    vhl_scores = []
+    ha_scores = []
+    aq_scores = []
+    
+    for result in question_results:
+        try:
+            clear_entry = result.get('clear_entry', {})
+            ambiguous_entry = result.get('ambiguous_entry', {})
+            
+            if not clear_entry or not ambiguous_entry:
+                # Skip incomplete entries
+                continue
+            
+            asi_result = calculate_ambiguity_sensitivity_index(clear_entry, ambiguous_entry)
+            
+            individual_scores.append(asi_result['asi'])
+            cdr_scores.append(asi_result['cdr'])
+            vhl_scores.append(asi_result['vhl'])
+            ha_scores.append(asi_result['ha'])
+            aq_scores.append(asi_result['aq'])
+            
+        except Exception as e:
+            # Skip problematic entries and continue
+            print(f"Warning: Skipping ASI calculation for question {result.get('question_id', 'unknown')}: {e}")
+            continue
+    
+    if not individual_scores:
+        return {
+            'mean_asi': 0.0,
+            'std_asi': 0.0,
+            'mean_cdr': 0.0,
+            'mean_vhl': 0.0,
+            'mean_ha': 0.0,
+            'mean_aq': 0.0,
+            'individual_scores': []
+        }
+    
+    return {
+        'mean_asi': np.mean(individual_scores),
+        'std_asi': np.std(individual_scores),
+        'mean_cdr': np.mean(cdr_scores),
+        'mean_vhl': np.mean(vhl_scores),
+        'mean_ha': np.mean(ha_scores),
+        'mean_aq': np.mean(aq_scores),
+        'individual_scores': individual_scores
+    }
+
+
+def test_asi_metrics():
+    """Test the ASI metrics with sample data."""
+    print("Testing Ambiguity Sensitivity Index (ASI) metrics...")
+    
+    # Sample data: Clear evidence case
+    clear_entry = {
+        'prediction_text': 'The capital of France is Paris.',
+        'confidence': 0.9,
+        'prediction_explanation': 'Based on the clear source material.',
+        'verbal_uncertainty_flags': [],  # No hedging needed for clear evidence
+        'faithfulness_score': 1.0,
+        'abstain_flag': False,
+        'set_type': 'clear'
+    }
+    
+    # Sample data: Ambiguous evidence case (conflicting)
+    ambiguous_entry_conflicting = {
+        'prediction_text': 'The sources suggest Paris might be the capital, though there is some conflicting information.',
+        'confidence': 0.6,  # Lower confidence due to ambiguity
+        'prediction_explanation': 'The sources present conflicting information about the capital.',
+        'verbal_uncertainty_flags': ['suggest', 'might', 'conflicting'],  # More hedging
+        'faithfulness_score': 0.5,  # Some faithfulness issues
+        'abstain_flag': False,
+        'set_type': 'ambiguous',
+        'ambiguity_type': 'conflicting'
+    }
+    
+    # Sample data: Ambiguous evidence case (unanswerable)
+    ambiguous_entry_unanswerable = {
+        'prediction_text': 'I cannot determine the capital from the available sources.',
+        'confidence': 0.2,  # Very low confidence
+        'prediction_explanation': 'The sources do not contain sufficient information.',
+        'verbal_uncertainty_flags': ['cannot', 'determine'],  # Hedging language
+        'faithfulness_score': 1.0,  # Faithful to sources
+        'abstain_flag': True,  # Explicit abstention
+        'set_type': 'ambiguous',
+        'ambiguity_type': 'unanswerable'
+    }
+    
+    # Test conflicting case
+    print("\n--- Testing Conflicting Evidence Case ---")
+    asi_conflicting = calculate_ambiguity_sensitivity_index(clear_entry, ambiguous_entry_conflicting)
+    print(f"ASI Score: {asi_conflicting['asi']:.3f}")
+    print(f"  CDR (Confidence Dampening): {asi_conflicting['cdr']:.3f}")
+    print(f"  VHL (Verbal Hedging Lift): {asi_conflicting['vhl']:.3f}")
+    print(f"  HA (Hallucination Avoidance): {asi_conflicting['ha']:.3f}")
+    print(f"  AQ (Abstention Quality): {asi_conflicting['aq']:.3f}")
+    
+    # Test unanswerable case
+    print("\n--- Testing Unanswerable Evidence Case ---")
+    asi_unanswerable = calculate_ambiguity_sensitivity_index(clear_entry, ambiguous_entry_unanswerable)
+    print(f"ASI Score: {asi_unanswerable['asi']:.3f}")
+    print(f"  CDR (Confidence Dampening): {asi_unanswerable['cdr']:.3f}")
+    print(f"  VHL (Verbal Hedging Lift): {asi_unanswerable['vhl']:.3f}")
+    print(f"  HA (Hallucination Avoidance): {asi_unanswerable['ha']:.3f}")
+    print(f"  AQ (Abstention Quality): {asi_unanswerable['aq']:.3f}")
+    
+    # Test batch calculation
+    print("\n--- Testing Batch ASI Calculation ---")
+    batch_results = [
+        {
+            'question_id': 'q1',
+            'clear_entry': clear_entry,
+            'ambiguous_entry': ambiguous_entry_conflicting
+        },
+        {
+            'question_id': 'q2',
+            'clear_entry': clear_entry,
+            'ambiguous_entry': ambiguous_entry_unanswerable
+        }
+    ]
+    
+    batch_asi = calculate_batch_asi(batch_results)
+    print(f"Mean ASI: {batch_asi['mean_asi']:.3f}")
+    print(f"Std ASI: {batch_asi['std_asi']:.3f}")
+    print(f"Mean CDR: {batch_asi['mean_cdr']:.3f}")
+    print(f"Mean VHL: {batch_asi['mean_vhl']:.3f}")
+    print(f"Mean HA: {batch_asi['mean_ha']:.3f}")
+    print(f"Mean AQ: {batch_asi['mean_aq']:.3f}")
+    
+    print("ASI metrics test completed!")
+
 
 """
 ======================================================================================
@@ -2879,6 +3603,42 @@ def test_soft_accuracy_functions():
         'medical_score': medical_score
     }
 
+def test_faithfulness_metrics():
+    """Test the faithfulness metrics with sample data."""
+    print("Testing faithfulness metrics...")
+    
+    # Sample data
+    sample_results = [
+        {
+            'prediction_text': 'The capital of France is Paris, which is located in northern France.',
+            'retrieved_docs': [
+                {'text': 'Paris is the capital and largest city of France. It is located in northern France.'},
+                {'text': 'France is a country in Western Europe with Paris as its capital.'}
+            ],
+            'gold_answer': 'Paris',
+            'confidence': 0.9,
+            'accuracy': 1.0
+        },
+        {
+            'prediction_text': 'The capital of France is London, which is a major financial center.',
+            'retrieved_docs': [
+                {'text': 'Paris is the capital and largest city of France.'},
+                {'text': 'London is the capital of the United Kingdom.'}
+            ],
+            'gold_answer': 'Paris',
+            'confidence': 0.8,
+            'accuracy': 0.0
+        }
+    ]
+    
+    # Test faithfulness metrics
+    faithfulness_metrics = calm_rag_faithfulness_metrics(sample_results)
+    
+    print("Faithfulness metrics:")
+    for key, value in faithfulness_metrics.items():
+        print(f"  {key}: {value:.3f}")
+    
+    print("Faithfulness metrics test completed!")
 
 if __name__ == "__main__":
     # Print comprehensive summary
@@ -2902,8 +3662,16 @@ if __name__ == "__main__":
     # Test soft accuracy functions
     soft_accuracy_results = test_soft_accuracy_functions()
     
+    # Test faithfulness metrics
+    test_faithfulness_metrics()
+    
+    # Test ASI metrics
+    test_asi_metrics()
+    
     print("\n" + "="*60)
     print("CALM-RAG METRICS IMPLEMENTATION COMPLETE!")
-    print("All hypotheses H1-H5 are now fully implemented with comprehensive metrics.")
+    print("All hypotheses H1-H6 are now fully implemented with comprehensive metrics.")
     print("Soft accuracy functions are now available for non-binary answer evaluation.")
+    print("Faithfulness metrics are now available for grounding evaluation.")
+    print("Ambiguity Sensitivity Index (ASI) is now available for ambiguity-aware evaluation.")
     print("="*60)

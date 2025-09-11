@@ -42,8 +42,12 @@ Instructions:
 1. Answer the question based ONLY on the information provided in the sources above
 2. If the sources contain conflicting information, acknowledge this in your response
 3. If the sources don't contain enough information to answer confidently, say so
-4. Use appropriate hedging language when uncertain (e.g., "likely", "probably", "possibly", ect)
+4. Use appropriate hedging language when uncertain (e.g., "likely", "probably", "possibly", etc.)
 5. Do not exceed 75 words in your response.
+
+IMPORTANT: Structure your response exactly as follows:
+- First line: Your direct answer to the question (keep this concise) but express uncertainty if necessary
+- Remaining lines: Brief explanation of your reasoning and any uncertainties
 """
 
     # Add confidence instruction based on model type

@@ -6,8 +6,10 @@ Tests various models (GPT, Claude, etc.) and computes all metrics for comparison
 
 import json
 import os
+import re
 import time
 import openai
+import numpy as np
 from typing import List, Dict, Any, Optional, Union
 from tqdm import tqdm
 
@@ -39,12 +41,15 @@ from metrics import (
     calm_rag_h3_metrics,
     calm_rag_h4_metrics,
     calm_rag_h5_metrics,
+    calm_rag_faithfulness_metrics,
     expected_calibration_error,
     calculate_continuous_uncertainty,
     calculate_soft_accuracy,
     LLMGrader,
     create_llm_grader,
-    calculate_llm_accuracy
+    calculate_llm_accuracy,
+    calculate_ambiguity_sensitivity_index,
+    calculate_batch_asi
 )
 from prompts import format_prompt, extract_confidence_from_response
 
@@ -523,6 +528,69 @@ class RAGModelEvaluator:
         else:
             return self.calculate_internal_confidence(log_probs)
     
+    def update_calibration(self, evaluation_results: List[Dict], original_model_responses: List[Dict]) -> None:
+        """
+        Update calibration using isotonic regression on log probabilities and accuracy.
+        """
+        try:
+            from sklearn.isotonic import IsotonicRegression
+            import numpy as np
+            
+            # Extract log probabilities and accuracies
+            log_probs_list = []
+            accuracies = []
+            
+            for i, response in enumerate(original_model_responses):
+                log_probs = response.get('log_probs', [])
+                if log_probs:
+                    # Calculate internal confidence from log probabilities
+                    raw_conf = self.calculate_internal_confidence(log_probs)
+                    if raw_conf is not None:
+                        log_probs_list.append(raw_conf)
+                        # Get accuracy from evaluation_results, not raw_results
+                        if i < len(evaluation_results):
+                            accuracies.append(evaluation_results[i].get('accuracy', 0.5))
+                        else:
+                            accuracies.append(0.5)
+            
+            if len(log_probs_list) >= 10:  # Need minimum data for calibration
+                # Fit isotonic regression
+                iso_reg = IsotonicRegression(out_of_bounds='clip')
+                iso_reg.fit(log_probs_list, accuracies)
+                
+                # Store calibration function
+                self.calibration_function = lambda log_probs: iso_reg.transform([self.calculate_internal_confidence(log_probs)])[0] if self.calculate_internal_confidence(log_probs) is not None else 0.5
+                self.is_calibrated = True
+                print(f"Calibration updated with {len(log_probs_list)} samples")
+            else:
+                print(f"Not enough data for calibration ({len(log_probs_list)} samples)")
+                
+        except Exception as e:
+            print(f"Error updating calibration: {e}")
+            self.is_calibrated = False
+    
+    def calculate_internal_confidence(self, log_probs: List[Dict]) -> Optional[float]:
+        """
+        Calculate internal confidence from log probabilities.
+        """
+        if not log_probs:
+            return 0.5
+        
+        # Convert log probs to probabilities
+        try:
+            # Calculate average log probability and convert to confidence
+            # Higher average log probability = higher confidence
+            avg_log_prob = np.mean([log_prob.get('logprob', -10) for log_prob in log_probs])
+            
+            # Convert log probability to confidence score
+            # Log probs are typically negative, so we need to normalize
+            # Use sigmoid-like function to map to [0,1]
+            confidence = 1.0 / (1.0 + np.exp(-avg_log_prob))
+            
+            return max(0.0, min(1.0, confidence))
+        except Exception:
+            return 0.5
+    
     
     
     def call_openai_model(self, prompt: str, temperature: float = 0.0) -> Dict[str, Any]:
@@ -777,11 +845,23 @@ class RAGModelEvaluator:
             }
     
     
-    def evaluate_single_entry(self, entry: Dict[str, Any], model_name: str) -> Dict[str, Any]:
-        """Evaluate a single dataset entry with the specified model."""
-        # Create RAG prompt
-        all_sources = entry['source_sets']['clear'] + entry['source_sets']['ambiguous']
-        prompt = self.create_rag_prompt(entry['question'], all_sources, model_name)
+    def evaluate_single_entry(self, entry: Dict[str, Any], model_name: str, source_set_type: str = "both") -> Dict[str, Any]:
+        """Evaluate a single dataset entry with the specified model.
+        
+        Args:
+            entry: Dataset entry
+            model_name: Name of the model to evaluate
+            source_set_type: "clear", "ambiguous", or "both" (default: "both")
+        """
+        # Select sources based on type
+        if source_set_type == "clear":
+            sources = entry['source_sets']['clear']
+        elif source_set_type == "ambiguous":
+            sources = entry['source_sets']['ambiguous']
+        else:  # "both" - original behavior
+            sources = entry['source_sets']['clear'] + entry['source_sets']['ambiguous']
+        
+        prompt = self.create_rag_prompt(entry['question'], sources, model_name)
         
         # Call model
         try:
@@ -807,7 +887,7 @@ class RAGModelEvaluator:
             return None
         
         # Create evaluation result structure
-        retrieved_docs = [{'url': s['url'], 'domain': s['domain'], 'category': s['category']} for s in all_sources]
+        retrieved_docs = [{'url': s['url'], 'domain': s['domain'], 'category': s['category']} for s in sources]
         relevant_docs = [s['url'] for s in entry['source_sets']['clear']]
         
         # Calculate continuous uncertainty score based on multiple factors
@@ -817,8 +897,36 @@ class RAGModelEvaluator:
         
         # Calculate accuracy by comparing prediction with gold answer
         gold_answer = entry.get('gold_answer', '')
-        prediction_text = result['response']
+        full_response = result['response']
         question = entry.get('question', '')
+        
+        # Extract prediction and explanation with improved parsing
+        lines = full_response.strip().split('\n')
+        
+        # Remove confidence line if present (usually at the end)
+        confidence_line_pattern = r'confidence:\s*[0-9]*\.?[0-9]+'
+        filtered_lines = []
+        for line in lines:
+            if not re.search(confidence_line_pattern, line.lower()):
+                filtered_lines.append(line)
+        
+        # First non-empty line is the prediction
+        prediction_text = ""
+        explanation_lines = []
+        
+        for i, line in enumerate(filtered_lines):
+            line = line.strip()
+            if line and not prediction_text:  # First non-empty line
+                prediction_text = line
+            elif line:  # Subsequent non-empty lines
+                explanation_lines.append(line)
+        
+        # Fallback if no prediction found
+        if not prediction_text:
+            prediction_text = full_response.strip()
+            prediction_explanation = "No explanation provided"
+        else:
+            prediction_explanation = '\n'.join(explanation_lines) if explanation_lines else "No explanation provided"
         
         if gold_answer and prediction_text:
             if self.use_llm_grading and self.llm_grader:
@@ -872,6 +980,25 @@ class RAGModelEvaluator:
                 'grading_method': 'confidence_heuristic'
             }
         
+        # Extract verbal uncertainty flags using existing function
+        from metrics import contains_hedge
+        combined_text = prediction_text + " " + prediction_explanation
+        hedge_count = contains_hedge(combined_text)
+        verbal_uncertainty_flags = [word for word in combined_text.lower().split() if word in ['likely', 'probably', 'possibly', 'might', 'may', 'could', 'seems', 'appears', 'suggests', 'unclear', 'uncertain', 'conflicting', 'contradictory']]
+        
+        # Calculate faithfulness score using existing metrics
+        from metrics import calm_rag_faithfulness_metrics
+        eval_result = {
+            'prediction': prediction_explanation,
+            'retrieved_docs': retrieved_docs,
+            'gold_answer': gold_answer
+        }
+        faithfulness_metrics = calm_rag_faithfulness_metrics([eval_result])
+        faithfulness_score = faithfulness_metrics.get('overall_faithfulness', 0.0)
+        
+        # Determine if model abstained
+        abstain_flag = self._detect_abstention(prediction_text, prediction_explanation)
+        
         evaluation_result = {
             'entry_id': entry['id'],
             'question': entry['question'],
@@ -880,7 +1007,8 @@ class RAGModelEvaluator:
             'relevant_docs': relevant_docs,
             'confidence': result['confidence'] or 0.5,
             'accuracy': accuracy,
-            'prediction_text': result['response'],
+            'prediction_text': prediction_text,
+            'prediction_explanation': prediction_explanation,
             # Note: log_probs removed from raw results to reduce file size
             'continuous_uncertainty': continuous_uncertainty,  # New continuous uncertainty score
             'is_uncertain': bool(result.get('confidence', 0) < 0.6) if result.get('confidence') is not None else True,
@@ -889,13 +1017,47 @@ class RAGModelEvaluator:
             'no_retrieval_accuracy': 0.3,    # Mock value
             'model': model_name,
             'tokens_used': result['tokens_used'],
-            'accuracy_method': grading_info.get('grading_method', 'unknown')
+            'accuracy_method': grading_info.get('grading_method', 'unknown'),
+            # ASI-specific fields
+            'set_type': source_set_type,
+            'verbal_uncertainty_flags': verbal_uncertainty_flags,
+            'faithfulness_score': faithfulness_score,
+            'abstain_flag': abstain_flag,
+            'ambiguity_type': self._determine_ambiguity_type(entry)  # From dataset metadata
         }
         
         return evaluation_result, result  # Return both cleaned result and original model response
     
+    def _detect_abstention(self, prediction_text: str, prediction_explanation: str) -> bool:
+        """Detect if the model explicitly abstained from answering."""
+        abstention_phrases = [
+            'cannot answer', 'cannot determine', 'unable to answer', 'unable to determine',
+            'insufficient information', 'not enough information', 'cannot find',
+            'no clear answer', 'no definitive answer', 'cannot provide',
+            'do not know', 'don\'t know', 'not sure', 'uncertain',
+            'cannot conclude', 'cannot decide', 'cannot tell'
+        ]
+        
+        combined_text = (prediction_text + " " + prediction_explanation).lower()
+        
+        for phrase in abstention_phrases:
+            if phrase in combined_text:
+                return True
+        
+        return False
+    
+    def _determine_ambiguity_type(self, entry: Dict[str, Any]) -> str:
+        """Determine ambiguity type from dataset entry metadata."""
+        # Check if there's explicit ambiguity type in the entry
+        if 'ambiguity_type' in entry:
+            return entry['ambiguity_type']
+        
+
+        # Otherwise, assume conflicting
+        return 'conflicting'
+    
     def evaluate_model(self, model_name: str, max_entries: Optional[int] = None) -> Dict[str, Any]:
-        """Evaluate a model on the dataset."""
+        """Evaluate a model on the dataset - runs each question twice (clear and ambiguous sets)."""
         print(f"\nEvaluating {model_name} on CALM-RAG dataset...")
         
         if max_entries:
@@ -903,16 +1065,27 @@ class RAGModelEvaluator:
         else:
             dataset_subset = self.dataset
         
-        results = []
+        # Store results for both clear and ambiguous sets
+        clear_results = []
+        ambiguous_results = []
         original_model_responses = []
         successful_evaluations = 0
         
         for entry in tqdm(dataset_subset, desc=f"Evaluating {model_name}"):
             try:
-                evaluation_result, original_response = self.evaluate_single_entry(entry, model_name)
-                if evaluation_result:
-                    results.append(evaluation_result)
-                    original_model_responses.append(original_response)
+                # Evaluate with clear sources only
+                clear_result, clear_raw = self.evaluate_single_entry(entry, model_name, "clear")
+                if clear_result:
+                    clear_results.append(clear_result)
+                    original_model_responses.append(clear_raw)
+                
+                # Evaluate with ambiguous sources only
+                ambiguous_result, ambiguous_raw = self.evaluate_single_entry(entry, model_name, "ambiguous")
+                if ambiguous_result:
+                    ambiguous_results.append(ambiguous_result)
+                    original_model_responses.append(ambiguous_raw)
+                
+                if clear_result and ambiguous_result:
                     successful_evaluations += 1
                 
                 # Rate limiting
@@ -923,36 +1096,48 @@ class RAGModelEvaluator:
                 continue
         
         print(f"Successfully evaluated {successful_evaluations}/{len(dataset_subset)} entries")
-        print(f"Raw results count: {len(results)}")
+        print(f"Clear results: {len(clear_results)}, Ambiguous results: {len(ambiguous_results)}")
         
-        if not results:
+        if not clear_results or not ambiguous_results:
             print("No successful evaluations!")
             return {}
         
         print(f"Stored {len(original_model_responses)} original model responses for backup")
         
+        # Combine results for standard metrics calculation
+        all_results = clear_results + ambiguous_results
+        
         # Update calibration after collecting initial results
-        if len(results) >= 10:
-            print(f"Updating calibration with {len(results)} samples...")
+        if len(all_results) >= 10:
+            print(f"Updating calibration with {len(all_results)} samples...")
             
             # Clear LLM grader cache to ensure fresh accuracy calculations
             if self.llm_grader:
                 print("Clearing LLM grader cache for fresh accuracy calculations...")
                 self.llm_grader.clear_cache()
             
-            self.update_calibration(results, original_model_responses)  # Pass original model responses for calibration
+            self.update_calibration(all_results, original_model_responses)  # Pass original model responses for calibration
             
             # Re-evaluate with calibrated confidence if calibration was successful
             if self.is_calibrated:
                 print("Re-evaluating with calibrated confidence...")
-                calibrated_results = []
+                calibrated_clear_results = []
+                calibrated_ambiguous_results = []
                 successful_re_evaluations = 0
                 
                 for entry in tqdm(dataset_subset, desc=f"Re-evaluating {model_name} with calibration"):
                     try:
-                        evaluation_result, original_response = self.evaluate_single_entry(entry, model_name)
-                        if evaluation_result:
-                            calibrated_results.append(evaluation_result)
+                        # Re-evaluate clear set
+                        clear_result, _ = self.evaluate_single_entry(entry, model_name, "clear")
+                        if clear_result:
+                            calibrated_clear_results.append(clear_result)
+                        
+                        # Re-evaluate ambiguous set
+                        ambiguous_result, _ = self.evaluate_single_entry(entry, model_name, "ambiguous")
+                        if ambiguous_result:
+                            calibrated_ambiguous_results.append(ambiguous_result)
+                        
+                        if clear_result and ambiguous_result:
                             successful_re_evaluations += 1
                         time.sleep(1)  # Rate limiting
                     except Exception as e:
@@ -962,28 +1147,49 @@ class RAGModelEvaluator:
                 print(f"Re-evaluation completed: {successful_re_evaluations}/{len(dataset_subset)} entries successful")
                 
                 # Only use calibrated results if we have the same number as original
-                if len(calibrated_results) == len(results):
-                    results = calibrated_results
+                if len(calibrated_clear_results) == len(clear_results) and len(calibrated_ambiguous_results) == len(ambiguous_results):
+                    clear_results = calibrated_clear_results
+                    ambiguous_results = calibrated_ambiguous_results
+                    all_results = clear_results + ambiguous_results
                     print("Using calibrated results for final metrics")
                 else:
-                    print(f"Warning: Re-evaluation incomplete ({len(calibrated_results)} vs {len(results)}). Using original results.")
+                    print(f"Warning: Re-evaluation incomplete. Using original results.")
         
         # Compute all metrics
         print("Computing CALM-RAG metrics...")
-        print(f"Final results count for metrics: {len(results)}")
+        print(f"Final results count for metrics: {len(all_results)}")
         
         # Core CALM-RAG metrics
-        calm_rag_metrics = compute_all_calm_rag_metrics(results)
+        calm_rag_metrics = compute_all_calm_rag_metrics(all_results)
         
         # Utility metrics
-        utility_metrics = calculate_all_utility_metrics(results)
+        utility_metrics = calculate_all_utility_metrics(all_results)
         
         # Individual hypothesis metrics
-        h1_metrics = calm_rag_h1_metrics(results)
-        h2_metrics = calm_rag_h2_metrics(results)
-        h3_metrics = calm_rag_h3_metrics(results)
-        h4_metrics = calm_rag_h4_metrics(results)
-        h5_metrics = calm_rag_h5_metrics(results)
+        h1_metrics = calm_rag_h1_metrics(all_results)
+        h2_metrics = calm_rag_h2_metrics(all_results)
+        h3_metrics = calm_rag_h3_metrics(all_results)
+        h4_metrics = calm_rag_h4_metrics(all_results)
+        h5_metrics = calm_rag_h5_metrics(all_results)
+        
+        # Calculate ASI metrics
+        print("Computing ASI metrics...")
+        asi_results = []
+        for i in range(min(len(clear_results), len(ambiguous_results))):
+            clear_entry = clear_results[i]
+            ambiguous_entry = ambiguous_results[i]
+            
+            # Ensure they're from the same question
+            if clear_entry['entry_id'] == ambiguous_entry['entry_id']:
+                asi_result = calculate_ambiguity_sensitivity_index(clear_entry, ambiguous_entry)
+                asi_results.append({
+                    'question_id': clear_entry['entry_id'],
+                    'asi_score': asi_result['asi'],
+                    'asi_components': asi_result
+                })
+        
+        # Calculate batch ASI statistics
+        batch_asi = calculate_batch_asi(asi_results)
         
         
         # Build streamlined evaluation summary (CALM-RAG focused)
@@ -993,8 +1199,9 @@ class RAGModelEvaluator:
             'successful_evaluations': successful_evaluations,
             'calibration_info': {
                 'was_calibrated': self.is_calibrated,
-                'raw_results_count': len(results),
-                'calibrated_results_count': len(results) if self.is_calibrated else 0,
+                'clear_results_count': len(clear_results),
+                'ambiguous_results_count': len(ambiguous_results),
+                'total_results_count': len(all_results),
                 'used_calibrated_results': self.is_calibrated
             },
             'calm_rag_metrics': calm_rag_metrics,
@@ -1005,19 +1212,42 @@ class RAGModelEvaluator:
                 'h4_self_assessment': h4_metrics,
                 'h5_source_quality': h5_metrics
             },
+            'asi_metrics': batch_asi,
+            'individual_asi_results': asi_results,
             # Keep only essential result data (no verbose logging)
-            'summary_results': [
-                {
-                    'entry_id': result['entry_id'],
-                    'question': result['question'][:100] + '...' if len(result['question']) > 100 else result['question'],
-                    'confidence': result['confidence'],
-                    'accuracy': result['accuracy'],
-                    'is_uncertain': result['is_uncertain'],
-                    'retrieval_recall': result.get('retrieval_recall', 0.0),
-                    'has_hedging': 'hedge' in result.get('prediction_text', '').lower()
-                }
-                for result in results
-            ]
+            'summary_results': {
+                'clear_results': [
+                    {
+                        'entry_id': result['entry_id'],
+                        'question': result['question'][:100] + '...' if len(result['question']) > 100 else result['question'],
+                        'confidence': result['confidence'],
+                        'accuracy': result['accuracy'],
+                        'is_uncertain': result['is_uncertain'],
+                        'set_type': result['set_type'],
+                        'faithfulness_score': result['faithfulness_score'],
+                        'abstain_flag': result['abstain_flag'],
+                        'prediction_text': result.get('prediction_text', ''),
+                        'prediction_explanation': result.get('prediction_explanation', '')[:200] + '...' if len(result.get('prediction_explanation', '')) > 200 else result.get('prediction_explanation', '')
+                    }
+                    for result in clear_results
+                ],
+                'ambiguous_results': [
+                    {
+                        'entry_id': result['entry_id'],
+                        'question': result['question'][:100] + '...' if len(result['question']) > 100 else result['question'],
+                        'confidence': result['confidence'],
+                        'accuracy': result['accuracy'],
+                        'is_uncertain': result['is_uncertain'],
+                        'set_type': result['set_type'],
+                        'faithfulness_score': result['faithfulness_score'],
+                        'abstain_flag': result['abstain_flag'],
+                        'ambiguity_type': result['ambiguity_type'],
+                        'prediction_text': result.get('prediction_text', ''),
+                        'prediction_explanation': result.get('prediction_explanation', '')[:200] + '...' if len(result.get('prediction_explanation', '')) > 200 else result.get('prediction_explanation', '')
+                    }
+                    for result in ambiguous_results
+                ]
+            }
         }
         
         # Simplify metric names, add descriptions, and round numeric values for better readability
@@ -1074,7 +1304,7 @@ class RAGModelEvaluator:
                 'grading_method': 'llm',
                 'model_used': self.llm_grading_model,
                 'cache_size': cache_stats['cache_size'],
-                'total_evaluations': len(results)
+                'total_evaluations': len(all_results)
             }
         
         return evaluation_summary
@@ -1132,6 +1362,7 @@ class RAGModelEvaluator:
         print(f"\nComparison saved to {comparison_file}")
         
         return comparison_summary
+    
 
 def main():
     """Main evaluation function."""
@@ -1187,6 +1418,7 @@ def main():
         # Evaluate just the first model (gpt-4o) with 10 entries
         result = evaluator.evaluate_model("gpt-4o", max_entries=10)
         
+        
         if result:
             print("\nEvaluation completed successfully!")
             print(f"Results saved in: {evaluator.output_dir}/")
@@ -1200,10 +1432,24 @@ def main():
             # Print some key metrics
             calm_rag = result['calm_rag_metrics']
             print(f"\nKey CALM-RAG Metrics:")
-            print(f"  Overconfidence Index: {calm_rag.get('h1_overconfidence_index', 'N/A'):.3f}")
-            print(f"  ECE with Retrieval: {calm_rag.get('h2_ece_with_retrieval', 'N/A'):.3f}")
-            print(f"  Hedge F1: {calm_rag.get('h3_hedge_f1', 'N/A'):.3f}")
-            print(f"  Expected Calibration Error: {calm_rag.get('h4_expected_calibration_error', 'N/A'):.3f}")
+            
+            # Helper function to safely format numeric values
+            def safe_format(value, default='N/A'):
+                if isinstance(value, (int, float)):
+                    return f"{value:.3f}"
+                else:
+                    return str(default)
+            
+            print(f"  Overconfidence Index: {safe_format(calm_rag.get('overconfidence_index', {}).get('value'))}")
+            print(f"  ECE with Retrieval: {safe_format(calm_rag.get('ece_with_retrieval', {}).get('value'))}")
+            print(f"  Hedge F1: {safe_format(calm_rag.get('hedge_f1', {}).get('value'))}")
+            print(f"  Expected Calibration Error: {safe_format(calm_rag.get('expected_calibration_error', {}).get('value'))}")
+            
+            # Print ASI metrics
+            if 'asi_metrics' in result:
+                asi_metrics = result['asi_metrics']
+                print(f"  ASI Score: {asi_metrics['mean_asi']:.3f}")
+                
         else:
             print("Evaluation failed - no results returned")
         
