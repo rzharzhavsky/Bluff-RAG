@@ -263,24 +263,49 @@ def calm_rag_h1_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
     recall_confidence_corr = confidence_accuracy_correlation(recalls, confidences)
     
     # Overconfidence index: confidence when accuracy is low
-    overconfidence_cases = [(c, a) for c, a in zip(confidences, accuracies) if a < 0.5]
+    # Adjust thresholds for calibrated confidence scale
+    # Calibrated confidences typically range from 0.04 to 1.0, so use adaptive thresholds
+    confidence_median = np.median(confidences)
+    confidence_75th = np.percentile(confidences, 75)
+    
+    # For calibrated confidence, use 75th percentile as "high confidence" threshold
+    # This identifies cases where model is confident but wrong
+    high_confidence_threshold = confidence_75th
+    
+    overconfidence_cases = [(c, a) for c, a in zip(confidences, accuracies) 
+                          if a < 0.5 and c > high_confidence_threshold]
     overconfidence_index = 0.0
     if overconfidence_cases:
         avg_confidence_wrong = np.mean([c for c, a in overconfidence_cases])
-        overconfidence_index = max(0, avg_confidence_wrong - 0.5)
+        # Scale by confidence range to make it interpretable
+        confidence_range = max(confidences) - min(confidences)
+        overconfidence_index = (avg_confidence_wrong - high_confidence_threshold) / max(confidence_range, 0.01)
     
     # Wrong answer rate
     wrong_answer_rate = np.mean([1 - a for a in accuracies])
     
-    # Refusal rate (when confidence is very low)
-    refusal_rate = np.mean([1 if c < 0.3 else 0 for c in confidences])
+    # Refusal rate (when confidence is very low) - adjust for calibrated scale
+    # Use 25th percentile instead of hardcoded 0.3 for calibrated confidence
+    low_confidence_threshold = np.percentile(confidences, 25)  # Bottom 25% of confidences
+    refusal_rate = np.mean([1 if c < low_confidence_threshold else 0 for c in confidences])
     
     return {
         'retrieval_recall_confidence_correlation': recall_confidence_corr,
         'avg_retrieval_recall': np.mean(recalls),
         'overconfidence_index': overconfidence_index,
         'wrong_answer_rate': wrong_answer_rate,
-        'refusal_rate': refusal_rate
+        'refusal_rate': refusal_rate,
+        # Diagnostic info for calibrated confidence thresholds
+        'calibrated_confidence_stats': {
+            'median': confidence_median,
+            '25th_percentile': low_confidence_threshold,
+            '75th_percentile': high_confidence_threshold,
+            'high_confidence_threshold': high_confidence_threshold,
+            'min': min(confidences) if confidences else 0,
+            'max': max(confidences) if confidences else 0,
+            'overconfidence_cases_count': len(overconfidence_cases),
+            'total_wrong_answers': len([a for a in accuracies if a < 0.5])
+        }
     }
 
 
@@ -396,8 +421,9 @@ def calm_rag_h3_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
     # Hedge density
     hedge_density = np.mean([count / max(len(text.split()), 1) for count, text in zip(hedge_counts, texts)])
     
-    # Confident wrong rate
-    confident_threshold = 0.7
+    # Confident wrong rate - adjust for calibrated scale
+    # Use 75th percentile instead of hardcoded 0.7 for calibrated confidence
+    confident_threshold = np.percentile(confidences, 75)  # Top 25% of confidences
     confident_wrong_rate = np.mean([1 if c > confident_threshold and a < 0.5 else 0 for c, a in zip(confidences, accuracies)])
     
     return {

@@ -519,8 +519,8 @@ class RAGModelEvaluator:
         
         return evaluation_result, result  # Return both cleaned result and original model response
     
-    def evaluate_model(self, model_name: str, max_entries: Optional[int] = None) -> Dict[str, Any]:
-        """Evaluate a model on the dataset - runs each question twice (clear and ambiguous sets)."""
+    def evaluate_model(self, model_name: str, max_entries: Optional[int] = None, skip_calibration: bool = False) -> Dict[str, Any]:
+        """Evaluate a model on the dataset with two-phase calibration approach."""
         print(f"\nEvaluating {model_name} on CALM-RAG dataset...")
         
         if max_entries:
@@ -534,40 +534,134 @@ class RAGModelEvaluator:
         original_model_responses = []
         successful_evaluations = 0
         
-        for i, entry in enumerate(tqdm(dataset_subset, desc=f"Evaluating {model_name}")):
-            try:
-                # Evaluate with clear sources only
-                clear_result, clear_raw = self.evaluate_single_entry(entry, model_name, "clear")
-                if clear_result:
-                    clear_results.append(clear_result)
-                    original_model_responses.append(clear_raw)
+        # Phase 1: Evaluate first 20 entries for calibration (if not skipping)
+        if not skip_calibration and len(dataset_subset) >= 20:
+            print("Phase 1: Evaluating first 20 entries for calibration...")
+            calibration_subset = dataset_subset[:20]
+            
+            for i, entry in enumerate(tqdm(calibration_subset, desc=f"Calibration phase - {model_name}")):
+                try:
+                    # Evaluate with clear sources only
+                    clear_result, clear_raw = self.evaluate_single_entry(entry, model_name, "clear")
+                    if clear_result:
+                        clear_results.append(clear_result)
+                        original_model_responses.append(clear_raw)
+                    
+                    # Evaluate with ambiguous sources only
+                    ambiguous_result, ambiguous_raw = self.evaluate_single_entry(entry, model_name, "ambiguous")
+                    if ambiguous_result:
+                        ambiguous_results.append(ambiguous_result)
+                        original_model_responses.append(ambiguous_raw)
+                    
+                    if clear_result and ambiguous_result:
+                        successful_evaluations += 1
+                    
+                    # Rate limiting
+                    time.sleep(1)
+                    
+                except Exception as e:
+                    print(f"Error evaluating entry {entry['id']}: {e}")
+                    continue
+            
+            # Create calibration function after collecting 20 entries worth of data
+            print(f"\n=== CALIBRATION PHASE ===")
+            print(f"Collected {len(original_model_responses)} responses for calibration")
+            all_results = clear_results + ambiguous_results
+            calibration_success = self.calibrator.update_calibration(all_results, original_model_responses)
+            if calibration_success:
+                print(f"✓ Calibration function created and frozen!")
+                print(f"Calibration samples: {self.calibrator.calibration_samples}")
+            else:
+                print(f"⚠ Calibration failed - will use internal confidence")
+            
+            # Phase 2: Re-run the same 20 entries with frozen calibration
+            print(f"\nPhase 2: Re-evaluating first 20 entries with frozen calibration...")
+            clear_results = []
+            ambiguous_results = []
+            original_model_responses = []
+            successful_evaluations = 0
+            
+            for i, entry in enumerate(tqdm(calibration_subset, desc=f"Re-evaluation with calibration - {model_name}")):
+                try:
+                    # Evaluate with clear sources only
+                    clear_result, clear_raw = self.evaluate_single_entry(entry, model_name, "clear")
+                    if clear_result:
+                        clear_results.append(clear_result)
+                        original_model_responses.append(clear_raw)
+                    
+                    # Evaluate with ambiguous sources only
+                    ambiguous_result, ambiguous_raw = self.evaluate_single_entry(entry, model_name, "ambiguous")
+                    if ambiguous_result:
+                        ambiguous_results.append(ambiguous_result)
+                        original_model_responses.append(ambiguous_raw)
+                    
+                    if clear_result and ambiguous_result:
+                        successful_evaluations += 1
+                    
+                    # Rate limiting
+                    time.sleep(1)
+                    
+                except Exception as e:
+                    print(f"Error re-evaluating entry {entry['id']}: {e}")
+                    continue
+            
+            print(f"Phase 2 completed: {successful_evaluations}/{len(calibration_subset)} entries re-evaluated with frozen calibration")
+            
+            # If we have more entries, continue with the rest using the frozen calibration
+            if len(dataset_subset) > 20:
+                print(f"\nPhase 3: Evaluating remaining {len(dataset_subset) - 20} entries with frozen calibration...")
+                remaining_subset = dataset_subset[20:]
                 
-                # Evaluate with ambiguous sources only
-                ambiguous_result, ambiguous_raw = self.evaluate_single_entry(entry, model_name, "ambiguous")
-                if ambiguous_result:
-                    ambiguous_results.append(ambiguous_result)
-                    original_model_responses.append(ambiguous_raw)
-                
-                if clear_result and ambiguous_result:
-                    successful_evaluations += 1
-                
-                # After first 20 entries, create calibration function
-                if i == 19:  # After 20th entry
-                    print(f"\n=== CALIBRATION PHASE ===")
-                    print(f"Collected {len(original_model_responses)} responses for calibration")
-                    all_results = clear_results + ambiguous_results
-                    calibration_success = self.calibrator.update_calibration(all_results, original_model_responses)
-                    if calibration_success:
-                        print(f"✓ Calibration function created successfully!")
-                    else:
-                        print(f"⚠ Calibration failed - will use internal confidence")
-                
-                # Rate limiting
-                time.sleep(1)
-                
-            except Exception as e:
-                print(f"Error evaluating entry {entry['id']}: {e}")
-                continue
+                for i, entry in enumerate(tqdm(remaining_subset, desc=f"Remaining entries - {model_name}")):
+                    try:
+                        # Evaluate with clear sources only
+                        clear_result, clear_raw = self.evaluate_single_entry(entry, model_name, "clear")
+                        if clear_result:
+                            clear_results.append(clear_result)
+                            original_model_responses.append(clear_raw)
+                        
+                        # Evaluate with ambiguous sources only
+                        ambiguous_result, ambiguous_raw = self.evaluate_single_entry(entry, model_name, "ambiguous")
+                        if ambiguous_result:
+                            ambiguous_results.append(ambiguous_result)
+                            original_model_responses.append(ambiguous_raw)
+                        
+                        if clear_result and ambiguous_result:
+                            successful_evaluations += 1
+                        
+                        # Rate limiting
+                        time.sleep(1)
+                        
+                    except Exception as e:
+                        print(f"Error evaluating entry {entry['id']}: {e}")
+                        continue
+        
+        else:
+            # Single phase evaluation (either skipping calibration or less than 20 entries)
+            print("Single phase evaluation...")
+            for i, entry in enumerate(tqdm(dataset_subset, desc=f"Evaluating {model_name}")):
+                try:
+                    # Evaluate with clear sources only
+                    clear_result, clear_raw = self.evaluate_single_entry(entry, model_name, "clear")
+                    if clear_result:
+                        clear_results.append(clear_result)
+                        original_model_responses.append(clear_raw)
+                    
+                    # Evaluate with ambiguous sources only
+                    ambiguous_result, ambiguous_raw = self.evaluate_single_entry(entry, model_name, "ambiguous")
+                    if ambiguous_result:
+                        ambiguous_results.append(ambiguous_result)
+                        original_model_responses.append(ambiguous_raw)
+                    
+                    if clear_result and ambiguous_result:
+                        successful_evaluations += 1
+                    
+                    # Rate limiting
+                    time.sleep(1)
+                    
+                except Exception as e:
+                    print(f"Error evaluating entry {entry['id']}: {e}")
+                    continue
         
         print(f"Successfully evaluated {successful_evaluations}/{len(dataset_subset)} entries")
         
@@ -759,13 +853,16 @@ def main():
     evaluator.dataset = public_health_entries
     print(f"Found {len(public_health_entries)} public_health entries")
     
-    # Evaluate with calibration workflow
+    # Evaluate with two-phase calibration workflow
     print("\nStarting evaluation with public_health domain...")
-    print("Phase 1: Using first 20 entries for calibration...")
+    print("Two-phase calibration approach:")
+    print("  Phase 1: Evaluate first 20 entries to create calibration function")
+    print("  Phase 2: Re-evaluate first 20 entries with frozen calibration")
+    print("  Phase 3: Evaluate remaining entries with frozen calibration")
     
     try:
-        # Phase 1: Evaluate first 20 entries for calibration
-        result = evaluator.evaluate_model("gpt-4o", max_entries=20)
+        # Run the two-phase evaluation
+        result = evaluator.evaluate_model("gpt-4o", max_entries=50)
         
         if result:
             print("\nEvaluation completed successfully!")
@@ -776,6 +873,12 @@ def main():
             print(f"  Model: gpt-4o")
             print(f"  Entries evaluated: {result['successful_evaluations']}/{result['total_entries']}")
             print(f"  Success rate: {result['successful_evaluations']/result['total_entries']:.1%}")
+            
+            # Print calibration info
+            calibration_info = result['calibration_info']
+            print(f"\nCalibration Information:")
+            print(f"  Was calibrated: {calibration_info['is_calibrated']}")
+            print(f"  Calibration samples: {calibration_info['calibration_samples']}")
             
             # Print some key metrics
             calm_rag = result['calm_rag_metrics']
