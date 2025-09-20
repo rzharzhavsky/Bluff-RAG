@@ -27,7 +27,8 @@ from metrics_calm_rag import (
     calm_rag_h1_metrics, calm_rag_h2_metrics, calm_rag_h3_metrics,
     calm_rag_h4_metrics, calm_rag_h5_metrics,
     calculate_ambiguity_sensitivity_index, calculate_batch_asi,
-    calculate_continuous_uncertainty, calculate_soft_accuracy
+    calculate_continuous_uncertainty, calculate_soft_accuracy,
+    calm_rag_faithfulness_metrics, calm_rag_faithfulness_metrics_with_individuals
 )
 from calibration import ConfidenceCalibrator
 
@@ -678,6 +679,14 @@ class RAGModelEvaluator:
         # Core CALM-RAG metrics
         calm_rag_metrics = compute_all_calm_rag_metrics(all_results)
         
+        # Calculate faithfulness metrics with individual scores
+        faithfulness_batch_metrics, individual_faithfulness_scores = calm_rag_faithfulness_metrics_with_individuals(all_results)
+        
+        # Add individual faithfulness scores to results
+        for i, result in enumerate(all_results):
+            if i < len(individual_faithfulness_scores):
+                result['faithfulness'] = individual_faithfulness_scores[i]
+        
         # Utility metrics
         utility_metrics = calculate_all_utility_metrics(all_results)
         
@@ -706,6 +715,7 @@ class RAGModelEvaluator:
             'successful_evaluations': successful_evaluations,
             'calibration_info': self.calibrator.get_calibration_info(),
             'calm_rag_metrics': calm_rag_metrics,
+            'faithfulness_metrics': faithfulness_batch_metrics,
             'utility_metrics': utility_metrics,
             'asi_metrics': batch_asi,
             'individual_asi_results': asi_results,
@@ -720,7 +730,8 @@ class RAGModelEvaluator:
                         'confidence': result['confidence'],
                         'accuracy': result['accuracy'],
                         'is_uncertain': result['is_uncertain'],
-                        'set_type': result['set_type']
+                        'set_type': result['set_type'],
+                        'faithfulness': result['faithfulness']
                     }
                     for result in clear_results
                 ],
@@ -735,7 +746,8 @@ class RAGModelEvaluator:
                         'accuracy': result['accuracy'],
                         'is_uncertain': result['is_uncertain'],
                         'set_type': result['set_type'],
-                        'ambiguity_type': result['ambiguity_type']
+                        'ambiguity_type': result['ambiguity_type'],
+                        'faithfulness': result['faithfulness']
                     }
                     for result in ambiguous_results
                 ]

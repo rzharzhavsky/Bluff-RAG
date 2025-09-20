@@ -1,30 +1,30 @@
 {
   "model": "gpt-4o",
   "total_evaluations": 50,
-  "calm_rag_score": 0.63,
+  "calm_rag_score": 0.563,
   "h1_overconfidence": {
     "avg_retrieval_recall": 0.502,
-    "overconfidence_index": 0.124,
-    "wrong_answer_rate": 0.707
+    "overconfidence_index": 0.174,
+    "wrong_answer_rate": 0.701
   },
   "h2_calibration": {
-    "ece_with_retrieval": 0.192,
-    "ece_without_retrieval": 0.143,
-    "ece_improvement": -0.049
+    "ece_with_retrieval": 0.193,
+    "ece_without_retrieval": 0.142,
+    "ece_improvement": -0.051
   },
   "h3_hedging": {
-    "hedge_precision": 0.971,
-    "hedge_recall": 0.723,
-    "hedge_f1": 0.829
+    "hedge_precision": 0.625,
+    "hedge_recall": 0.417,
+    "hedge_f1": 0.5
   },
   "h4_self_assessment": {
-    "expected_calibration_error": 0.192,
-    "brier_score": 0.069,
-    "confidence_accuracy_correlation": 0.243
+    "expected_calibration_error": 0.193,
+    "brier_score": 0.068,
+    "confidence_accuracy_correlation": 0.261
   },
   "h5_source_quality": {
-    "source_quality_confidence_corr": -0.043,
-    "quality_weighted_ece": 0.218,
-    "quality_calibration_gap": 0.012
+    "source_quality_confidence_corr": -0.062,
+    "quality_weighted_ece": 0.214,
+    "quality_calibration_gap": -0.018
   }
 }

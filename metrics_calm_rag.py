@@ -22,6 +22,16 @@ HEDGE_TERMS = [
 ]
 
 
+def normalize_text(text: str) -> str:
+    """Normalize text for comparison by converting to lowercase and removing punctuation."""
+    if not text:
+        return ""
+    # Convert to lowercase and remove punctuation
+    text = text.lower().translate(str.maketrans('', '', string.punctuation))
+    # Remove extra whitespace
+    return ' '.join(text.split())
+
+
 def normalize_document_id(doc: Union[str, Dict[str, Any]]) -> str:
     """Normalize document to a consistent ID for comparison."""
     if isinstance(doc, str):
@@ -365,10 +375,57 @@ def calm_rag_h2_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
     }
 
 
+def calculate_question_difficulty(result: Dict[str, Any]) -> float:
+    """
+    Calculate true uncertainty based on question difficulty factors.
+    Returns a score from 0 (easy/certain) to 1 (difficult/uncertain).
+    """
+    difficulty_factors = []
+    
+    # Factor 1: Retrieval quality (low recall = high difficulty)
+    retrieved_docs = result.get('retrieved_docs', [])
+    relevant_docs = result.get('relevant_docs', [])
+    retrieval_recall_score = retrieval_recall(retrieved_docs, relevant_docs)
+    difficulty_factors.append(1 - retrieval_recall_score)  # Low recall = high difficulty
+    
+    # Factor 2: Source quality (low quality = high difficulty)
+    source_quality = source_quality_score(retrieved_docs)
+    difficulty_factors.append(1 - source_quality)  # Low quality = high difficulty
+    
+    # Factor 3: Source diversity (high diversity might indicate conflicting info)
+    if len(retrieved_docs) > 1:
+        # Simple diversity measure: unique domains
+        domains = set()
+        for doc in retrieved_docs:
+            if isinstance(doc, dict) and 'url' in doc:
+                try:
+                    from urllib.parse import urlparse
+                    domain = urlparse(doc['url']).netloc
+                    domains.add(domain)
+                except:
+                    pass
+        diversity = len(domains) / len(retrieved_docs) if retrieved_docs else 0
+        # High diversity can indicate uncertainty (conflicting sources)
+        difficulty_factors.append(min(diversity * 2, 1.0))  # Scale and cap at 1.0
+    else:
+        difficulty_factors.append(0.5)  # Neutral if single/no source
+    
+    # Factor 4: Question ambiguity (based on source set type)
+    source_set_type = result.get('source_set_type', 'clear')
+    if source_set_type == 'ambiguous':
+        difficulty_factors.append(0.8)  # Ambiguous questions are inherently difficult
+    else:
+        difficulty_factors.append(0.2)  # Clear questions are easier
+    
+    # Return weighted average of difficulty factors
+    return np.mean(difficulty_factors)
+
+
 def calm_rag_h3_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
     """
     H3: Hedging language as signal of uncertainty
     Tests if models use appropriate hedging language when uncertain.
+    Improved with true difficulty-based uncertainty and non-binary hedging.
     """
     if not results:
         return {}
@@ -376,6 +433,7 @@ def calm_rag_h3_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
     texts = []
     confidences = []
     accuracies = []
+    true_uncertainties = []
     
     for result in results:
         prediction = result.get('prediction_text', '')
@@ -385,55 +443,83 @@ def calm_rag_h3_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
         texts.append(combined_text)
         confidences.append(result.get('confidence', 0.5))
         accuracies.append(result.get('accuracy', 0.0))
+        
+        # Calculate true uncertainty based on question difficulty
+        difficulty = calculate_question_difficulty(result)
+        true_uncertainties.append(difficulty)
     
-    # Calculate hedge metrics
+    # Calculate hedge density (non-binary)
     hedge_counts = [contains_hedge(text) for text in texts]
+    word_counts = [len(text.split()) for text in texts]
+    hedge_densities = [count / max(words, 1) for count, words in zip(hedge_counts, word_counts)]
     
-    # Hedge precision/recall (simplified - using confidence as proxy for true uncertainty)
-    true_uncertainties = [1 - c for c in confidences]  # Higher confidence = lower uncertainty
-    hedge_detections = [1 if count > 0 else 0 for count in hedge_counts]
+    # Define thresholds for classification
+    uncertainty_threshold = np.percentile(true_uncertainties, 75)  # Top 25% most uncertain
+    certainty_threshold = np.percentile(true_uncertainties, 25)   # Bottom 25% most certain
+    hedge_threshold = np.percentile(hedge_densities, 50)          # Median hedge density
     
-    # Calculate precision and recall
-    true_positives = sum([1 for h, u in zip(hedge_detections, true_uncertainties) if h == 1 and u > 0.3])
-    false_positives = sum([1 for h, u in zip(hedge_detections, true_uncertainties) if h == 1 and u <= 0.3])
-    false_negatives = sum([1 for h, u in zip(hedge_detections, true_uncertainties) if h == 0 and u > 0.3])
+    # Calculate confusion matrix elements with true negatives
+    true_positives = sum([1 for h, u in zip(hedge_densities, true_uncertainties) 
+                         if h > hedge_threshold and u > uncertainty_threshold])
+    false_positives = sum([1 for h, u in zip(hedge_densities, true_uncertainties) 
+                          if h > hedge_threshold and u < certainty_threshold])
+    false_negatives = sum([1 for h, u in zip(hedge_densities, true_uncertainties) 
+                          if h <= hedge_threshold and u > uncertainty_threshold])
+    true_negatives = sum([1 for h, u in zip(hedge_densities, true_uncertainties) 
+                         if h <= hedge_threshold and u < certainty_threshold])
     
+    # Calculate comprehensive metrics
     hedge_precision = true_positives / (true_positives + false_positives) if (true_positives + false_positives) > 0 else 0.0
     hedge_recall = true_positives / (true_positives + false_negatives) if (true_positives + false_negatives) > 0 else 0.0
+    hedge_specificity = true_negatives / (true_negatives + false_positives) if (true_negatives + false_positives) > 0 else 0.0
     hedge_f1 = 2 * (hedge_precision * hedge_recall) / (hedge_precision + hedge_recall) if (hedge_precision + hedge_recall) > 0 else 0.0
+    hedge_accuracy = (true_positives + true_negatives) / len(results) if len(results) > 0 else 0.0
     
-    # Lexical overconfidence: confident language when wrong
-    confident_wrong_cases = [(text, acc) for text, acc in zip(texts, accuracies) if acc < 0.5]
-    lexical_overconfidence = 0.0
-    if confident_wrong_cases:
-        confident_terms = ['definitely', 'certainly', 'absolutely', 'clearly', 'obviously']
-        overconfident_count = 0
-        for text, acc in confident_wrong_cases:
-            text_lower = text.lower()
-            if any(term in text_lower for term in confident_terms):
-                overconfident_count += 1
-        lexical_overconfidence = overconfident_count / len(confident_wrong_cases)
+    # Lexical overconfidence: confident language when wrong (improved)
+    confident_terms = ['definitely', 'certainly', 'absolutely', 'clearly', 'obviously', 'undoubtedly', 'without doubt', 'for sure']
+    confident_densities = []
+    for text, acc in zip(texts, accuracies):
+        word_count = max(len(text.split()), 1)
+        confident_count = sum([text.lower().count(term) for term in confident_terms])
+        confident_density = confident_count / word_count
+        confident_densities.append(confident_density)
     
-    # Uncertainty-confidence correlation
-    uncertainty_scores = [contains_hedge(text) for text in texts]
-    uncertainty_confidence_corr = confidence_accuracy_correlation(uncertainty_scores, confidences)
+    # Lexical overconfidence: average confident language density in wrong answers
+    wrong_answers_indices = [i for i, acc in enumerate(accuracies) if acc < 0.5]
+    lexical_overconfidence = np.mean([confident_densities[i] for i in wrong_answers_indices]) if wrong_answers_indices else 0.0
     
-    # Hedge density
-    hedge_density = np.mean([count / max(len(text.split()), 1) for count, text in zip(hedge_counts, texts)])
+    # Uncertainty-confidence correlation (using true difficulty-based uncertainty)
+    uncertainty_confidence_corr = confidence_accuracy_correlation(true_uncertainties, confidences)
+    
+    # Overall hedge density
+    hedge_density = np.mean(hedge_densities)
     
     # Confident wrong rate - adjust for calibrated scale
-    # Use 75th percentile instead of hardcoded 0.7 for calibrated confidence
     confident_threshold = np.percentile(confidences, 75)  # Top 25% of confidences
     confident_wrong_rate = np.mean([1 if c > confident_threshold and a < 0.5 else 0 for c, a in zip(confidences, accuracies)])
     
     return {
         'hedge_precision': hedge_precision,
         'hedge_recall': hedge_recall,
+        'hedge_specificity': hedge_specificity,
         'hedge_f1': hedge_f1,
+        'hedge_accuracy': hedge_accuracy,
         'lexical_overconfidence_index': lexical_overconfidence,
         'uncertainty_confidence_correlation': uncertainty_confidence_corr,
         'hedge_density': hedge_density,
-        'confident_wrong_rate': confident_wrong_rate
+        'confident_wrong_rate': confident_wrong_rate,
+        # Diagnostic information
+        'hedging_diagnostics': {
+            'uncertainty_threshold': uncertainty_threshold,
+            'certainty_threshold': certainty_threshold,
+            'hedge_threshold': hedge_threshold,
+            'true_positives': true_positives,
+            'false_positives': false_positives,
+            'true_negatives': true_negatives,
+            'false_negatives': false_negatives,
+            'avg_true_uncertainty': np.mean(true_uncertainties),
+            'avg_hedge_density': hedge_density
+        }
     }
 
 
@@ -620,7 +706,7 @@ def calculate_continuous_uncertainty(entry: Dict[str, Any],
 
 
 def compute_all_calm_rag_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
-    """Compute all CALM-RAG metrics."""
+    """Compute all CALM-RAG metrics (excluding faithfulness, which is calculated separately)."""
     all_metrics = {}
     
     # H1-H5 metrics
@@ -669,4 +755,455 @@ def calculate_all_utility_metrics(results: List[Dict[str, Any]]) -> Dict[str, fl
         'avg_source_diversity': np.mean(diversities),
         'source_diversity_std': np.std(diversities)
     }
+
+
+# FAITHFULNESS METRICS
+# =============================================================================
+
+def calculate_answer_source_overlap(prediction: str, retrieved_docs: List[Dict[str, Any]], 
+                                  method: str = "token") -> float:
+    """
+    Calculate the overlap between the prediction and retrieved source documents.
+    
+    Args:
+        prediction: The model's generated answer
+        retrieved_docs: List of retrieved document dictionaries
+        method: Overlap calculation method ("token", "ngram", "semantic")
+    
+    Returns:
+        Overlap score between 0 and 1
+    """
+    if not prediction or not retrieved_docs:
+        return 0.0
+    
+    # Extract text from retrieved documents
+    source_texts = []
+    for doc in retrieved_docs:
+        if isinstance(doc, dict):
+            text = doc.get('text', '') or doc.get('content', '') or doc.get('excerpt', '')
+        else:
+            text = str(doc)
+        if text:
+            source_texts.append(text)
+    
+    if not source_texts:
+        return 0.0
+    
+    # Combine all source text
+    combined_sources = " ".join(source_texts)
+    
+    if method == "token":
+        return _calculate_token_overlap(prediction, combined_sources)
+    elif method == "ngram":
+        return _calculate_ngram_overlap(prediction, combined_sources)
+    elif method == "semantic":
+        return _calculate_semantic_overlap(prediction, combined_sources)
+    else:
+        raise ValueError(f"Unknown overlap method: {method}")
+
+
+def _calculate_token_overlap(prediction: str, source_text: str) -> float:
+    """Calculate token-level overlap between prediction and source."""
+    pred_tokens = set(normalize_text(prediction).split())
+    source_tokens = set(normalize_text(source_text).split())
+    
+    if not pred_tokens:
+        return 0.0
+    
+    intersection = pred_tokens.intersection(source_tokens)
+    return len(intersection) / len(pred_tokens)
+
+
+def _calculate_ngram_overlap(prediction: str, source_text: str, n: int = 3) -> float:
+    """Calculate n-gram overlap between prediction and source."""
+    def get_ngrams(text: str, n: int) -> set:
+        tokens = normalize_text(text).split()
+        return set(tuple(tokens[i:i+n]) for i in range(len(tokens) - n + 1))
+    
+    pred_ngrams = get_ngrams(prediction, n)
+    source_ngrams = get_ngrams(source_text, n)
+    
+    if not pred_ngrams:
+        return 0.0
+    
+    intersection = pred_ngrams.intersection(source_ngrams)
+    return len(intersection) / len(pred_ngrams)
+
+
+def _calculate_semantic_overlap(prediction: str, source_text: str) -> float:
+    """Calculate semantic overlap using simple word embeddings approach."""
+    # Simple implementation using word overlap with synonyms
+    # In practice, you might want to use more sophisticated embeddings
+    pred_tokens = set(normalize_text(prediction).split())
+    source_tokens = set(normalize_text(source_text).split())
+    
+    if not pred_tokens:
+        return 0.0
+    
+    # Basic semantic similarity using word overlap
+    intersection = pred_tokens.intersection(source_tokens)
+    return len(intersection) / len(pred_tokens)
+
+
+def calculate_attribution_accuracy(prediction: str, retrieved_docs: List[Dict[str, Any]], 
+                                 gold_answer: str = None) -> Dict[str, float]:
+    """
+    Calculate attribution accuracy - how well claims in the prediction can be attributed to sources.
+    
+    Args:
+        prediction: The model's generated answer
+        retrieved_docs: List of retrieved document dictionaries
+        gold_answer: Ground truth answer for comparison
+    
+    Returns:
+        Dictionary with attribution metrics
+    """
+    if not prediction or not retrieved_docs:
+        return {
+            'attribution_coverage': 0.0,
+            'source_utilization': 0.0,
+            'claim_attribution_rate': 0.0,
+            'attribution_precision': 0.0
+        }
+    
+    # Extract claims from prediction (simple sentence splitting)
+    prediction_sentences = [s.strip() for s in prediction.split('.') if s.strip()]
+    
+    # Extract text from sources
+    source_texts = []
+    for doc in retrieved_docs:
+        if isinstance(doc, dict):
+            text = doc.get('text', '') or doc.get('content', '') or doc.get('excerpt', '')
+        else:
+            text = str(doc)
+        if text:
+            source_texts.append(text)
+    
+    if not source_texts:
+        return {
+            'attribution_coverage': 0.0,
+            'source_utilization': 0.0,
+            'claim_attribution_rate': 0.0,
+            'attribution_precision': 0.0
+        }
+    
+    # Calculate attribution metrics
+    attributed_claims = 0
+    total_claims = len(prediction_sentences)
+    
+    for claim in prediction_sentences:
+        if _can_claim_be_attributed(claim, source_texts):
+            attributed_claims += 1
+    
+    # Source utilization - how many sources are actually used
+    used_sources = 0
+    for source_text in source_texts:
+        if _is_source_used_in_prediction(prediction, source_text):
+            used_sources += 1
+    
+    return {
+        'attribution_coverage': attributed_claims / total_claims if total_claims > 0 else 0.0,
+        'source_utilization': used_sources / len(source_texts) if source_texts else 0.0,
+        'claim_attribution_rate': attributed_claims / total_claims if total_claims > 0 else 0.0,
+        'attribution_precision': attributed_claims / total_claims if total_claims > 0 else 0.0
+    }
+
+
+def _can_claim_be_attributed(claim: str, source_texts: List[str]) -> bool:
+    """Check if a claim can be attributed to any source text."""
+    claim_tokens = set(normalize_text(claim).split())
+    
+    for source_text in source_texts:
+        source_tokens = set(normalize_text(source_text).split())
+        # Check if significant portion of claim tokens appear in source
+        overlap = len(claim_tokens.intersection(source_tokens))
+        if overlap >= max(1, len(claim_tokens) * 0.3):  # At least 30% overlap
+            return True
+    
+    return False
+
+
+def _is_source_used_in_prediction(prediction: str, source_text: str) -> bool:
+    """Check if a source text is used in the prediction."""
+    pred_tokens = set(normalize_text(prediction).split())
+    source_tokens = set(normalize_text(source_text).split())
+    
+    # Check for significant overlap
+    overlap = len(pred_tokens.intersection(source_tokens))
+    return overlap >= max(3, len(source_tokens) * 0.1)  # At least 10% overlap or 3 tokens
+
+
+def calculate_hallucination_detection(prediction: str, retrieved_docs: List[Dict[str, Any]], 
+                                    gold_answer: str = None) -> Dict[str, float]:
+    """
+    Detect potential hallucinations in the prediction.
+    
+    Args:
+        prediction: The model's generated answer
+        retrieved_docs: List of retrieved document dictionaries
+        gold_answer: Ground truth answer for comparison
+    
+    Returns:
+        Dictionary with hallucination detection metrics
+    """
+    if not prediction:
+        return {
+            'hallucination_rate': 0.0,
+            'unsupported_claims_rate': 0.0,
+            'hallucination_severity': 0.0,
+            'factual_consistency': 0.0
+        }
+    
+    # Extract text from sources
+    source_texts = []
+    for doc in retrieved_docs:
+        if isinstance(doc, dict):
+            text = doc.get('text', '') or doc.get('content', '') or doc.get('excerpt', '')
+        else:
+            text = str(doc)
+        if text:
+            source_texts.append(text)
+    
+    # Split prediction into claims
+    prediction_sentences = [s.strip() for s in prediction.split('.') if s.strip()]
+    
+    hallucinated_claims = 0
+    unsupported_claims = 0
+    total_claims = len(prediction_sentences)
+    
+    for claim in prediction_sentences:
+        if not _can_claim_be_attributed(claim, source_texts):
+            unsupported_claims += 1
+            # Check if it's a clear hallucination (contains specific facts not in sources)
+            if _is_potential_hallucination(claim, source_texts):
+                hallucinated_claims += 1
+    
+    # Calculate factual consistency with gold answer if available
+    factual_consistency = 1.0
+    if gold_answer:
+        factual_consistency = _calculate_factual_consistency(prediction, gold_answer)
+    
+    return {
+        'hallucination_rate': hallucinated_claims / total_claims if total_claims > 0 else 0.0,
+        'unsupported_claims_rate': unsupported_claims / total_claims if total_claims > 0 else 0.0,
+        'hallucination_severity': hallucinated_claims / total_claims if total_claims > 0 else 0.0,
+        'factual_consistency': factual_consistency
+    }
+
+
+def _is_potential_hallucination(claim: str, source_texts: List[str]) -> bool:
+    """Check if a claim is likely a hallucination."""
+    # Look for specific factual claims that should be in sources
+    factual_indicators = [
+        r'\d+%',  # percentages
+        r'\d+\.\d+',  # decimal numbers
+        r'\d{4}',  # years
+        r'\$\d+',  # monetary amounts
+        r'\d+\s+(years?|months?|days?)',  # time periods
+    ]
+    
+    for pattern in factual_indicators:
+        if re.search(pattern, claim):
+            # If it contains specific facts but can't be attributed, likely hallucination
+            return True
+    
+    return False
+
+
+def _calculate_factual_consistency(prediction: str, gold_answer: str) -> float:
+    """Calculate factual consistency between prediction and gold answer."""
+    if not gold_answer:
+        return 1.0
+    
+    # Simple token overlap as a proxy for factual consistency
+    pred_tokens = set(normalize_text(prediction).split())
+    gold_tokens = set(normalize_text(gold_answer).split())
+    
+    if not pred_tokens or not gold_tokens:
+        return 0.0
+    
+    intersection = pred_tokens.intersection(gold_tokens)
+    union = pred_tokens.union(gold_tokens)
+    
+    return len(intersection) / len(union) if union else 0.0
+
+
+def calculate_source_grounding_metrics(prediction: str, retrieved_docs: List[Dict[str, Any]]) -> Dict[str, float]:
+    """
+    Calculate how well the prediction is grounded in the retrieved sources.
+    
+    Args:
+        prediction: The model's generated answer
+        retrieved_docs: List of retrieved document dictionaries
+    
+    Returns:
+        Dictionary with grounding metrics
+    """
+    if not prediction or not retrieved_docs:
+        return {
+            'grounding_score': 0.0,
+            'source_coverage': 0.0,
+            'grounding_consistency': 0.0,
+            'source_relevance': 0.0
+        }
+    
+    # Extract text from sources
+    source_texts = []
+    for doc in retrieved_docs:
+        if isinstance(doc, dict):
+            text = doc.get('text', '') or doc.get('content', '') or doc.get('excerpt', '')
+        else:
+            text = str(doc)
+        if text:
+            source_texts.append(text)
+    
+    if not source_texts:
+        return {
+            'grounding_score': 0.0,
+            'source_coverage': 0.0,
+            'grounding_consistency': 0.0,
+            'source_relevance': 0.0
+        }
+    
+    # Calculate grounding score (average overlap with all sources)
+    overlap_scores = []
+    for source_text in source_texts:
+        overlap = _calculate_token_overlap(prediction, source_text)
+        overlap_scores.append(overlap)
+    
+    grounding_score = np.mean(overlap_scores) if overlap_scores else 0.0
+    
+    # Source coverage - how many sources are used
+    used_sources = sum(1 for score in overlap_scores if score > 0.1)
+    source_coverage = used_sources / len(source_texts) if source_texts else 0.0
+    
+    # Grounding consistency - variance in overlap scores
+    grounding_consistency = 1.0 - np.var(overlap_scores) if len(overlap_scores) > 1 else 1.0
+    
+    # Source relevance - average relevance of used sources
+    source_relevance = np.mean([score for score in overlap_scores if score > 0.1]) if any(score > 0.1 for score in overlap_scores) else 0.0
+    
+    return {
+        'grounding_score': grounding_score,
+        'source_coverage': source_coverage,
+        'grounding_consistency': grounding_consistency,
+        'source_relevance': source_relevance
+    }
+
+
+def calm_rag_faithfulness_metrics_with_individuals(results: List[Dict[str, Any]]) -> Tuple[Dict[str, float], List[float]]:
+    """
+    Calculate comprehensive faithfulness metrics for CALM-RAG evaluation, returning both batch metrics and individual scores.
+    
+    Args:
+        results: List of result dictionaries with CALM-RAG schema
+    
+    Returns:
+        Tuple of (batch_metrics, individual_faithfulness_scores)
+    """
+    if not results:
+        return {}, []
+    
+    # Initialize metric accumulators
+    overlap_scores = []
+    attribution_metrics = {
+        'attribution_coverage': [],
+        'source_utilization': [],
+        'claim_attribution_rate': [],
+        'attribution_precision': []
+    }
+    hallucination_metrics = {
+        'hallucination_rate': [],
+        'unsupported_claims_rate': [],
+        'hallucination_severity': [],
+        'factual_consistency': []
+    }
+    grounding_metrics = {
+        'grounding_score': [],
+        'source_coverage': [],
+        'grounding_consistency': [],
+        'source_relevance': []
+    }
+    individual_faithfulness_scores = []
+    
+    # Process each result
+    for result in results:
+        prediction = result.get('prediction_text', '')
+        retrieved_docs = result.get('retrieved_docs', [])
+        gold_answer = result.get('gold_answer', '')
+        
+        # Calculate answer-source overlap
+        overlap = calculate_answer_source_overlap(prediction, retrieved_docs, method="token")
+        overlap_scores.append(overlap)
+        
+        # Calculate attribution accuracy
+        attribution = calculate_attribution_accuracy(prediction, retrieved_docs, gold_answer)
+        for key, value in attribution.items():
+            attribution_metrics[key].append(value)
+        
+        # Calculate hallucination detection
+        hallucination = calculate_hallucination_detection(prediction, retrieved_docs, gold_answer)
+        for key, value in hallucination.items():
+            hallucination_metrics[key].append(value)
+        
+        # Calculate source grounding
+        grounding = calculate_source_grounding_metrics(prediction, retrieved_docs)
+        for key, value in grounding.items():
+            grounding_metrics[key].append(value)
+        
+        # Calculate individual faithfulness score
+        individual_faithfulness = (
+            overlap +
+            attribution['attribution_coverage'] +
+            (1.0 - hallucination['hallucination_rate']) +
+            grounding['grounding_score']
+        ) / 4.0
+        individual_faithfulness_scores.append(individual_faithfulness)
+    
+    # Calculate average metrics
+    metrics = {}
+    
+    # Answer-source overlap metrics
+    metrics['answer_source_overlap'] = np.mean(overlap_scores) if overlap_scores else 0.0
+    metrics['answer_source_overlap_std'] = np.std(overlap_scores) if overlap_scores else 0.0
+    
+    # Attribution metrics
+    for key, values in attribution_metrics.items():
+        metrics[key] = np.mean(values) if values else 0.0
+        metrics[f'{key}_std'] = np.std(values) if values else 0.0
+    
+    # Hallucination metrics
+    for key, values in hallucination_metrics.items():
+        metrics[key] = np.mean(values) if values else 0.0
+        metrics[f'{key}_std'] = np.std(values) if values else 0.0
+    
+    # Grounding metrics
+    for key, values in grounding_metrics.items():
+        metrics[key] = np.mean(values) if values else 0.0
+        metrics[f'{key}_std'] = np.std(values) if values else 0.0
+    
+    # Overall faithfulness score (composite metric)
+    faithfulness_components = [
+        metrics['answer_source_overlap'],
+        1.0 - metrics['hallucination_rate'],  # Invert hallucination rate
+        metrics['attribution_coverage'],
+        metrics['grounding_score']
+    ]
+    metrics['overall_faithfulness'] = np.mean(faithfulness_components)
+    
+    return metrics, individual_faithfulness_scores
+
+
+def calm_rag_faithfulness_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
+    """
+    Calculate comprehensive faithfulness metrics for CALM-RAG evaluation.
+    
+    Args:
+        results: List of result dictionaries with CALM-RAG schema
+    
+    Returns:
+        Dictionary of faithfulness metrics
+    """
+    batch_metrics, _ = calm_rag_faithfulness_metrics_with_individuals(results)
+    return batch_metrics
 
