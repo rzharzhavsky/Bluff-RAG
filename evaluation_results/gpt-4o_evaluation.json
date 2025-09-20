@@ -1,560 +1,322 @@
 {
   "model": "gpt-4o",
-  "total_entries": 10,
-  "successful_evaluations": 10,
+  "total_entries": 20,
+  "successful_evaluations": 20,
   "calibration_info": {
-    "was_calibrated": 1,
-    "clear_results_count": 10,
-    "ambiguous_results_count": 10,
-    "total_results_count": 20,
-    "used_calibrated_results": 1
+    "is_calibrated": 1,
+    "calibration_samples": 40,
+    "has_calibration_function": 1
   },
   "calm_rag_metrics": {
-    "retrieval_recall_confidence_corr": {
-      "value": -0.14,
-      "description": "Correlation between retrieval recall and confidence (higher is better)"
-    },
-    "avg_retrieval_recall": {
-      "value": 0.5,
-      "description": "Average percentage of relevant documents retrieved (0-1, higher is better)"
-    },
-    "overconfidence_index": {
-      "value": 0.583,
-      "description": "Measure of overconfidence in retrieval (0-1, lower is better)"
-    },
-    "wrong_answer_rate": {
-      "value": 0.2,
-      "description": "Percentage of wrong answers given (0-1, lower is better)"
-    },
-    "refusal_rate": {
-      "value": 0.0,
-      "description": "Percentage of questions refused to answer (0-1, context-dependent)"
-    },
-    "ece_with_retrieval": {
-      "value": 0.11,
-      "description": "Expected Calibration Error with retrieval (0-1, lower is better)"
-    },
-    "ece_without_retrieval": {
-      "value": 0.2,
-      "description": "Expected Calibration Error without retrieval (0-1, lower is better)"
-    },
-    "ece_improvement": {
-      "value": -0.09,
-      "description": "Improvement in calibration from retrieval (negative is better)"
-    },
-    "brier_with_retrieval": {
-      "value": 0.134,
-      "description": "Brier score with retrieval (0-1, lower is better)"
-    },
-    "brier_without_retrieval": {
-      "value": 0.04,
-      "description": "Brier score without retrieval (0-1, lower is better)"
-    },
-    "brier_improvement": {
-      "value": 0.094,
-      "description": "Improvement in Brier score from retrieval (negative is better)"
-    },
-    "confidence_accuracy_corr_with_retrieval": {
-      "value": -0.289,
-      "description": "Correlation between confidence and accuracy with retrieval (higher is better)"
-    },
-    "confidence_accuracy_corr_without_retrieval": {
-      "value": 0.0,
-      "description": "Correlation between confidence and accuracy without retrieval (higher is better)"
-    },
-    "correlation_improvement": {
-      "value": -0.289,
-      "description": "Improvement in confidence-accuracy correlation from retrieval (positive is better)"
-    },
-    "hedge_precision": {
-      "value": 0.368,
-      "description": "Precision of hedge detection (0-1, higher is better)"
-    },
-    "hedge_recall": {
-      "value": 0.397,
-      "description": "Recall of hedge detection (0-1, higher is better)"
-    },
-    "hedge_f1": {
-      "value": 0.382,
-      "description": "F1 score of hedge detection (0-1, higher is better)"
-    },
-    "lexical_overconfidence_index": {
-      "value": 0.0,
-      "description": "Measure of overconfidence in language (0-1, lower is better)"
-    },
-    "uncertainty_confidence_corr": {
-      "value": 0.16,
-      "description": "Correlation between uncertainty and confidence (higher is better)"
-    },
-    "hedge_density": {
-      "value": 0.026,
-      "description": "Density of hedging language in responses (0-1, context-dependent)"
-    },
-    "confident_wrong_rate": {
-      "value": 0.333,
-      "description": "Rate of confident but wrong answers (0-1, lower is better)"
-    },
-    "hedge_sophistication": {
-      "value": 0.0,
-      "description": "Sophistication of hedging language (0-1, higher is better)"
-    },
-    "advanced_hedge_detection_rate": {
-      "value": 0.5,
-      "description": "Rate of advanced hedge pattern detection (0-1, higher is better)"
-    },
-    "expected_calibration_error": {
-      "value": 0.11,
-      "description": "Overall expected calibration error (0-1, lower is better)"
-    },
-    "brier_score": {
-      "value": 0.134,
-      "description": "Overall Brier score (0-1, lower is better)"
-    },
-    "confidence_accuracy_correlation": {
-      "value": -0.289,
-      "description": "Overall confidence-accuracy correlation (higher is better)"
-    },
-    "calibration_ece_after_isotonic": {
-      "value": 0.0,
-      "description": "ECE after isotonic calibration (0-1, lower is better)"
-    },
-    "calibration_improvement": {
-      "value": 0.11,
-      "description": "Improvement from calibration (positive is better)"
-    },
-    "confidence_distribution_entropy": {
-      "value": 0.61,
-      "description": "Entropy of confidence distribution (higher indicates more uncertainty)"
-    },
-    "human_model_confidence_corr": {
-      "value": 0.0,
-      "description": "Correlation between human and model confidence (higher is better)"
-    },
-    "source_quality_confidence_corr": {
-      "value": -0.14,
-      "description": "Correlation between source quality and confidence (higher is better)"
-    },
-    "source_diversity_calibration_corr": {
-      "value": -0.077,
-      "description": "Correlation between source diversity and calibration (higher is better)"
-    },
-    "quality_weighted_ece": {
-      "value": 0.282,
-      "description": "Quality-weighted expected calibration error (0-1, lower is better)"
-    },
-    "high_quality_source_ece": {
-      "value": 0.083,
-      "description": "ECE for high-quality sources (0-1, lower is better)"
-    },
-    "low_quality_source_ece": {
-      "value": 0.142,
-      "description": "ECE for low-quality sources (0-1, lower is better)"
-    },
-    "quality_calibration_gap": {
-      "value": -0.059,
-      "description": "Gap in calibration between quality levels (lower is better)"
-    },
-    "h6_answer_source_overlap": {
-      "value": 0.0,
-      "description": "No description available"
-    },
-    "h6_answer_source_overlap_std": {
-      "value": 0.0,
-      "description": "No description available"
-    },
-    "h6_attribution_attribution_coverage": {
-      "value": 0.0,
-      "description": "No description available"
-    },
-    "h6_attribution_attribution_coverage_std": {
-      "value": 0.0,
-      "description": "No description available"
-    },
-    "h6_attribution_source_utilization": {
-      "value": 0.0,
-      "description": "No description available"
-    },
-    "h6_attribution_source_utilization_std": {
-      "value": 0.0,
-      "description": "No description available"
-    },
-    "h6_attribution_claim_attribution_rate": {
-      "value": 0.0,
-      "description": "No description available"
-    },
-    "h6_attribution_claim_attribution_rate_std": {
-      "value": 0.0,
-      "description": "No description available"
-    },
-    "h6_attribution_attribution_precision": {
-      "value": 0.0,
-      "description": "No description available"
-    },
-    "h6_attribution_attribution_precision_std": {
-      "value": 0.0,
-      "description": "No description available"
-    },
-    "h6_hallucination_hallucination_rate": {
-      "value": 0.1,
-      "description": "No description available"
-    },
-    "h6_hallucination_hallucination_rate_std": {
-      "value": 0.3,
-      "description": "No description available"
-    },
-    "h6_hallucination_unsupported_claims_rate": {
-      "value": 1.0,
-      "description": "No description available"
-    },
-    "h6_hallucination_unsupported_claims_rate_std": {
-      "value": 0.0,
-      "description": "No description available"
-    },
-    "h6_hallucination_hallucination_severity": {
-      "value": 0.1,
-      "description": "No description available"
-    },
-    "h6_hallucination_hallucination_severity_std": {
-      "value": 0.3,
-      "description": "No description available"
-    },
-    "h6_hallucination_factual_consistency": {
-      "value": 0.292,
-      "description": "No description available"
-    },
-    "h6_hallucination_factual_consistency_std": {
-      "value": 0.134,
-      "description": "No description available"
-    },
-    "h6_grounding_grounding_score": {
-      "value": 0.0,
-      "description": "No description available"
-    },
-    "h6_grounding_grounding_score_std": {
-      "value": 0.0,
-      "description": "No description available"
-    },
-    "h6_grounding_source_coverage": {
-      "value": 0.0,
-      "description": "No description available"
-    },
-    "h6_grounding_source_coverage_std": {
-      "value": 0.0,
-      "description": "No description available"
-    },
-    "h6_grounding_grounding_consistency": {
-      "value": 0.0,
-      "description": "No description available"
-    },
-    "h6_grounding_grounding_consistency_std": {
-      "value": 0.0,
-      "description": "No description available"
-    },
-    "h6_grounding_source_relevance": {
-      "value": 0.0,
-      "description": "No description available"
-    },
-    "h6_grounding_source_relevance_std": {
-      "value": 0.0,
-      "description": "No description available"
-    },
-    "h6_overall_faithfulness": {
-      "value": 0.225,
-      "description": "No description available"
-    },
-    "avg_retrieval_precision": {
-      "value": 0.5,
-      "description": "Average precision of retrieved documents (0-1, higher is better)"
-    },
-    "avg_retrieval_f1": {
-      "value": 0.5,
-      "description": "Average F1 score of retrieval (0-1, higher is better)"
-    },
-    "accuracy_confidence_correlation": {
-      "value": -0.289,
-      "description": "Correlation between accuracy and confidence (higher is better)"
-    },
-    "avg_source_quality": {
-      "value": 0.6,
-      "description": "Average quality of retrieved sources (0-1, higher is better)"
-    },
-    "source_quality_std": {
-      "value": 0.2,
-      "description": "Standard deviation of source quality (lower indicates more consistent quality)"
-    },
-    "source_quality_confidence_correlation": {
-      "value": -0.14,
-      "description": "Correlation between source quality and confidence (higher is better)"
-    },
-    "avg_source_diversity": {
-      "value": 0.9,
-      "description": "Average diversity of retrieved sources (0-1, higher is better)"
-    },
-    "source_diversity_std": {
-      "value": 0.118,
-      "description": "Standard deviation of source diversity (lower indicates more consistent diversity)"
-    },
-    "source_diversity_accuracy_correlation": {
-      "value": -0.077,
-      "description": "Correlation between source diversity and accuracy (higher is better)"
-    }
+    "retrieval_recall_confidence_correlation": 0.103,
+    "avg_retrieval_recall": 0.505,
+    "overconfidence_index": 0.2,
+    "wrong_answer_rate": 0.702,
+    "refusal_rate": 0.0,
+    "ece_with_retrieval": 0.409,
+    "ece_without_retrieval": 0.257,
+    "ece_difference": -0.153,
+    "brier_with_retrieval": 0.207,
+    "brier_without_retrieval": 0.091,
+    "brier_difference": -0.115,
+    "confidence_accuracy_corr_with_retrieval": 0.448,
+    "confidence_accuracy_corr_without_retrieval": 0.448,
+    "correlation_difference": 0.0,
+    "hedge_precision": 0.481,
+    "hedge_recall": 0.722,
+    "hedge_f1": 0.578,
+    "lexical_overconfidence_index": 0.0,
+    "uncertainty_confidence_correlation": 0.15,
+    "hedge_density": 0.02,
+    "confident_wrong_rate": 0.4,
+    "expected_calibration_error": 0.409,
+    "brier_score": 0.207,
+    "confidence_accuracy_correlation": 0.448,
+    "calibration_ece_after_isotonic": 0.0,
+    "calibration_improvement": 0.409,
+    "confidence_distribution_entropy": 0.993,
+    "source_quality_confidence_correlation": 0.072,
+    "source_diversity_calibration_correlation": 0.092,
+    "quality_weighted_ece": 0.427,
+    "high_quality_source_ece": 0.394,
+    "low_quality_source_ece": 0.425,
+    "quality_calibration_gap": -0.031
   },
-  "hypothesis_metrics": {
-    "h1_overconfidence": {
-      "retrieval_recall_confidence_correlation": -0.14,
-      "avg_retrieval_recall": 0.5,
-      "overconfidence_index": 0.583,
-      "wrong_answer_rate": 0.2,
-      "refusal_rate": 0.0
-    },
-    "h2_calibration_difference": {
-      "ece_with_retrieval": 0.11,
-      "ece_without_retrieval": 0.2,
-      "ece_difference": -0.09,
-      "brier_with_retrieval": 0.134,
-      "brier_without_retrieval": 0.04,
-      "brier_difference": 0.094,
-      "confidence_accuracy_corr_with_retrieval": -0.289,
-      "confidence_accuracy_corr_without_retrieval": 0.0,
-      "correlation_difference": -0.289
-    },
-    "h3_hedging_language": {
-      "hedge_precision": 0.368,
-      "hedge_recall": 0.397,
-      "hedge_f1": 0.382,
-      "lexical_overconfidence_index": 0.0,
-      "uncertainty_confidence_correlation": 0.16,
-      "hedge_density": 0.026,
-      "confident_wrong_rate": 0.333,
-      "hedge_sophistication": 0.0,
-      "advanced_hedge_detection_rate": 0.5
-    },
-    "h4_self_assessment": {
-      "expected_calibration_error": 0.11,
-      "brier_score": 0.134,
-      "confidence_accuracy_correlation": -0.289,
-      "calibration_ece_after_isotonic": 0.0,
-      "calibration_improvement": 0.11,
-      "confidence_distribution_entropy": 0.61,
-      "human_model_confidence_correlation": 0.0
-    },
-    "h5_source_quality": {
-      "source_quality_confidence_correlation": -0.14,
-      "source_diversity_calibration_correlation": -0.077,
-      "quality_weighted_ece": 0.282,
-      "high_quality_source_ece": 0.083,
-      "low_quality_source_ece": 0.142,
-      "quality_calibration_gap": -0.059
-    }
+  "utility_metrics": {
+    "avg_retrieval_recall": 0.505,
+    "avg_retrieval_precision": 0.505,
+    "avg_retrieval_f1": 0.505,
+    "avg_source_quality": 0.611,
+    "source_quality_std": 0.19,
+    "avg_source_diversity": 0.9,
+    "source_diversity_std": 0.126
   },
   "asi_metrics": {
-    "mean_asi": 0.0,
-    "std_asi": 0.0,
-    "mean_cdr": 0.0,
-    "mean_vhl": 0.0,
-    "mean_ha": 0.0,
-    "mean_aq": 0.0,
-    "individual_scores": []
+    "mean_asi": 0.045,
+    "std_asi": 0.027,
+    "min_asi": 0.011,
+    "max_asi": 0.121,
+    "median_asi": 0.045
   },
   "individual_asi_results": [
     {
       "question_id": "public_health_000",
-      "asi_score": 0.3,
+      "asi_score": 0.121,
       "asi_components": {
-        "cdr": 0.0,
-        "vhl": 1.0,
-        "ha": 0.0,
-        "aq": 0.5,
-        "asi": 0.3,
-        "components": {
-          "confidence_clear": 0.553,
-          "confidence_ambiguous": 0.553,
-          "hedging_clear": 1,
-          "hedging_ambiguous": 2,
-          "faithfulness_ambiguous": 0.0,
-          "abstain_flag": 0,
-          "ambiguity_type": "conflicting"
-        }
+        "asi": 0.121,
+        "confidence_sensitivity": 0.084,
+        "accuracy_sensitivity": 0.158,
+        "clear_confidence": 0.692,
+        "ambiguous_confidence": 0.608,
+        "clear_accuracy": 0.289,
+        "ambiguous_accuracy": 0.132
       }
     },
     {
       "question_id": "public_health_001",
-      "asi_score": 0.0,
+      "asi_score": 0.034,
       "asi_components": {
-        "cdr": 0.0,
-        "vhl": 0.0,
-        "ha": 0.0,
-        "aq": 0.0,
-        "asi": 0.0,
-        "components": {
-          "confidence_clear": 0.553,
-          "confidence_ambiguous": 0.8,
-          "hedging_clear": 2,
-          "hedging_ambiguous": 0,
-          "faithfulness_ambiguous": 0.0,
-          "abstain_flag": 0,
-          "ambiguity_type": "conflicting"
-        }
+        "asi": 0.034,
+        "confidence_sensitivity": 0.032,
+        "accuracy_sensitivity": 0.037,
+        "clear_confidence": 0.712,
+        "ambiguous_confidence": 0.744,
+        "clear_accuracy": 0.481,
+        "ambiguous_accuracy": 0.519
       }
     },
     {
       "question_id": "public_health_002",
-      "asi_score": 0.2,
+      "asi_score": 0.016,
       "asi_components": {
-        "cdr": 0.0,
-        "vhl": 0.5,
-        "ha": 0.0,
-        "aq": 0.5,
-        "asi": 0.2,
-        "components": {
-          "confidence_clear": 0.553,
-          "confidence_ambiguous": 0.8,
-          "hedging_clear": 1,
-          "hedging_ambiguous": 1,
-          "faithfulness_ambiguous": 0.0,
-          "abstain_flag": 0,
-          "ambiguity_type": "conflicting"
-        }
+        "asi": 0.016,
+        "confidence_sensitivity": 0.033,
+        "accuracy_sensitivity": 0.0,
+        "clear_confidence": 0.698,
+        "ambiguous_confidence": 0.666,
+        "clear_accuracy": 0.296,
+        "ambiguous_accuracy": 0.296
       }
     },
     {
       "question_id": "public_health_003",
-      "asi_score": 0.1,
+      "asi_score": 0.044,
       "asi_components": {
-        "cdr": 0.0,
-        "vhl": 0.5,
-        "ha": 0.0,
-        "aq": 0.0,
-        "asi": 0.1,
-        "components": {
-          "confidence_clear": 0.553,
-          "confidence_ambiguous": 0.553,
-          "hedging_clear": 0,
-          "hedging_ambiguous": 0,
-          "faithfulness_ambiguous": 0.0,
-          "abstain_flag": 0,
-          "ambiguity_type": "conflicting"
-        }
+        "asi": 0.044,
+        "confidence_sensitivity": 0.004,
+        "accuracy_sensitivity": 0.085,
+        "clear_confidence": 0.687,
+        "ambiguous_confidence": 0.683,
+        "clear_accuracy": 0.17,
+        "ambiguous_accuracy": 0.255
       }
     },
     {
       "question_id": "public_health_004",
-      "asi_score": 0.2,
+      "asi_score": 0.022,
       "asi_components": {
-        "cdr": 0.0,
-        "vhl": 0.5,
-        "ha": 0.0,
-        "aq": 0.5,
-        "asi": 0.2,
-        "components": {
-          "confidence_clear": 0.553,
-          "confidence_ambiguous": 0.553,
-          "hedging_clear": 2,
-          "hedging_ambiguous": 2,
-          "faithfulness_ambiguous": 0.0,
-          "abstain_flag": 0,
-          "ambiguity_type": "conflicting"
-        }
+        "asi": 0.022,
+        "confidence_sensitivity": 0.043,
+        "accuracy_sensitivity": 0.0,
+        "clear_confidence": 0.638,
+        "ambiguous_confidence": 0.681,
+        "clear_accuracy": 0.148,
+        "ambiguous_accuracy": 0.148
       }
     },
     {
       "question_id": "public_health_005",
-      "asi_score": 0.0,
+      "asi_score": 0.032,
       "asi_components": {
-        "cdr": 0.0,
-        "vhl": 0.0,
-        "ha": 0.0,
-        "aq": 0.0,
-        "asi": 0.0,
-        "components": {
-          "confidence_clear": 0.553,
-          "confidence_ambiguous": 0.553,
-          "hedging_clear": 2,
-          "hedging_ambiguous": 0,
-          "faithfulness_ambiguous": 0.0,
-          "abstain_flag": 0,
-          "ambiguity_type": "conflicting"
-        }
+        "asi": 0.032,
+        "confidence_sensitivity": 0.024,
+        "accuracy_sensitivity": 0.04,
+        "clear_confidence": 0.722,
+        "ambiguous_confidence": 0.746,
+        "clear_accuracy": 0.04,
+        "ambiguous_accuracy": 0.08
       }
     },
     {
       "question_id": "public_health_006",
-      "asi_score": 0.1,
+      "asi_score": 0.011,
       "asi_components": {
-        "cdr": 0.0,
-        "vhl": 0.5,
-        "ha": 0.0,
-        "aq": 0.0,
-        "asi": 0.1,
-        "components": {
-          "confidence_clear": 0.553,
-          "confidence_ambiguous": 0.553,
-          "hedging_clear": 0,
-          "hedging_ambiguous": 0,
-          "faithfulness_ambiguous": 0.0,
-          "abstain_flag": 0,
-          "ambiguity_type": "conflicting"
-        }
+        "asi": 0.011,
+        "confidence_sensitivity": 0.021,
+        "accuracy_sensitivity": 0.0,
+        "clear_confidence": 0.746,
+        "ambiguous_confidence": 0.725,
+        "clear_accuracy": 0.25,
+        "ambiguous_accuracy": 0.25
       }
     },
     {
       "question_id": "public_health_007",
-      "asi_score": 0.393,
+      "asi_score": 0.05,
       "asi_components": {
-        "cdr": 0.309,
-        "vhl": 1.0,
-        "ha": 0.0,
-        "aq": 0.5,
-        "asi": 0.393,
-        "components": {
-          "confidence_clear": 0.8,
-          "confidence_ambiguous": 0.553,
-          "hedging_clear": 1,
-          "hedging_ambiguous": 2,
-          "faithfulness_ambiguous": 0.0,
-          "abstain_flag": 0,
-          "ambiguity_type": "conflicting"
-        }
+        "asi": 0.05,
+        "confidence_sensitivity": 0.062,
+        "accuracy_sensitivity": 0.038,
+        "clear_confidence": 0.775,
+        "ambiguous_confidence": 0.713,
+        "clear_accuracy": 0.615,
+        "ambiguous_accuracy": 0.654
       }
     },
     {
       "question_id": "public_health_008",
-      "asi_score": 0.26,
+      "asi_score": 0.045,
       "asi_components": {
-        "cdr": 0.0,
-        "vhl": 0.5,
-        "ha": 0.0,
-        "aq": 0.8,
-        "asi": 0.26,
-        "components": {
-          "confidence_clear": 0.553,
-          "confidence_ambiguous": 0.553,
-          "hedging_clear": 3,
-          "hedging_ambiguous": 3,
-          "faithfulness_ambiguous": 0.0,
-          "abstain_flag": 1,
-          "ambiguity_type": "conflicting"
-        }
+        "asi": 0.045,
+        "confidence_sensitivity": 0.09,
+        "accuracy_sensitivity": 0.0,
+        "clear_confidence": 0.787,
+        "ambiguous_confidence": 0.697,
+        "clear_accuracy": 0.389,
+        "ambiguous_accuracy": 0.389
       }
     },
     {
       "question_id": "public_health_009",
-      "asi_score": 0.2,
+      "asi_score": 0.051,
       "asi_components": {
-        "cdr": 0.0,
-        "vhl": 0.5,
-        "ha": 0.0,
-        "aq": 0.5,
-        "asi": 0.2,
-        "components": {
-          "confidence_clear": 0.553,
-          "confidence_ambiguous": 0.553,
-          "hedging_clear": 1,
-          "hedging_ambiguous": 1,
-          "faithfulness_ambiguous": 0.0,
-          "abstain_flag": 0,
-          "ambiguity_type": "conflicting"
-        }
+        "asi": 0.051,
+        "confidence_sensitivity": 0.073,
+        "accuracy_sensitivity": 0.029,
+        "clear_confidence": 0.748,
+        "ambiguous_confidence": 0.675,
+        "clear_accuracy": 0.304,
+        "ambiguous_accuracy": 0.333
+      }
+    },
+    {
+      "question_id": "public_health_010",
+      "asi_score": 0.02,
+      "asi_components": {
+        "asi": 0.02,
+        "confidence_sensitivity": 0.041,
+        "accuracy_sensitivity": 0.0,
+        "clear_confidence": 0.717,
+        "ambiguous_confidence": 0.676,
+        "clear_accuracy": 0.149,
+        "ambiguous_accuracy": 0.149
+      }
+    },
+    {
+      "question_id": "public_health_011",
+      "asi_score": 0.017,
+      "asi_components": {
+        "asi": 0.017,
+        "confidence_sensitivity": 0.034,
+        "accuracy_sensitivity": 0.0,
+        "clear_confidence": 0.727,
+        "ambiguous_confidence": 0.692,
+        "clear_accuracy": 0.036,
+        "ambiguous_accuracy": 0.036
+      }
+    },
+    {
+      "question_id": "public_health_012",
+      "asi_score": 0.09,
+      "asi_components": {
+        "asi": 0.09,
+        "confidence_sensitivity": 0.068,
+        "accuracy_sensitivity": 0.111,
+        "clear_confidence": 0.727,
+        "ambiguous_confidence": 0.795,
+        "clear_accuracy": 0.889,
+        "ambiguous_accuracy": 1.0
+      }
+    },
+    {
+      "question_id": "public_health_013",
+      "asi_score": 0.048,
+      "asi_components": {
+        "asi": 0.048,
+        "confidence_sensitivity": 0.096,
+        "accuracy_sensitivity": 0.0,
+        "clear_confidence": 0.604,
+        "ambiguous_confidence": 0.7,
+        "clear_accuracy": 0.279,
+        "ambiguous_accuracy": 0.279
+      }
+    },
+    {
+      "question_id": "public_health_014",
+      "asi_score": 0.022,
+      "asi_components": {
+        "asi": 0.022,
+        "confidence_sensitivity": 0.008,
+        "accuracy_sensitivity": 0.036,
+        "clear_confidence": 0.706,
+        "ambiguous_confidence": 0.715,
+        "clear_accuracy": 0.393,
+        "ambiguous_accuracy": 0.357
+      }
+    },
+    {
+      "question_id": "public_health_015",
+      "asi_score": 0.055,
+      "asi_components": {
+        "asi": 0.055,
+        "confidence_sensitivity": 0.067,
+        "accuracy_sensitivity": 0.042,
+        "clear_confidence": 0.751,
+        "ambiguous_confidence": 0.684,
+        "clear_accuracy": 0.333,
+        "ambiguous_accuracy": 0.292
+      }
+    },
+    {
+      "question_id": "public_health_016",
+      "asi_score": 0.074,
+      "asi_components": {
+        "asi": 0.074,
+        "confidence_sensitivity": 0.009,
+        "accuracy_sensitivity": 0.139,
+        "clear_confidence": 0.741,
+        "ambiguous_confidence": 0.732,
+        "clear_accuracy": 0.194,
+        "ambiguous_accuracy": 0.056
+      }
+    },
+    {
+      "question_id": "public_health_017",
+      "asi_score": 0.062,
+      "asi_components": {
+        "asi": 0.062,
+        "confidence_sensitivity": 0.029,
+        "accuracy_sensitivity": 0.095,
+        "clear_confidence": 0.614,
+        "ambiguous_confidence": 0.642,
+        "clear_accuracy": 0.167,
+        "ambiguous_accuracy": 0.071
+      }
+    },
+    {
+      "question_id": "public_health_018",
+      "asi_score": 0.02,
+      "asi_components": {
+        "asi": 0.02,
+        "confidence_sensitivity": 0.01,
+        "accuracy_sensitivity": 0.03,
+        "clear_confidence": 0.695,
+        "ambiguous_confidence": 0.705,
+        "clear_accuracy": 0.149,
+        "ambiguous_accuracy": 0.119
+      }
+    },
+    {
+      "question_id": "public_health_019",
+      "asi_score": 0.06,
+      "asi_components": {
+        "asi": 0.06,
+        "confidence_sensitivity": 0.058,
+        "accuracy_sensitivity": 0.062,
+        "clear_confidence": 0.737,
+        "ambiguous_confidence": 0.795,
+        "clear_accuracy": 0.5,
+        "ambiguous_accuracy": 0.438
       }
     }
   ],
@@ -563,254 +325,344 @@
       {
         "entry_id": "public_health_000",
         "question": "How do regulatory measures impact the management of hazardous substances in public health?",
-        "confidence": 0.553,
-        "accuracy": 0.7,
-        "is_uncertain": 1,
-        "set_type": "clear",
-        "faithfulness_score": 0.25,
-        "abstain_flag": 0,
-        "prediction_text": "Regulatory measures likely enhance the management of hazardous substances in public health by restricting their use and promoting safe handling.",
-        "prediction_explanation": "The RoHS Directive restricts hazardous substances in electronic equipment, reducing environmental and health risks (Source 2). The NIEHS supports worker safety in hazardous waste management (Source 4)..."
+        "confidence": 0.692,
+        "accuracy": 0.289,
+        "is_uncertain": 0,
+        "set_type": "clear"
       },
       {
         "entry_id": "public_health_001",
         "question": "How can managing cholesterol levels impact the risk of cardiovascular complications in individuals w...",
-        "confidence": 0.553,
-        "accuracy": 0.7,
-        "is_uncertain": 1,
-        "set_type": "clear",
-        "faithfulness_score": 0.25,
-        "abstain_flag": 0,
-        "prediction_text": "Managing cholesterol levels can likely reduce the risk of cardiovascular complications in individuals with diabetes.",
-        "prediction_explanation": "Source 1 suggests that controlling cholesterol is important for managing diabetes-related complications, including heart attack and stroke. However, the sources do not provide detailed mechanisms or s..."
+        "confidence": 0.712,
+        "accuracy": 0.481,
+        "is_uncertain": 0,
+        "set_type": "clear"
       },
       {
         "entry_id": "public_health_002",
         "question": "Is the concept of a threshold level of exposure for toxic chemicals universally accepted in public h...",
-        "confidence": 0.553,
-        "accuracy": 0.9,
-        "is_uncertain": 1,
-        "set_type": "clear",
-        "faithfulness_score": 0.25,
-        "abstain_flag": 0,
-        "prediction_text": "The concept of a threshold level of exposure for toxic chemicals is not universally accepted in public health risk assessments.",
-        "prediction_explanation": "Source 5 discusses the threshold dose concept, suggesting it is foundational in various scientific disciplines. However, Source 1 and Source 3 indicate ongoing discussions and evaluations regarding sa..."
+        "confidence": 0.698,
+        "accuracy": 0.296,
+        "is_uncertain": 0,
+        "set_type": "clear"
       },
       {
         "entry_id": "public_health_003",
         "question": "How does the eligibility for premium-free Medicare Part A differ between individuals who work for mo...",
-        "confidence": 0.553,
-        "accuracy": 0.0,
-        "is_uncertain": 1,
-        "set_type": "clear",
-        "faithfulness_score": 0.25,
-        "abstain_flag": 0,
-        "prediction_text": "The sources do not provide specific information on how eligibility for premium-free Medicare Part A differs between individuals working for most employers and certain government employees.",
-        "prediction_explanation": "The provided sources discuss general eligibility for premium-free Medicare Part A, such as paying Medicare taxes while working, but do not detail differences for government employees. Therefore, I can..."
+        "confidence": 0.687,
+        "accuracy": 0.17,
+        "is_uncertain": 0,
+        "set_type": "clear"
       },
       {
         "entry_id": "public_health_004",
         "question": "How might interdisciplinary knowledge enhance the effectiveness of a health education specialist in ...",
-        "confidence": 0.553,
-        "accuracy": 0.7,
-        "is_uncertain": 1,
-        "set_type": "clear",
-        "faithfulness_score": 0.25,
-        "abstain_flag": 0,
-        "prediction_text": "Interdisciplinary knowledge likely enhances a health education specialist's effectiveness in addressing obesity-related issues by integrating diverse skills and insights.",
-        "prediction_explanation": "Source 2 highlights the importance of understanding psycho-social aspects and epidemiology, which can inform strategies for behavior change. Source 5 suggests that knowledge of nutrition, technology, ..."
+        "confidence": 0.638,
+        "accuracy": 0.148,
+        "is_uncertain": 0,
+        "set_type": "clear"
       },
       {
         "entry_id": "public_health_005",
         "question": "What was a major societal influence that led to the establishment of a publicly accessible database ...",
-        "confidence": 0.553,
-        "accuracy": 0.3,
-        "is_uncertain": 1,
-        "set_type": "clear",
-        "faithfulness_score": 0.25,
-        "abstain_flag": 0,
-        "prediction_text": "The establishment of a publicly accessible database of clinical trials in the United States was likely influenced by the need for transparency and ethical oversight in clinical research.",
-        "prediction_explanation": "Source 4 highlights the importance of ethical principles and oversight in clinical trials, which suggests a societal push for transparency and accountability. However, the sources do not explicitly me..."
+        "confidence": 0.722,
+        "accuracy": 0.04,
+        "is_uncertain": 0,
+        "set_type": "clear"
       },
       {
         "entry_id": "public_health_006",
         "question": "Why is the fortification of cereal grains with folic acid considered a significant public health int...",
-        "confidence": 0.553,
-        "accuracy": 0.9,
-        "is_uncertain": 1,
-        "set_type": "clear",
-        "faithfulness_score": 0.25,
-        "abstain_flag": 0,
-        "prediction_text": "The fortification of cereal grains with folic acid is considered a significant public health intervention due to its cost-effectiveness in reducing micronutrient deficiencies and preventing neural tube defects (NTDs).",
-        "prediction_explanation": "Source 2 highlights the low cost of folic acid fortification and its substantial economic benefits, such as cost savings and reduced lifetime costs associated with NTDs. This intervention is relativel..."
+        "confidence": 0.746,
+        "accuracy": 0.25,
+        "is_uncertain": 0,
+        "set_type": "clear"
       },
       {
         "entry_id": "public_health_007",
         "question": "Why might measles outbreaks occur in a country where the disease has been officially eliminated?",
-        "confidence": 0.8,
-        "accuracy": 0.8,
+        "confidence": 0.775,
+        "accuracy": 0.615,
         "is_uncertain": 0,
-        "set_type": "clear",
-        "faithfulness_score": 0.25,
-        "abstain_flag": 0,
-        "prediction_text": "Measles outbreaks might occur in a country where the disease has been officially eliminated due to low immunization rates and vaccine hesitancy.",
-        "prediction_explanation": "Source 3 highlights that areas with low immunization allow the virus to circulate, increasing outbreak likelihood. Source 5 mentions that vaccine hesitancy creates immunity gaps, undermining herd immu..."
+        "set_type": "clear"
       },
       {
         "entry_id": "public_health_008",
         "question": "Can an adult born before 1957 be considered immune to measles, mumps, and rubella without vaccinatio...",
-        "confidence": 0.553,
-        "accuracy": 0.7,
-        "is_uncertain": 1,
-        "set_type": "clear",
-        "faithfulness_score": 0.25,
-        "abstain_flag": 1,
-        "prediction_text": "An adult born before 1957 might be considered immune to measles, mumps, and rubella without vaccination.",
-        "prediction_explanation": "The sources do not directly address this, but it is generally understood that people born before 1957 were likely exposed to these diseases naturally, which could confer immunity. However, the sources..."
+        "confidence": 0.787,
+        "accuracy": 0.389,
+        "is_uncertain": 0,
+        "set_type": "clear"
       },
       {
         "entry_id": "public_health_009",
         "question": "How does the source of dietary sodium primarily differ from common perceptions about its origin?",
-        "confidence": 0.553,
-        "accuracy": 0.9,
-        "is_uncertain": 1,
-        "set_type": "clear",
-        "faithfulness_score": 0.25,
-        "abstain_flag": 0,
-        "prediction_text": "Most dietary sodium comes from processed and restaurant foods, not just table salt.",
-        "prediction_explanation": "Source 4 indicates that the majority of sodium intake is from processed and restaurant foods, which contrasts with the common perception that it primarily comes from adding table salt. This suggests a..."
+        "confidence": 0.748,
+        "accuracy": 0.304,
+        "is_uncertain": 0,
+        "set_type": "clear"
+      },
+      {
+        "entry_id": "public_health_010",
+        "question": "How does the US Preventive Services Task Force incorporate health equity into its preventive service...",
+        "confidence": 0.717,
+        "accuracy": 0.149,
+        "is_uncertain": 0,
+        "set_type": "clear"
+      },
+      {
+        "entry_id": "public_health_011",
+        "question": "Can the presence of different symptom clusters in depression affect the cardiovascular and suicide r...",
+        "confidence": 0.727,
+        "accuracy": 0.036,
+        "is_uncertain": 0,
+        "set_type": "clear"
+      },
+      {
+        "entry_id": "public_health_012",
+        "question": "What is considered the first-line treatment for anaphylaxis in emergency management protocols?",
+        "confidence": 0.727,
+        "accuracy": 0.889,
+        "is_uncertain": 0,
+        "set_type": "clear"
+      },
+      {
+        "entry_id": "public_health_013",
+        "question": "How can maternal health and nutritional status prior to conception influence the long-term health ou...",
+        "confidence": 0.604,
+        "accuracy": 0.279,
+        "is_uncertain": 0,
+        "set_type": "clear"
+      },
+      {
+        "entry_id": "public_health_014",
+        "question": "How does the age at which colorectal cancer screening begins impact its effectiveness in reducing mo...",
+        "confidence": 0.706,
+        "accuracy": 0.393,
+        "is_uncertain": 0,
+        "set_type": "clear"
+      },
+      {
+        "entry_id": "public_health_015",
+        "question": "How does the CDC's updated isolation guidance for COVID-19 align with general practices for handling...",
+        "confidence": 0.751,
+        "accuracy": 0.333,
+        "is_uncertain": 0,
+        "set_type": "clear"
+      },
+      {
+        "entry_id": "public_health_016",
+        "question": "How does the gender disparity in the prevalence of depressive disorders potentially impact the appro...",
+        "confidence": 0.741,
+        "accuracy": 0.194,
+        "is_uncertain": 0,
+        "set_type": "clear"
+      },
+      {
+        "entry_id": "public_health_017",
+        "question": "How do the recommended exposure limits for occupational noise by NIOSH differ in application from ge...",
+        "confidence": 0.614,
+        "accuracy": 0.167,
+        "is_uncertain": 0,
+        "set_type": "clear"
+      },
+      {
+        "entry_id": "public_health_018",
+        "question": "How does the return policy for vaccines differ between age groups, and what might the implications b...",
+        "confidence": 0.695,
+        "accuracy": 0.149,
+        "is_uncertain": 0,
+        "set_type": "clear"
+      },
+      {
+        "entry_id": "public_health_019",
+        "question": "How does the expansion of Medicaid under the Affordable Care Act aim to improve public health outcom...",
+        "confidence": 0.737,
+        "accuracy": 0.5,
+        "is_uncertain": 0,
+        "set_type": "clear"
       }
     ],
     "ambiguous_results": [
       {
         "entry_id": "public_health_000",
         "question": "How do regulatory measures impact the management of hazardous substances in public health?",
-        "confidence": 0.553,
-        "accuracy": 0.6,
-        "is_uncertain": 1,
+        "confidence": 0.608,
+        "accuracy": 0.132,
+        "is_uncertain": 0,
         "set_type": "ambiguous",
-        "faithfulness_score": 0.25,
-        "abstain_flag": 0,
-        "ambiguity_type": "conflicting",
-        "prediction_text": "Regulatory measures likely ensure the safe management of hazardous substances by mandating decontamination and destruction protocols.",
-        "prediction_explanation": "Source 1 discusses federal regulations requiring decontamination of hazardous biological agents before disposal, which likely helps mitigate public health risks. However, the sources do not provide co..."
+        "ambiguity_type": "conflicting"
       },
       {
         "entry_id": "public_health_001",
         "question": "How can managing cholesterol levels impact the risk of cardiovascular complications in individuals w...",
-        "confidence": 0.8,
-        "accuracy": 0.0,
+        "confidence": 0.744,
+        "accuracy": 0.519,
         "is_uncertain": 0,
         "set_type": "ambiguous",
-        "faithfulness_score": 0.25,
-        "abstain_flag": 0,
-        "ambiguity_type": "conflicting",
-        "prediction_text": "The sources do not provide enough information to answer confidently.",
-        "prediction_explanation": "The provided sources focus on diabetes management, blood glucose levels, and unrelated topics like the keto diet and vitamin D, but do not specifically address the impact of managing cholesterol level..."
+        "ambiguity_type": "conflicting"
       },
       {
         "entry_id": "public_health_002",
         "question": "Is the concept of a threshold level of exposure for toxic chemicals universally accepted in public h...",
-        "confidence": 0.8,
-        "accuracy": 0.2,
+        "confidence": 0.666,
+        "accuracy": 0.296,
         "is_uncertain": 0,
         "set_type": "ambiguous",
-        "faithfulness_score": 0.25,
-        "abstain_flag": 0,
-        "ambiguity_type": "conflicting",
-        "prediction_text": "The concept of a threshold level of exposure for toxic chemicals is not addressed in the provided sources.",
-        "prediction_explanation": "The sources do not discuss the concept of threshold levels of exposure for toxic chemicals in public health risk assessments. Therefore, it is unclear from the provided information whether this concep..."
+        "ambiguity_type": "conflicting"
       },
       {
         "entry_id": "public_health_003",
         "question": "How does the eligibility for premium-free Medicare Part A differ between individuals who work for mo...",
-        "confidence": 0.553,
-        "accuracy": 0.0,
-        "is_uncertain": 1,
+        "confidence": 0.683,
+        "accuracy": 0.255,
+        "is_uncertain": 0,
         "set_type": "ambiguous",
-        "faithfulness_score": 0.25,
-        "abstain_flag": 0,
-        "ambiguity_type": "conflicting",
-        "prediction_text": "The sources do not provide specific information on the eligibility differences for premium-free Medicare Part A between individuals working for most employers and certain government employees.",
-        "prediction_explanation": "The provided sources discuss general aspects of Medicare and its components but do not detail eligibility criteria differences for premium-free Part A based on employment type."
+        "ambiguity_type": "conflicting"
       },
       {
         "entry_id": "public_health_004",
         "question": "How might interdisciplinary knowledge enhance the effectiveness of a health education specialist in ...",
-        "confidence": 0.553,
-        "accuracy": 0.8,
-        "is_uncertain": 1,
+        "confidence": 0.681,
+        "accuracy": 0.148,
+        "is_uncertain": 0,
         "set_type": "ambiguous",
-        "faithfulness_score": 0.25,
-        "abstain_flag": 0,
-        "ambiguity_type": "conflicting",
-        "prediction_text": "Interdisciplinary knowledge likely enhances a health education specialist's effectiveness in addressing obesity-related issues by integrating behavioral, medical, and community strategies.",
-        "prediction_explanation": "Source 2 emphasizes the importance of combining medical treatments with behavioral interventions for sustainable weight management. Source 1 suggests that health education specialists work in diverse ..."
+        "ambiguity_type": "conflicting"
       },
       {
         "entry_id": "public_health_005",
         "question": "What was a major societal influence that led to the establishment of a publicly accessible database ...",
-        "confidence": 0.553,
-        "accuracy": 0.0,
-        "is_uncertain": 1,
+        "confidence": 0.746,
+        "accuracy": 0.08,
+        "is_uncertain": 0,
         "set_type": "ambiguous",
-        "faithfulness_score": 0.25,
-        "abstain_flag": 0,
-        "ambiguity_type": "conflicting",
-        "prediction_text": "The sources do not provide enough information to answer confidently.",
-        "prediction_explanation": "None of the provided sources directly address the societal influences that led to the establishment of a publicly accessible database of clinical trials in the United States. The sources focus on clin..."
+        "ambiguity_type": "conflicting"
       },
       {
         "entry_id": "public_health_006",
         "question": "Why is the fortification of cereal grains with folic acid considered a significant public health int...",
-        "confidence": 0.553,
-        "accuracy": 0.7,
-        "is_uncertain": 1,
+        "confidence": 0.725,
+        "accuracy": 0.25,
+        "is_uncertain": 0,
         "set_type": "ambiguous",
-        "faithfulness_score": 0.25,
-        "abstain_flag": 0,
-        "ambiguity_type": "conflicting",
-        "prediction_text": "The fortification of cereal grains with folic acid is significant for reducing birth defects.",
-        "prediction_explanation": "Folic acid is crucial for DNA synthesis and cell growth, especially during pregnancy, reducing the risk of birth defects (Source 1). Pregnant women deficient in folic acid face heightened risks, inclu..."
+        "ambiguity_type": "conflicting"
       },
       {
         "entry_id": "public_health_007",
         "question": "Why might measles outbreaks occur in a country where the disease has been officially eliminated?",
-        "confidence": 0.553,
-        "accuracy": 0.9,
-        "is_uncertain": 1,
+        "confidence": 0.713,
+        "accuracy": 0.654,
+        "is_uncertain": 0,
         "set_type": "ambiguous",
-        "faithfulness_score": 0.25,
-        "abstain_flag": 0,
-        "ambiguity_type": "conflicting",
-        "prediction_text": "Measles outbreaks might occur in a country where the disease has been officially eliminated due to imported cases and unvaccinated individuals.",
-        "prediction_explanation": "Source 1 mentions that a proportion of measles cases have an imported source, and Source 3 highlights that unvaccinated individuals exposed to the virus can spread it, especially in crowded places. Th..."
+        "ambiguity_type": "conflicting"
       },
       {
         "entry_id": "public_health_008",
         "question": "Can an adult born before 1957 be considered immune to measles, mumps, and rubella without vaccinatio...",
-        "confidence": 0.553,
-        "accuracy": 0.7,
-        "is_uncertain": 1,
+        "confidence": 0.697,
+        "accuracy": 0.389,
+        "is_uncertain": 0,
         "set_type": "ambiguous",
-        "faithfulness_score": 0.25,
-        "abstain_flag": 1,
-        "ambiguity_type": "conflicting",
-        "prediction_text": "An adult born before 1957 might be considered immune to measles, mumps, and rubella without vaccination.",
-        "prediction_explanation": "Source 1 suggests that people born before 1957 are generally considered immune due to likely exposure to the diseases during childhood. However, the sources do not explicitly confirm this for mumps an..."
+        "ambiguity_type": "conflicting"
       },
       {
         "entry_id": "public_health_009",
         "question": "How does the source of dietary sodium primarily differ from common perceptions about its origin?",
-        "confidence": 0.553,
-        "accuracy": 0.7,
-        "is_uncertain": 1,
+        "confidence": 0.675,
+        "accuracy": 0.333,
+        "is_uncertain": 0,
         "set_type": "ambiguous",
-        "faithfulness_score": 0.25,
-        "abstain_flag": 0,
-        "ambiguity_type": "conflicting",
-        "prediction_text": "The primary source of dietary sodium differs from common perceptions as it is often added during cooking or manufacturing, not just from table salt.",
-        "prediction_explanation": "Source 2 clarifies that sodium is a component of table salt and is added to foods for flavor, texture, or preservation. This suggests that sodium intake is not solely from salt added at the table, but..."
+        "ambiguity_type": "conflicting"
+      },
+      {
+        "entry_id": "public_health_010",
+        "question": "How does the US Preventive Services Task Force incorporate health equity into its preventive service...",
+        "confidence": 0.676,
+        "accuracy": 0.149,
+        "is_uncertain": 0,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting"
+      },
+      {
+        "entry_id": "public_health_011",
+        "question": "Can the presence of different symptom clusters in depression affect the cardiovascular and suicide r...",
+        "confidence": 0.692,
+        "accuracy": 0.036,
+        "is_uncertain": 0,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting"
+      },
+      {
+        "entry_id": "public_health_012",
+        "question": "What is considered the first-line treatment for anaphylaxis in emergency management protocols?",
+        "confidence": 0.795,
+        "accuracy": 1.0,
+        "is_uncertain": 0,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting"
+      },
+      {
+        "entry_id": "public_health_013",
+        "question": "How can maternal health and nutritional status prior to conception influence the long-term health ou...",
+        "confidence": 0.7,
+        "accuracy": 0.279,
+        "is_uncertain": 0,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting"
+      },
+      {
+        "entry_id": "public_health_014",
+        "question": "How does the age at which colorectal cancer screening begins impact its effectiveness in reducing mo...",
+        "confidence": 0.715,
+        "accuracy": 0.357,
+        "is_uncertain": 0,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting"
+      },
+      {
+        "entry_id": "public_health_015",
+        "question": "How does the CDC's updated isolation guidance for COVID-19 align with general practices for handling...",
+        "confidence": 0.684,
+        "accuracy": 0.292,
+        "is_uncertain": 0,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting"
+      },
+      {
+        "entry_id": "public_health_016",
+        "question": "How does the gender disparity in the prevalence of depressive disorders potentially impact the appro...",
+        "confidence": 0.732,
+        "accuracy": 0.056,
+        "is_uncertain": 0,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting"
+      },
+      {
+        "entry_id": "public_health_017",
+        "question": "How do the recommended exposure limits for occupational noise by NIOSH differ in application from ge...",
+        "confidence": 0.642,
+        "accuracy": 0.071,
+        "is_uncertain": 0,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting"
+      },
+      {
+        "entry_id": "public_health_018",
+        "question": "How does the return policy for vaccines differ between age groups, and what might the implications b...",
+        "confidence": 0.705,
+        "accuracy": 0.119,
+        "is_uncertain": 0,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting"
+      },
+      {
+        "entry_id": "public_health_019",
+        "question": "How does the expansion of Medicaid under the Affordable Care Act aim to improve public health outcom...",
+        "confidence": 0.795,
+        "accuracy": 0.438,
+        "is_uncertain": 0,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting"
       }
     ]
   }
