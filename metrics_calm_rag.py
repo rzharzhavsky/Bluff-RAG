@@ -299,12 +299,21 @@ def calm_rag_h1_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
     low_confidence_threshold = np.percentile(confidences, 25)  # Bottom 25% of confidences
     refusal_rate = np.mean([1 if c < low_confidence_threshold else 0 for c in confidences])
     
+    # Calculate H1 composite score
+    # Normalize metrics to 0-1 scale where higher is better
+    normalized_avg_recall = np.mean(recalls)  # Already 0-1, higher is better
+    normalized_overconfidence = max(0, 1 - overconfidence_index)  # Invert overconfidence (lower is better)
+    normalized_wrong_rate = max(0, 1 - wrong_answer_rate)  # Invert wrong rate (lower is better)
+    
+    h1_composite_score = (normalized_avg_recall + normalized_overconfidence + normalized_wrong_rate) / 3
+    
     return {
         'retrieval_recall_confidence_correlation': recall_confidence_corr,
         'avg_retrieval_recall': np.mean(recalls),
         'overconfidence_index': overconfidence_index,
         'wrong_answer_rate': wrong_answer_rate,
         'refusal_rate': refusal_rate,
+        'h1_composite_score': h1_composite_score,
         # Diagnostic info for calibrated confidence thresholds
         'calibrated_confidence_stats': {
             'median': confidence_median,
@@ -319,60 +328,6 @@ def calm_rag_h1_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
     }
 
 
-def calm_rag_h2_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
-    """
-    H2: Calibration difference with and without retrieval
-    Tests if retrieval improves calibration.
-    """
-    if not results:
-        return {}
-    
-    # Separate results by retrieval status (simulated)
-    with_retrieval_confidences = []
-    with_retrieval_accuracies = []
-    without_retrieval_confidences = []
-    without_retrieval_accuracies = []
-    
-    for result in results:
-        confidence = result.get('confidence', 0.5)
-        accuracy = result.get('accuracy', 0.0)
-        
-        # Simulate without-retrieval scenario using lower confidence
-        # This is a simplified approach - in practice you'd run models twice
-        without_confidence = confidence * 0.7  # Simulate lower confidence without retrieval
-        without_accuracy = accuracy * 0.8  # Simulate lower accuracy without retrieval
-        
-        with_retrieval_confidences.append(confidence)
-        with_retrieval_accuracies.append(accuracy)
-        without_retrieval_confidences.append(without_confidence)
-        without_retrieval_accuracies.append(without_accuracy)
-    
-    # Calculate ECE for both scenarios
-    ece_with = expected_calibration_error(with_retrieval_confidences, with_retrieval_accuracies)
-    ece_without = expected_calibration_error(without_retrieval_confidences, without_retrieval_accuracies)
-    ece_difference = ece_without - ece_with  # Positive means retrieval helps
-    
-    # Calculate Brier scores
-    brier_with = brier_score(with_retrieval_confidences, with_retrieval_accuracies)
-    brier_without = brier_score(without_retrieval_confidences, without_retrieval_accuracies)
-    brier_difference = brier_without - brier_with
-    
-    # Calculate correlations
-    corr_with = confidence_accuracy_correlation(with_retrieval_confidences, with_retrieval_accuracies)
-    corr_without = confidence_accuracy_correlation(without_retrieval_confidences, without_retrieval_accuracies)
-    corr_difference = corr_with - corr_without
-    
-    return {
-        'ece_with_retrieval': ece_with,
-        'ece_without_retrieval': ece_without,
-        'ece_difference': ece_difference,
-        'brier_with_retrieval': brier_with,
-        'brier_without_retrieval': brier_without,
-        'brier_difference': brier_difference,
-        'confidence_accuracy_corr_with_retrieval': corr_with,
-        'confidence_accuracy_corr_without_retrieval': corr_without,
-        'correlation_difference': corr_difference
-    }
 
 
 def calculate_question_difficulty(result: Dict[str, Any]) -> float:
@@ -625,13 +580,22 @@ def calm_rag_h5_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
     
     diversity_calibration_corr = confidence_accuracy_correlation(diversities, confidences)
     
+    # Calculate H5 score as average of 3 key metrics
+    # Normalize metrics to 0-1 scale where higher is better
+    normalized_quality_corr = max(0, quality_confidence_corr)  # Already 0-1, higher is better
+    normalized_weighted_ece = max(0, 1 - quality_weighted_ece)  # Invert ECE (lower is better)
+    normalized_calibration_gap = max(0, quality_calibration_gap)  # Higher gap is better (shows source discrimination)
+    
+    h5_score = (normalized_quality_corr + normalized_weighted_ece + normalized_calibration_gap) / 3
+    
     return {
         'source_quality_confidence_correlation': quality_confidence_corr,
         'source_diversity_calibration_correlation': diversity_calibration_corr,
         'quality_weighted_ece': quality_weighted_ece,
         'high_quality_source_ece': high_quality_ece,
         'low_quality_source_ece': low_quality_ece,
-        'quality_calibration_gap': quality_calibration_gap
+        'quality_calibration_gap': quality_calibration_gap,
+        'h5_source_quality_score': h5_score
     }
 
 
@@ -709,9 +673,8 @@ def compute_all_calm_rag_metrics(results: List[Dict[str, Any]]) -> Dict[str, flo
     """Compute all CALM-RAG metrics (excluding faithfulness, which is calculated separately)."""
     all_metrics = {}
     
-    # H1-H5 metrics
+    # H1, H3-H5 metrics
     all_metrics.update(calm_rag_h1_metrics(results))
-    all_metrics.update(calm_rag_h2_metrics(results))
     all_metrics.update(calm_rag_h3_metrics(results))
     all_metrics.update(calm_rag_h4_metrics(results))
     all_metrics.update(calm_rag_h5_metrics(results))
