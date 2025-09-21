@@ -11,7 +11,7 @@ def load_progress():
     """Load progress tracking from file"""
     progress_file = "generation_progress.json"
     try:
-        with open(progress_file, "r") as f:
+        with open(progress_file, "r", encoding='utf-8') as f:
             return json.load(f)
     except FileNotFoundError:
         return {
@@ -44,7 +44,7 @@ def regenerate_failed_entries():
     # Load existing dataset
     dataset_file = "calmrag_dataset.json"
     try:
-        with open(dataset_file, "r") as f:
+        with open(dataset_file, "r", encoding='utf-8') as f:
             existing_dataset = json.load(f)
             print(f"Loaded existing dataset with {len(existing_dataset)} entries")
     except FileNotFoundError:
@@ -138,7 +138,7 @@ def generate_dataset_batch_full():
     # Load existing dataset
     dataset_file = "calmrag_dataset.json"
     try:
-        with open(dataset_file, "r") as f:
+        with open(dataset_file, "r", encoding='utf-8') as f:
             existing_dataset = json.load(f)
             print(f"Loaded existing dataset with {len(existing_dataset)} entries")
     except FileNotFoundError:

@@ -72,10 +72,11 @@ def make_json_serializable(data: Any) -> Any:
 
 
 def generate_calm_rag_report(evaluation_summary: Dict[str, Any]) -> Dict[str, Any]:
-    """Generate a minimal CALM-RAG report focusing only on the core hypotheses."""
+    """Generate a comprehensive CALM-RAG report including faithfulness metrics."""
     calm_rag_metrics = evaluation_summary.get('calm_rag_metrics', {})
+    faithfulness_metrics = evaluation_summary.get('faithfulness_metrics', {})
     
-    # Extract only the core CALM-RAG metrics for the 5 hypotheses
+    # Extract core CALM-RAG metrics for the 5 hypotheses plus faithfulness
     core_report = {
         'model': evaluation_summary['model'],
         'total_evaluations': evaluation_summary['successful_evaluations'],
@@ -114,17 +115,28 @@ def generate_calm_rag_report(evaluation_summary: Dict[str, Any]) -> Dict[str, An
             'source_quality_confidence_corr': calm_rag_metrics.get('source_quality_confidence_correlation', 0.0),
             'quality_weighted_ece': calm_rag_metrics.get('quality_weighted_ece', 0.0),
             'quality_calibration_gap': calm_rag_metrics.get('quality_calibration_gap', 0.0)
+        },
+        
+        # Faithfulness metrics
+        'faithfulness': {
+            'overall_faithfulness': faithfulness_metrics.get('overall_faithfulness', 0.0),
+            'answer_source_overlap': faithfulness_metrics.get('answer_source_overlap', 0.0),
+            'attribution_coverage': faithfulness_metrics.get('attribution_coverage', 0.0),
+            'hallucination_rate': faithfulness_metrics.get('hallucination_rate', 0.0),
+            'grounding_score': faithfulness_metrics.get('grounding_score', 0.0),
+            'factual_consistency': faithfulness_metrics.get('factual_consistency', 0.0)
         }
     }
     
-    # Calculate overall CALM-RAG score
+    # Calculate overall CALM-RAG score including faithfulness
     key_metrics = [
         core_report['h1_overconfidence']['avg_retrieval_recall'],
         1 - core_report['h1_overconfidence']['overconfidence_index'],
         1 - core_report['h2_calibration']['ece_with_retrieval'],
         core_report['h3_hedging']['hedge_f1'],
         1 - core_report['h4_self_assessment']['expected_calibration_error'],
-        core_report['h5_source_quality']['source_quality_confidence_corr']
+        core_report['h5_source_quality']['source_quality_confidence_corr'],
+        core_report['faithfulness']['overall_faithfulness']  # Include faithfulness in overall score
     ]
     
     core_report['calm_rag_score'] = round(sum(key_metrics) / len(key_metrics), 3)
@@ -158,7 +170,7 @@ class RAGModelEvaluator:
         
     def _load_dataset(self) -> List[Dict[str, Any]]:
         """Load the CALM-RAG dataset."""
-        with open(self.dataset_path, 'r') as f:
+        with open(self.dataset_path, 'r', encoding='utf-8') as f:
             return json.load(f)
     
     def setup_openai(self, api_key: str, model: str = "gpt-4o"):
@@ -483,8 +495,20 @@ class RAGModelEvaluator:
         # Parse response
         parsed = parse_response(result['response'])
         
-        # Create evaluation result structure
-        retrieved_docs = [{'url': s['url'], 'domain': s['domain'], 'category': s['category']} for s in sources]
+        # Create evaluation result structure with full source data for faithfulness metrics
+        retrieved_docs = []
+        for s in sources:
+            doc = {
+                'url': s['url'], 
+                'domain': s['domain'], 
+                'category': s['category'],
+                'title': s.get('title', ''),
+                'text': s.get('text', ''),
+                'timestamp': s.get('timestamp', ''),
+                'score': s.get('score', None)
+            }
+            retrieved_docs.append(doc)
+        
         relevant_docs = [s['url'] for s in entry['source_sets']['clear']]
         
         # Calculate accuracy
@@ -763,11 +787,11 @@ class RAGModelEvaluator:
         
         # Save results
         output_file = os.path.join(self.output_dir, f"{model_name}_evaluation.json")
-        with open(output_file, 'w') as f:
+        with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(evaluation_summary, f, indent=2)
         
         report_file = os.path.join(self.output_dir, f"{model_name}_calm_rag_report.json")
-        with open(report_file, 'w') as f:
+        with open(report_file, 'w', encoding='utf-8') as f:
             json.dump(calm_rag_report, f, indent=2)
         
         print(f"Results saved to {output_file}")
@@ -807,12 +831,20 @@ class RAGModelEvaluator:
             
             # Key CALM-RAG metrics for comparison
             calm_rag = result['calm_rag_metrics']
+            faithfulness = result.get('faithfulness_metrics', {})
             comparison_summary['comparison_metrics'][model_name] = {
                 'overconfidence_index': calm_rag.get('overconfidence_index', 'N/A'),
                 'ece_with_retrieval': calm_rag.get('ece_with_retrieval', 'N/A'),
                 'hedge_f1': calm_rag.get('hedge_f1', 'N/A'),
                 'expected_calibration_error': calm_rag.get('expected_calibration_error', 'N/A'),
-                'source_quality_confidence_correlation': calm_rag.get('source_quality_confidence_correlation', 'N/A')
+                'source_quality_confidence_correlation': calm_rag.get('source_quality_confidence_correlation', 'N/A'),
+                # Faithfulness metrics
+                'overall_faithfulness': faithfulness.get('overall_faithfulness', 'N/A'),
+                'answer_source_overlap': faithfulness.get('answer_source_overlap', 'N/A'),
+                'attribution_coverage': faithfulness.get('attribution_coverage', 'N/A'),
+                'hallucination_rate': faithfulness.get('hallucination_rate', 'N/A'),
+                'grounding_score': faithfulness.get('grounding_score', 'N/A'),
+                'factual_consistency': faithfulness.get('factual_consistency', 'N/A')
             }
         
         # Round all numeric values and ensure JSON serialization
@@ -821,7 +853,7 @@ class RAGModelEvaluator:
         
         # Save comparison
         comparison_file = os.path.join(self.output_dir, "model_comparison.json")
-        with open(comparison_file, 'w') as f:
+        with open(comparison_file, 'w', encoding='utf-8') as f:
             json.dump(comparison_summary, f, indent=2)
         
         print(f"\nComparison saved to {comparison_file}")
@@ -912,6 +944,10 @@ def main():
                 asi_metrics = result['asi_metrics']
                 print(f"  ASI Score: {asi_metrics.get('mean_asi', 0):.3f}")
                 
+            # Print Faithfulness metrics
+            faithfulness = result.get('faithfulness_metrics', {})
+            print(f"  Overall Faithfulness: {safe_format(faithfulness.get('overall_faithfulness'))}")
+            
         else:
             print("Evaluation failed - no results returned")
         

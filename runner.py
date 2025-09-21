@@ -42,7 +42,7 @@ class RAGEvaluator:
     
     def _load_dataset(self) -> List[Dict[str, Any]]:
         """Load the CALM-RAG dataset from JSON file."""
-        with open(self.dataset_path, 'r') as f:
+        with open(self.dataset_path, 'r', encoding='utf-8') as f:
             return json.load(f)
     
     def setup_openai(self, api_key: str, model: str = "gpt-4"):

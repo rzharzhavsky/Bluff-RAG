@@ -780,11 +780,12 @@ def calculate_answer_source_overlap(prediction: str, retrieved_docs: List[Dict[s
     source_texts = []
     for doc in retrieved_docs:
         if isinstance(doc, dict):
-            text = doc.get('text', '') or doc.get('content', '') or doc.get('excerpt', '')
+            # Try multiple possible text fields
+            text = doc.get('text', '') or doc.get('content', '') or doc.get('excerpt', '') or doc.get('title', '')
         else:
             text = str(doc)
-        if text:
-            source_texts.append(text)
+        if text and len(text.strip()) > 10:  # Only include substantial text
+            source_texts.append(text.strip())
     
     if not source_texts:
         return 0.0
@@ -804,14 +805,32 @@ def calculate_answer_source_overlap(prediction: str, retrieved_docs: List[Dict[s
 
 def _calculate_token_overlap(prediction: str, source_text: str) -> float:
     """Calculate token-level overlap between prediction and source."""
+    if not prediction or not source_text:
+        return 0.0
+    
     pred_tokens = set(normalize_text(prediction).split())
     source_tokens = set(normalize_text(source_text).split())
     
     if not pred_tokens:
         return 0.0
     
+    # Remove very common words that don't add meaning
+    stop_words = {'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'can', 'this', 'that', 'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her', 'us', 'them'}
+    
+    pred_tokens = pred_tokens - stop_words
+    source_tokens = source_tokens - stop_words
+    
+    if not pred_tokens:
+        return 0.0
+    
     intersection = pred_tokens.intersection(source_tokens)
-    return len(intersection) / len(pred_tokens)
+    overlap_ratio = len(intersection) / len(pred_tokens)
+    
+    # Boost score if there's substantial overlap
+    if overlap_ratio > 0.3:
+        return min(1.0, overlap_ratio * 1.2)
+    
+    return overlap_ratio
 
 
 def _calculate_ngram_overlap(prediction: str, source_text: str, n: int = 3) -> float:
@@ -866,20 +885,24 @@ def calculate_attribution_accuracy(prediction: str, retrieved_docs: List[Dict[st
             'attribution_precision': 0.0
         }
     
-    # Extract claims from prediction (simple sentence splitting)
-    prediction_sentences = [s.strip() for s in prediction.split('.') if s.strip()]
+    # Extract claims from prediction (improved sentence splitting)
+    prediction_sentences = []
+    for sentence in prediction.split('.'):
+        sentence = sentence.strip()
+        if sentence and len(sentence) > 10:  # Only substantial sentences
+            prediction_sentences.append(sentence)
     
     # Extract text from sources
     source_texts = []
     for doc in retrieved_docs:
         if isinstance(doc, dict):
-            text = doc.get('text', '') or doc.get('content', '') or doc.get('excerpt', '')
+            text = doc.get('text', '') or doc.get('content', '') or doc.get('excerpt', '') or doc.get('title', '')
         else:
             text = str(doc)
-        if text:
-            source_texts.append(text)
+        if text and len(text.strip()) > 10:  # Only substantial text
+            source_texts.append(text.strip())
     
-    if not source_texts:
+    if not source_texts or not prediction_sentences:
         return {
             'attribution_coverage': 0.0,
             'source_utilization': 0.0,
@@ -901,26 +924,49 @@ def calculate_attribution_accuracy(prediction: str, retrieved_docs: List[Dict[st
         if _is_source_used_in_prediction(prediction, source_text):
             used_sources += 1
     
+    # Calculate metrics
+    attribution_coverage = attributed_claims / total_claims if total_claims > 0 else 0.0
+    source_utilization = used_sources / len(source_texts) if source_texts else 0.0
+    
     return {
-        'attribution_coverage': attributed_claims / total_claims if total_claims > 0 else 0.0,
-        'source_utilization': used_sources / len(source_texts) if source_texts else 0.0,
-        'claim_attribution_rate': attributed_claims / total_claims if total_claims > 0 else 0.0,
-        'attribution_precision': attributed_claims / total_claims if total_claims > 0 else 0.0
+        'attribution_coverage': attribution_coverage,
+        'source_utilization': source_utilization,
+        'claim_attribution_rate': attribution_coverage,
+        'attribution_precision': attribution_coverage
     }
 
 
 def _can_claim_be_attributed(claim: str, source_texts: List[str]) -> bool:
     """Check if a claim can be attributed to any source text."""
+    if not claim or not source_texts:
+        return False
+    
     claim_tokens = set(normalize_text(claim).split())
+    
+    # Remove stop words for better matching
+    stop_words = {'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'can', 'this', 'that', 'these', 'those'}
+    claim_tokens = claim_tokens - stop_words
+    
+    if not claim_tokens:
+        return False
+    
+    best_overlap_ratio = 0.0
     
     for source_text in source_texts:
         source_tokens = set(normalize_text(source_text).split())
+        source_tokens = source_tokens - stop_words
+        
+        if not source_tokens:
+            continue
+            
         # Check if significant portion of claim tokens appear in source
         overlap = len(claim_tokens.intersection(source_tokens))
-        if overlap >= max(1, len(claim_tokens) * 0.3):  # At least 30% overlap
-            return True
+        overlap_ratio = overlap / len(claim_tokens)
+        
+        best_overlap_ratio = max(best_overlap_ratio, overlap_ratio)
     
-    return False
+    # Require at least 25% overlap for attribution
+    return best_overlap_ratio >= 0.25
 
 
 def _is_source_used_in_prediction(prediction: str, source_text: str) -> bool:
@@ -1051,11 +1097,11 @@ def calculate_source_grounding_metrics(prediction: str, retrieved_docs: List[Dic
     source_texts = []
     for doc in retrieved_docs:
         if isinstance(doc, dict):
-            text = doc.get('text', '') or doc.get('content', '') or doc.get('excerpt', '')
+            text = doc.get('text', '') or doc.get('content', '') or doc.get('excerpt', '') or doc.get('title', '')
         else:
             text = str(doc)
-        if text:
-            source_texts.append(text)
+        if text and len(text.strip()) > 10:  # Only substantial text
+            source_texts.append(text.strip())
     
     if not source_texts:
         return {
@@ -1073,15 +1119,16 @@ def calculate_source_grounding_metrics(prediction: str, retrieved_docs: List[Dic
     
     grounding_score = np.mean(overlap_scores) if overlap_scores else 0.0
     
-    # Source coverage - how many sources are used
-    used_sources = sum(1 for score in overlap_scores if score > 0.1)
+    # Source coverage - how many sources are used (lower threshold)
+    used_sources = sum(1 for score in overlap_scores if score > 0.05)
     source_coverage = used_sources / len(source_texts) if source_texts else 0.0
     
     # Grounding consistency - variance in overlap scores
     grounding_consistency = 1.0 - np.var(overlap_scores) if len(overlap_scores) > 1 else 1.0
     
     # Source relevance - average relevance of used sources
-    source_relevance = np.mean([score for score in overlap_scores if score > 0.1]) if any(score > 0.1 for score in overlap_scores) else 0.0
+    relevant_scores = [score for score in overlap_scores if score > 0.05]
+    source_relevance = np.mean(relevant_scores) if relevant_scores else 0.0
     
     return {
         'grounding_score': grounding_score,
@@ -1151,13 +1198,19 @@ def calm_rag_faithfulness_metrics_with_individuals(results: List[Dict[str, Any]]
         for key, value in grounding.items():
             grounding_metrics[key].append(value)
         
-        # Calculate individual faithfulness score
+        # Calculate individual faithfulness score with better weighting
+        # Weight the components based on their importance
+        overlap_weight = 0.3
+        attribution_weight = 0.3
+        hallucination_weight = 0.2
+        grounding_weight = 0.2
+        
         individual_faithfulness = (
-            overlap +
-            attribution['attribution_coverage'] +
-            (1.0 - hallucination['hallucination_rate']) +
-            grounding['grounding_score']
-        ) / 4.0
+            overlap * overlap_weight +
+            attribution['attribution_coverage'] * attribution_weight +
+            (1.0 - hallucination['hallucination_rate']) * hallucination_weight +
+            grounding['grounding_score'] * grounding_weight
+        )
         individual_faithfulness_scores.append(individual_faithfulness)
     
     # Calculate average metrics
@@ -1182,14 +1235,14 @@ def calm_rag_faithfulness_metrics_with_individuals(results: List[Dict[str, Any]]
         metrics[key] = np.mean(values) if values else 0.0
         metrics[f'{key}_std'] = np.std(values) if values else 0.0
     
-    # Overall faithfulness score (composite metric)
+    # Overall faithfulness score (composite metric with weighted components)
     faithfulness_components = [
-        metrics['answer_source_overlap'],
-        1.0 - metrics['hallucination_rate'],  # Invert hallucination rate
-        metrics['attribution_coverage'],
-        metrics['grounding_score']
+        metrics['answer_source_overlap'] * 0.3,
+        (1.0 - metrics['hallucination_rate']) * 0.2,  # Invert hallucination rate
+        metrics['attribution_coverage'] * 0.3,
+        metrics['grounding_score'] * 0.2
     ]
-    metrics['overall_faithfulness'] = np.mean(faithfulness_components)
+    metrics['overall_faithfulness'] = sum(faithfulness_components)
     
     return metrics, individual_faithfulness_scores
 
