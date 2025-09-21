@@ -24,7 +24,7 @@ except Exception as e:
 from prompts_core import format_prompt, extract_confidence_from_response, parse_response
 from metrics_calm_rag import (
     compute_all_calm_rag_metrics, calculate_all_utility_metrics,
-    calm_rag_h1_metrics, calm_rag_h2_metrics, calm_rag_h3_metrics,
+    calm_rag_h1_metrics, calm_rag_h3_metrics,
     calm_rag_h4_metrics, calm_rag_h5_metrics,
     calculate_ambiguity_sensitivity_index, calculate_batch_asi,
     calculate_continuous_uncertainty, calculate_soft_accuracy,
@@ -72,74 +72,49 @@ def make_json_serializable(data: Any) -> Any:
 
 
 def generate_calm_rag_report(evaluation_summary: Dict[str, Any]) -> Dict[str, Any]:
-    """Generate a comprehensive CALM-RAG report including faithfulness metrics."""
+    """Generate a comprehensive CALM-RAG report with structure."""
     calm_rag_metrics = evaluation_summary.get('calm_rag_metrics', {})
     faithfulness_metrics = evaluation_summary.get('faithfulness_metrics', {})
+    asi_metrics = evaluation_summary.get('asi_metrics', {})
     
-    # Extract core CALM-RAG metrics for the 5 hypotheses plus faithfulness
+    # Calculate answer correctness (average of all accuracies)
+    # We need to get this from the individual results if available
+    all_results = []
+    if 'clear_results' in evaluation_summary:
+        all_results.extend(evaluation_summary['clear_results'])
+    if 'ambiguous_results' in evaluation_summary:
+        all_results.extend(evaluation_summary['ambiguous_results'])
+    
+    answer_correctness = 0.0
+    if all_results:
+        accuracies = [result.get('accuracy') for result in all_results]
+        answer_correctness = sum(accuracies) / len(accuracies)
+    
+    # Create streamlined report structure
     core_report = {
         'model': evaluation_summary['model'],
         'total_evaluations': evaluation_summary['successful_evaluations'],
-        'calm_rag_score': 0.0,
         
-        # H1: Overconfidence under sparse/noisy evidence
-        'h1_overconfidence': {
+        # Requested metrics
+        'answer_correctness': answer_correctness,
+        'total_ece': calm_rag_metrics.get('expected_calibration_error', 0.0),
+        'total_asi_score': asi_metrics.get('mean_asi', 0.0),
+        'vui_metric': calm_rag_metrics.get('hedge_f1', 0.0),  # VUI = hedge_f1
+        'faithfulness_overall_score': faithfulness_metrics.get('overall_faithfulness', 0.0),
+        'h5_composite_score': calm_rag_metrics.get('h5_source_quality_score', 0.0),
+        'brier_score': calm_rag_metrics.get('brier_score', 0.0),
+        'confidence_accuracy_correlation': calm_rag_metrics.get('confidence_accuracy_correlation', 0.0),
+        
+        # H1 composite score with all H1 metrics
+        'h1_composite_score': calm_rag_metrics.get('h1_composite_score', 0.0),
+        'h1_metrics': {
             'avg_retrieval_recall': calm_rag_metrics.get('avg_retrieval_recall', 0.0),
             'overconfidence_index': calm_rag_metrics.get('overconfidence_index', 0.0),
-            'wrong_answer_rate': calm_rag_metrics.get('wrong_answer_rate', 0.0)
-        },
-        
-        # H2: Calibration difference with and without retrieval
-        'h2_calibration': {
-            'ece_with_retrieval': calm_rag_metrics.get('ece_with_retrieval', 0.0),
-            'ece_without_retrieval': calm_rag_metrics.get('ece_without_retrieval', 0.0),
-            'ece_improvement': calm_rag_metrics.get('ece_difference', 0.0)
-        },
-        
-        # H3: Hedging language as signal of uncertainty
-        'h3_hedging': {
-            'hedge_precision': calm_rag_metrics.get('hedge_precision', 0.0),
-            'hedge_recall': calm_rag_metrics.get('hedge_recall', 0.0),
-            'hedge_f1': calm_rag_metrics.get('hedge_f1', 0.0)
-        },
-        
-        # H4: Self-assessment and numeric calibration
-        'h4_self_assessment': {
-            'expected_calibration_error': calm_rag_metrics.get('expected_calibration_error', 0.0),
-            'brier_score': calm_rag_metrics.get('brier_score', 0.0),
-            'confidence_accuracy_correlation': calm_rag_metrics.get('confidence_accuracy_correlation', 0.0)
-        },
-        
-        # H5: Source quality impact on calibration
-        'h5_source_quality': {
-            'source_quality_confidence_corr': calm_rag_metrics.get('source_quality_confidence_correlation', 0.0),
-            'quality_weighted_ece': calm_rag_metrics.get('quality_weighted_ece', 0.0),
-            'quality_calibration_gap': calm_rag_metrics.get('quality_calibration_gap', 0.0)
-        },
-        
-        # Faithfulness metrics
-        'faithfulness': {
-            'overall_faithfulness': faithfulness_metrics.get('overall_faithfulness', 0.0),
-            'answer_source_overlap': faithfulness_metrics.get('answer_source_overlap', 0.0),
-            'attribution_coverage': faithfulness_metrics.get('attribution_coverage', 0.0),
-            'hallucination_rate': faithfulness_metrics.get('hallucination_rate', 0.0),
-            'grounding_score': faithfulness_metrics.get('grounding_score', 0.0),
-            'factual_consistency': faithfulness_metrics.get('factual_consistency', 0.0)
+            'wrong_answer_rate': calm_rag_metrics.get('wrong_answer_rate', 0.0),
+            'refusal_rate': calm_rag_metrics.get('refusal_rate', 0.0),
+            'retrieval_recall_confidence_correlation': calm_rag_metrics.get('retrieval_recall_confidence_correlation', 0.0)
         }
     }
-    
-    # Calculate overall CALM-RAG score including faithfulness
-    key_metrics = [
-        core_report['h1_overconfidence']['avg_retrieval_recall'],
-        1 - core_report['h1_overconfidence']['overconfidence_index'],
-        1 - core_report['h2_calibration']['ece_with_retrieval'],
-        core_report['h3_hedging']['hedge_f1'],
-        1 - core_report['h4_self_assessment']['expected_calibration_error'],
-        core_report['h5_source_quality']['source_quality_confidence_corr'],
-        core_report['faithfulness']['overall_faithfulness']  # Include faithfulness in overall score
-    ]
-    
-    core_report['calm_rag_score'] = round(sum(key_metrics) / len(key_metrics), 3)
     
     return core_report
 
@@ -834,7 +809,6 @@ class RAGModelEvaluator:
             faithfulness = result.get('faithfulness_metrics', {})
             comparison_summary['comparison_metrics'][model_name] = {
                 'overconfidence_index': calm_rag.get('overconfidence_index', 'N/A'),
-                'ece_with_retrieval': calm_rag.get('ece_with_retrieval', 'N/A'),
                 'hedge_f1': calm_rag.get('hedge_f1', 'N/A'),
                 'expected_calibration_error': calm_rag.get('expected_calibration_error', 'N/A'),
                 'source_quality_confidence_correlation': calm_rag.get('source_quality_confidence_correlation', 'N/A'),
@@ -935,7 +909,6 @@ def main():
                     return str(default)
             
             print(f"  Overconfidence Index: {safe_format(calm_rag.get('overconfidence_index'))}")
-            print(f"  ECE with Retrieval: {safe_format(calm_rag.get('ece_with_retrieval'))}")
             print(f"  Hedge F1: {safe_format(calm_rag.get('hedge_f1'))}")
             print(f"  Expected Calibration Error: {safe_format(calm_rag.get('expected_calibration_error'))}")
             
