@@ -1,0 +1,2021 @@
+{
+  "model": "gpt-4o",
+  "total_entries": 50,
+  "successful_evaluations": 50,
+  "calibration_info": {
+    "is_calibrated": 1,
+    "calibration_samples": 40,
+    "has_calibration_function": 1
+  },
+  "calm_rag_metrics": {
+    "retrieval_recall_confidence_correlation": 0.061,
+    "avg_retrieval_recall": 0.502,
+    "overconfidence_index": 0.146,
+    "wrong_answer_rate": 0.708,
+    "refusal_rate": 0.25,
+    "calibrated_confidence_stats": {
+      "median": 0.224,
+      "25th_percentile": 0.058,
+      "75th_percentile": 0.411,
+      "high_confidence_threshold": 0.411,
+      "min": 0.036,
+      "max": 0.824,
+      "overconfidence_cases_count": 21,
+      "total_wrong_answers": 93
+    },
+    "ece_with_retrieval": 0.156,
+    "ece_without_retrieval": 0.117,
+    "ece_difference": -0.039,
+    "brier_with_retrieval": 0.049,
+    "brier_without_retrieval": 0.028,
+    "brier_difference": -0.02,
+    "confidence_accuracy_corr_with_retrieval": 0.269,
+    "confidence_accuracy_corr_without_retrieval": 0.269,
+    "correlation_difference": -0.0,
+    "hedge_precision": 0.611,
+    "hedge_recall": 0.458,
+    "hedge_specificity": 0.462,
+    "hedge_f1": 0.524,
+    "hedge_accuracy": 0.17,
+    "lexical_overconfidence_index": 0.0,
+    "uncertainty_confidence_correlation": -0.047,
+    "hedge_density": 0.022,
+    "confident_wrong_rate": 0.21,
+    "hedging_diagnostics": {
+      "uncertainty_threshold": 0.675,
+      "certainty_threshold": 0.35,
+      "hedge_threshold": 0.017,
+      "true_positives": 11,
+      "false_positives": 7,
+      "true_negatives": 6,
+      "false_negatives": 13,
+      "avg_true_uncertainty": 0.512,
+      "avg_hedge_density": 0.022
+    },
+    "expected_calibration_error": 0.156,
+    "brier_score": 0.049,
+    "confidence_accuracy_correlation": 0.269,
+    "calibration_ece_after_isotonic": 0.0,
+    "calibration_improvement": 0.156,
+    "confidence_distribution_entropy": 2.684,
+    "source_quality_confidence_correlation": 0.009,
+    "source_diversity_calibration_correlation": -0.097,
+    "quality_weighted_ece": 0.182,
+    "high_quality_source_ece": 0.145,
+    "low_quality_source_ece": 0.167,
+    "quality_calibration_gap": -0.022
+  },
+  "faithfulness_metrics": {
+    "answer_source_overlap": 0.7,
+    "answer_source_overlap_std": 0.227,
+    "attribution_coverage": 0.88,
+    "attribution_coverage_std": 0.325,
+    "source_utilization": 0.183,
+    "source_utilization_std": 0.24,
+    "claim_attribution_rate": 0.88,
+    "claim_attribution_rate_std": 0.325,
+    "attribution_precision": 0.88,
+    "attribution_precision_std": 0.325,
+    "hallucination_rate": 0.0,
+    "hallucination_rate_std": 0.0,
+    "unsupported_claims_rate": 0.12,
+    "unsupported_claims_rate_std": 0.325,
+    "hallucination_severity": 0.0,
+    "hallucination_severity_std": 0.0,
+    "factual_consistency": 0.27,
+    "factual_consistency_std": 0.149,
+    "grounding_score": 0.283,
+    "grounding_score_std": 0.133,
+    "source_coverage": 0.863,
+    "source_coverage_std": 0.2,
+    "grounding_consistency": 0.968,
+    "grounding_consistency_std": 0.029,
+    "source_relevance": 0.319,
+    "source_relevance_std": 0.127,
+    "overall_faithfulness": 0.731
+  },
+  "utility_metrics": {
+    "avg_retrieval_recall": 0.502,
+    "avg_retrieval_precision": 0.502,
+    "avg_retrieval_f1": 0.502,
+    "avg_source_quality": 0.652,
+    "source_quality_std": 0.184,
+    "avg_source_diversity": 0.885,
+    "source_diversity_std": 0.138
+  },
+  "asi_metrics": {
+    "mean_asi": 0.13,
+    "std_asi": 0.095,
+    "min_asi": 0.0,
+    "max_asi": 0.458,
+    "median_asi": 0.123
+  },
+  "individual_asi_results": [
+    {
+      "question_id": "public_health_000",
+      "asi_score": 0.154,
+      "asi_components": {
+        "asi": 0.154,
+        "confidence_sensitivity": 0.15,
+        "accuracy_sensitivity": 0.158,
+        "clear_confidence": 0.186,
+        "ambiguous_confidence": 0.036,
+        "clear_accuracy": 0.289,
+        "ambiguous_accuracy": 0.132
+      }
+    },
+    {
+      "question_id": "public_health_001",
+      "asi_score": 0.136,
+      "asi_components": {
+        "asi": 0.136,
+        "confidence_sensitivity": 0.049,
+        "accuracy_sensitivity": 0.222,
+        "clear_confidence": 0.085,
+        "ambiguous_confidence": 0.036,
+        "clear_accuracy": 0.481,
+        "ambiguous_accuracy": 0.259
+      }
+    },
+    {
+      "question_id": "public_health_002",
+      "asi_score": 0.088,
+      "asi_components": {
+        "asi": 0.088,
+        "confidence_sensitivity": 0.176,
+        "accuracy_sensitivity": 0.0,
+        "clear_confidence": 0.212,
+        "ambiguous_confidence": 0.036,
+        "clear_accuracy": 0.296,
+        "ambiguous_accuracy": 0.296
+      }
+    },
+    {
+      "question_id": "public_health_003",
+      "asi_score": 0.056,
+      "asi_components": {
+        "asi": 0.056,
+        "confidence_sensitivity": 0.091,
+        "accuracy_sensitivity": 0.021,
+        "clear_confidence": 0.251,
+        "ambiguous_confidence": 0.343,
+        "clear_accuracy": 0.234,
+        "ambiguous_accuracy": 0.255
+      }
+    },
+    {
+      "question_id": "public_health_004",
+      "asi_score": 0.122,
+      "asi_components": {
+        "asi": 0.122,
+        "confidence_sensitivity": 0.207,
+        "accuracy_sensitivity": 0.037,
+        "clear_confidence": 0.036,
+        "ambiguous_confidence": 0.243,
+        "clear_accuracy": 0.185,
+        "ambiguous_accuracy": 0.148
+      }
+    },
+    {
+      "question_id": "public_health_005",
+      "asi_score": 0.243,
+      "asi_components": {
+        "asi": 0.243,
+        "confidence_sensitivity": 0.165,
+        "accuracy_sensitivity": 0.32,
+        "clear_confidence": 0.305,
+        "ambiguous_confidence": 0.471,
+        "clear_accuracy": 0.4,
+        "ambiguous_accuracy": 0.08
+      }
+    },
+    {
+      "question_id": "public_health_006",
+      "asi_score": 0.112,
+      "asi_components": {
+        "asi": 0.112,
+        "confidence_sensitivity": 0.224,
+        "accuracy_sensitivity": 0.0,
+        "clear_confidence": 0.411,
+        "ambiguous_confidence": 0.187,
+        "clear_accuracy": 0.25,
+        "ambiguous_accuracy": 0.25
+      }
+    },
+    {
+      "question_id": "public_health_007",
+      "asi_score": 0.197,
+      "asi_components": {
+        "asi": 0.197,
+        "confidence_sensitivity": 0.355,
+        "accuracy_sensitivity": 0.038,
+        "clear_confidence": 0.571,
+        "ambiguous_confidence": 0.216,
+        "clear_accuracy": 0.615,
+        "ambiguous_accuracy": 0.654
+      }
+    },
+    {
+      "question_id": "public_health_008",
+      "asi_score": 0.173,
+      "asi_components": {
+        "asi": 0.173,
+        "confidence_sensitivity": 0.347,
+        "accuracy_sensitivity": 0.0,
+        "clear_confidence": 0.643,
+        "ambiguous_confidence": 0.296,
+        "clear_accuracy": 0.389,
+        "ambiguous_accuracy": 0.389
+      }
+    },
+    {
+      "question_id": "public_health_009",
+      "asi_score": 0.247,
+      "asi_components": {
+        "asi": 0.247,
+        "confidence_sensitivity": 0.398,
+        "accuracy_sensitivity": 0.096,
+        "clear_confidence": 0.434,
+        "ambiguous_confidence": 0.036,
+        "clear_accuracy": 0.304,
+        "ambiguous_accuracy": 0.4
+      }
+    },
+    {
+      "question_id": "public_health_010",
+      "asi_score": 0.04,
+      "asi_components": {
+        "asi": 0.04,
+        "confidence_sensitivity": 0.081,
+        "accuracy_sensitivity": 0.0,
+        "clear_confidence": 0.288,
+        "ambiguous_confidence": 0.369,
+        "clear_accuracy": 0.149,
+        "ambiguous_accuracy": 0.149
+      }
+    },
+    {
+      "question_id": "public_health_011",
+      "asi_score": 0.125,
+      "asi_components": {
+        "asi": 0.125,
+        "confidence_sensitivity": 0.142,
+        "accuracy_sensitivity": 0.107,
+        "clear_confidence": 0.294,
+        "ambiguous_confidence": 0.436,
+        "clear_accuracy": 0.143,
+        "ambiguous_accuracy": 0.036
+      }
+    },
+    {
+      "question_id": "public_health_012",
+      "asi_score": 0.458,
+      "asi_components": {
+        "asi": 0.458,
+        "confidence_sensitivity": 0.334,
+        "accuracy_sensitivity": 0.583,
+        "clear_confidence": 0.47,
+        "ambiguous_confidence": 0.804,
+        "clear_accuracy": 0.417,
+        "ambiguous_accuracy": 1.0
+      }
+    },
+    {
+      "question_id": "public_health_013",
+      "asi_score": 0.064,
+      "asi_components": {
+        "asi": 0.064,
+        "confidence_sensitivity": 0.128,
+        "accuracy_sensitivity": 0.0,
+        "clear_confidence": 0.036,
+        "ambiguous_confidence": 0.164,
+        "clear_accuracy": 0.279,
+        "ambiguous_accuracy": 0.279
+      }
+    },
+    {
+      "question_id": "public_health_014",
+      "asi_score": 0.135,
+      "asi_components": {
+        "asi": 0.135,
+        "confidence_sensitivity": 0.233,
+        "accuracy_sensitivity": 0.036,
+        "clear_confidence": 0.059,
+        "ambiguous_confidence": 0.293,
+        "clear_accuracy": 0.393,
+        "ambiguous_accuracy": 0.357
+      }
+    },
+    {
+      "question_id": "public_health_015",
+      "asi_score": 0.15,
+      "asi_components": {
+        "asi": 0.15,
+        "confidence_sensitivity": 0.258,
+        "accuracy_sensitivity": 0.042,
+        "clear_confidence": 0.412,
+        "ambiguous_confidence": 0.154,
+        "clear_accuracy": 0.333,
+        "ambiguous_accuracy": 0.292
+      }
+    },
+    {
+      "question_id": "public_health_016",
+      "asi_score": 0.12,
+      "asi_components": {
+        "asi": 0.12,
+        "confidence_sensitivity": 0.129,
+        "accuracy_sensitivity": 0.111,
+        "clear_confidence": 0.227,
+        "ambiguous_confidence": 0.356,
+        "clear_accuracy": 0.167,
+        "ambiguous_accuracy": 0.056
+      }
+    },
+    {
+      "question_id": "public_health_017",
+      "asi_score": 0.041,
+      "asi_components": {
+        "asi": 0.041,
+        "confidence_sensitivity": 0.01,
+        "accuracy_sensitivity": 0.071,
+        "clear_confidence": 0.036,
+        "ambiguous_confidence": 0.046,
+        "clear_accuracy": 0.167,
+        "ambiguous_accuracy": 0.238
+      }
+    },
+    {
+      "question_id": "public_health_018",
+      "asi_score": 0.031,
+      "asi_components": {
+        "asi": 0.031,
+        "confidence_sensitivity": 0.033,
+        "accuracy_sensitivity": 0.03,
+        "clear_confidence": 0.26,
+        "ambiguous_confidence": 0.227,
+        "clear_accuracy": 0.149,
+        "ambiguous_accuracy": 0.119
+      }
+    },
+    {
+      "question_id": "public_health_019",
+      "asi_score": 0.103,
+      "asi_components": {
+        "asi": 0.103,
+        "confidence_sensitivity": 0.146,
+        "accuracy_sensitivity": 0.059,
+        "clear_confidence": 0.353,
+        "ambiguous_confidence": 0.499,
+        "clear_accuracy": 0.5,
+        "ambiguous_accuracy": 0.441
+      }
+    },
+    {
+      "question_id": "public_health_021",
+      "asi_score": 0.252,
+      "asi_components": {
+        "asi": 0.252,
+        "confidence_sensitivity": 0.482,
+        "accuracy_sensitivity": 0.023,
+        "clear_confidence": 0.549,
+        "ambiguous_confidence": 0.068,
+        "clear_accuracy": 0.209,
+        "ambiguous_accuracy": 0.186
+      }
+    },
+    {
+      "question_id": "public_health_022",
+      "asi_score": 0.179,
+      "asi_components": {
+        "asi": 0.179,
+        "confidence_sensitivity": 0.252,
+        "accuracy_sensitivity": 0.106,
+        "clear_confidence": 0.656,
+        "ambiguous_confidence": 0.404,
+        "clear_accuracy": 0.213,
+        "ambiguous_accuracy": 0.319
+      }
+    },
+    {
+      "question_id": "public_health_023",
+      "asi_score": 0.101,
+      "asi_components": {
+        "asi": 0.101,
+        "confidence_sensitivity": 0.158,
+        "accuracy_sensitivity": 0.043,
+        "clear_confidence": 0.098,
+        "ambiguous_confidence": 0.255,
+        "clear_accuracy": 0.174,
+        "ambiguous_accuracy": 0.217
+      }
+    },
+    {
+      "question_id": "public_health_024",
+      "asi_score": 0.02,
+      "asi_components": {
+        "asi": 0.02,
+        "confidence_sensitivity": 0.04,
+        "accuracy_sensitivity": 0.0,
+        "clear_confidence": 0.178,
+        "ambiguous_confidence": 0.138,
+        "clear_accuracy": 0.375,
+        "ambiguous_accuracy": 0.375
+      }
+    },
+    {
+      "question_id": "public_health_025",
+      "asi_score": 0.162,
+      "asi_components": {
+        "asi": 0.162,
+        "confidence_sensitivity": 0.256,
+        "accuracy_sensitivity": 0.069,
+        "clear_confidence": 0.47,
+        "ambiguous_confidence": 0.214,
+        "clear_accuracy": 0.379,
+        "ambiguous_accuracy": 0.448
+      }
+    },
+    {
+      "question_id": "public_health_026",
+      "asi_score": 0.036,
+      "asi_components": {
+        "asi": 0.036,
+        "confidence_sensitivity": 0.071,
+        "accuracy_sensitivity": 0.0,
+        "clear_confidence": 0.105,
+        "ambiguous_confidence": 0.176,
+        "clear_accuracy": 0.414,
+        "ambiguous_accuracy": 0.414
+      }
+    },
+    {
+      "question_id": "public_health_027",
+      "asi_score": 0.141,
+      "asi_components": {
+        "asi": 0.141,
+        "confidence_sensitivity": 0.182,
+        "accuracy_sensitivity": 0.1,
+        "clear_confidence": 0.221,
+        "ambiguous_confidence": 0.403,
+        "clear_accuracy": 0.267,
+        "ambiguous_accuracy": 0.167
+      }
+    },
+    {
+      "question_id": "public_health_028",
+      "asi_score": 0.201,
+      "asi_components": {
+        "asi": 0.201,
+        "confidence_sensitivity": 0.403,
+        "accuracy_sensitivity": 0.0,
+        "clear_confidence": 0.824,
+        "ambiguous_confidence": 0.421,
+        "clear_accuracy": 0.84,
+        "ambiguous_accuracy": 0.84
+      }
+    },
+    {
+      "question_id": "public_health_029",
+      "asi_score": 0.045,
+      "asi_components": {
+        "asi": 0.045,
+        "confidence_sensitivity": 0.016,
+        "accuracy_sensitivity": 0.073,
+        "clear_confidence": 0.036,
+        "ambiguous_confidence": 0.052,
+        "clear_accuracy": 0.171,
+        "ambiguous_accuracy": 0.244
+      }
+    },
+    {
+      "question_id": "public_health_030",
+      "asi_score": 0.438,
+      "asi_components": {
+        "asi": 0.438,
+        "confidence_sensitivity": 0.585,
+        "accuracy_sensitivity": 0.29,
+        "clear_confidence": 0.036,
+        "ambiguous_confidence": 0.62,
+        "clear_accuracy": 0.355,
+        "ambiguous_accuracy": 0.065
+      }
+    },
+    {
+      "question_id": "public_health_031",
+      "asi_score": 0.071,
+      "asi_components": {
+        "asi": 0.071,
+        "confidence_sensitivity": 0.091,
+        "accuracy_sensitivity": 0.05,
+        "clear_confidence": 0.567,
+        "ambiguous_confidence": 0.659,
+        "clear_accuracy": 0.15,
+        "ambiguous_accuracy": 0.2
+      }
+    },
+    {
+      "question_id": "public_health_032",
+      "asi_score": 0.179,
+      "asi_components": {
+        "asi": 0.179,
+        "confidence_sensitivity": 0.332,
+        "accuracy_sensitivity": 0.026,
+        "clear_confidence": 0.29,
+        "ambiguous_confidence": 0.622,
+        "clear_accuracy": 0.289,
+        "ambiguous_accuracy": 0.263
+      }
+    },
+    {
+      "question_id": "public_health_033",
+      "asi_score": 0.008,
+      "asi_components": {
+        "asi": 0.008,
+        "confidence_sensitivity": 0.0,
+        "accuracy_sensitivity": 0.015,
+        "clear_confidence": 0.036,
+        "ambiguous_confidence": 0.036,
+        "clear_accuracy": 0.277,
+        "ambiguous_accuracy": 0.262
+      }
+    },
+    {
+      "question_id": "public_health_034",
+      "asi_score": 0.034,
+      "asi_components": {
+        "asi": 0.034,
+        "confidence_sensitivity": 0.0,
+        "accuracy_sensitivity": 0.068,
+        "clear_confidence": 0.036,
+        "ambiguous_confidence": 0.036,
+        "clear_accuracy": 0.182,
+        "ambiguous_accuracy": 0.25
+      }
+    },
+    {
+      "question_id": "public_health_035",
+      "asi_score": 0.144,
+      "asi_components": {
+        "asi": 0.144,
+        "confidence_sensitivity": 0.288,
+        "accuracy_sensitivity": 0.0,
+        "clear_confidence": 0.324,
+        "ambiguous_confidence": 0.036,
+        "clear_accuracy": 0.2,
+        "ambiguous_accuracy": 0.2
+      }
+    },
+    {
+      "question_id": "public_health_036",
+      "asi_score": 0.068,
+      "asi_components": {
+        "asi": 0.068,
+        "confidence_sensitivity": 0.107,
+        "accuracy_sensitivity": 0.029,
+        "clear_confidence": 0.143,
+        "ambiguous_confidence": 0.036,
+        "clear_accuracy": 0.257,
+        "ambiguous_accuracy": 0.229
+      }
+    },
+    {
+      "question_id": "public_health_037",
+      "asi_score": 0.192,
+      "asi_components": {
+        "asi": 0.192,
+        "confidence_sensitivity": 0.367,
+        "accuracy_sensitivity": 0.017,
+        "clear_confidence": 0.036,
+        "ambiguous_confidence": 0.403,
+        "clear_accuracy": 0.186,
+        "ambiguous_accuracy": 0.203
+      }
+    },
+    {
+      "question_id": "public_health_038",
+      "asi_score": 0.208,
+      "asi_components": {
+        "asi": 0.208,
+        "confidence_sensitivity": 0.329,
+        "accuracy_sensitivity": 0.087,
+        "clear_confidence": 0.47,
+        "ambiguous_confidence": 0.142,
+        "clear_accuracy": 0.348,
+        "ambiguous_accuracy": 0.261
+      }
+    },
+    {
+      "question_id": "public_health_039",
+      "asi_score": 0.045,
+      "asi_components": {
+        "asi": 0.045,
+        "confidence_sensitivity": 0.09,
+        "accuracy_sensitivity": 0.0,
+        "clear_confidence": 0.145,
+        "ambiguous_confidence": 0.055,
+        "clear_accuracy": 0.229,
+        "ambiguous_accuracy": 0.229
+      }
+    },
+    {
+      "question_id": "public_health_040",
+      "asi_score": 0.017,
+      "asi_components": {
+        "asi": 0.017,
+        "confidence_sensitivity": 0.015,
+        "accuracy_sensitivity": 0.019,
+        "clear_confidence": 0.036,
+        "ambiguous_confidence": 0.051,
+        "clear_accuracy": 0.278,
+        "ambiguous_accuracy": 0.259
+      }
+    },
+    {
+      "question_id": "public_health_041",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "accuracy_sensitivity": 0.0,
+        "clear_confidence": 0.036,
+        "ambiguous_confidence": 0.036,
+        "clear_accuracy": 0.28,
+        "ambiguous_accuracy": 0.28
+      }
+    },
+    {
+      "question_id": "public_health_042",
+      "asi_score": 0.199,
+      "asi_components": {
+        "asi": 0.199,
+        "confidence_sensitivity": 0.368,
+        "accuracy_sensitivity": 0.031,
+        "clear_confidence": 0.207,
+        "ambiguous_confidence": 0.575,
+        "clear_accuracy": 0.312,
+        "ambiguous_accuracy": 0.281
+      }
+    },
+    {
+      "question_id": "public_health_043",
+      "asi_score": 0.125,
+      "asi_components": {
+        "asi": 0.125,
+        "confidence_sensitivity": 0.25,
+        "accuracy_sensitivity": 0.0,
+        "clear_confidence": 0.479,
+        "ambiguous_confidence": 0.23,
+        "clear_accuracy": 0.115,
+        "ambiguous_accuracy": 0.115
+      }
+    },
+    {
+      "question_id": "public_health_044",
+      "asi_score": 0.176,
+      "asi_components": {
+        "asi": 0.176,
+        "confidence_sensitivity": 0.299,
+        "accuracy_sensitivity": 0.053,
+        "clear_confidence": 0.498,
+        "ambiguous_confidence": 0.2,
+        "clear_accuracy": 0.421,
+        "ambiguous_accuracy": 0.368
+      }
+    },
+    {
+      "question_id": "public_health_045",
+      "asi_score": 0.055,
+      "asi_components": {
+        "asi": 0.055,
+        "confidence_sensitivity": 0.109,
+        "accuracy_sensitivity": 0.0,
+        "clear_confidence": 0.44,
+        "ambiguous_confidence": 0.549,
+        "clear_accuracy": 0.269,
+        "ambiguous_accuracy": 0.269
+      }
+    },
+    {
+      "question_id": "public_health_046",
+      "asi_score": 0.122,
+      "asi_components": {
+        "asi": 0.122,
+        "confidence_sensitivity": 0.244,
+        "accuracy_sensitivity": 0.0,
+        "clear_confidence": 0.353,
+        "ambiguous_confidence": 0.108,
+        "clear_accuracy": 0.288,
+        "ambiguous_accuracy": 0.288
+      }
+    },
+    {
+      "question_id": "public_health_047",
+      "asi_score": 0.241,
+      "asi_components": {
+        "asi": 0.241,
+        "confidence_sensitivity": 0.341,
+        "accuracy_sensitivity": 0.141,
+        "clear_confidence": 0.188,
+        "ambiguous_confidence": 0.528,
+        "clear_accuracy": 0.611,
+        "ambiguous_accuracy": 0.471
+      }
+    },
+    {
+      "question_id": "public_health_048",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "accuracy_sensitivity": 0.0,
+        "clear_confidence": 0.036,
+        "ambiguous_confidence": 0.036,
+        "clear_accuracy": 0.28,
+        "ambiguous_accuracy": 0.28
+      }
+    },
+    {
+      "question_id": "public_health_049",
+      "asi_score": 0.143,
+      "asi_components": {
+        "asi": 0.143,
+        "confidence_sensitivity": 0.191,
+        "accuracy_sensitivity": 0.095,
+        "clear_confidence": 0.363,
+        "ambiguous_confidence": 0.172,
+        "clear_accuracy": 0.31,
+        "ambiguous_accuracy": 0.214
+      }
+    },
+    {
+      "question_id": "public_health_020",
+      "asi_score": 0.102,
+      "asi_components": {
+        "asi": 0.102,
+        "confidence_sensitivity": 0.204,
+        "accuracy_sensitivity": 0.0,
+        "clear_confidence": 0.352,
+        "ambiguous_confidence": 0.148,
+        "clear_accuracy": 0.171,
+        "ambiguous_accuracy": 0.171
+      }
+    }
+  ],
+  "summary_results": {
+    "clear_results": [
+      {
+        "entry_id": "public_health_000",
+        "question": "How do regulatory measures impact the management of hazardous substances in public health?",
+        "model_answer": "Regulatory measures likely enhance the management of hazardous substances in public health by ensuring safety and reducing risks.",
+        "model_explanation": "OSHA's Hazard Communication Standard mandates hazard information dissemination and training (Source 1). The EU's RoHS Directive restricts hazardous su...",
+        "gold_answer": "Regulatory measures provide guidelines and standards that ensure the safe handling, exposure limits, and management of hazardous substances to protect public health. These regulations often require regular monitoring, reporting, and compliance with safety protocols to minimize health risks associated with exposure to toxic materials.",
+        "confidence": 0.186,
+        "accuracy": 0.289,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.78
+      },
+      {
+        "entry_id": "public_health_001",
+        "question": "How can managing cholesterol levels impact the risk of cardiovascular complications in individuals w...",
+        "model_answer": "Managing cholesterol levels can likely reduce the risk of cardiovascular complications in individuals with diabetes.",
+        "model_explanation": "Source 2 suggests that managing total cholesterol (TC) levels is important for lowering cardiovascular disease (CVD) risk in type 2 diabetes patients....",
+        "gold_answer": "Managing cholesterol levels can significantly reduce the risk of cardiovascular complications in individuals with diabetes by preventing the build-up of plaque in the arteries, which can lead to heart attacks and strokes.",
+        "confidence": 0.085,
+        "accuracy": 0.481,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.786
+      },
+      {
+        "entry_id": "public_health_002",
+        "question": "Is the concept of a threshold level of exposure for toxic chemicals universally accepted in public h...",
+        "model_answer": "The concept of a threshold level of exposure for toxic chemicals is not universally accepted in public health risk assessments.",
+        "model_explanation": "Source 5 discusses the threshold dose concept, suggesting its foundational role in safety determinations. However, Source 1 and Source 2 highlight ong...",
+        "gold_answer": "No, the concept of a threshold for exposure is debated; some experts argue that even low levels of exposure can have cumulative adverse effects over time, especially for vulnerable populations.",
+        "confidence": 0.212,
+        "accuracy": 0.296,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.825
+      },
+      {
+        "entry_id": "public_health_003",
+        "question": "How does the eligibility for premium-free Medicare Part A differ between individuals who work for mo...",
+        "model_answer": "Eligibility for premium-free Medicare Part A generally requires individuals or their spouses to have paid Medicare taxes while working, but specific details for government employees are not provided.",
+        "model_explanation": "The sources mention eligibility for premium-free Part A based on work history and Medicare taxes but do not specify differences for government employe...",
+        "gold_answer": "Most individuals earn quarters of coverage (QCs) through the full payment of FICA taxes, which count towards both monthly Social Security benefits and premium-free Medicare Part A. However, certain government employees only pay the Part A portion of FICA taxes, so their QCs can only be used to meet the requirements for premium-free Medicare Part A, not for monthly Social Security benefits.",
+        "confidence": 0.251,
+        "accuracy": 0.234,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.759
+      },
+      {
+        "entry_id": "public_health_004",
+        "question": "How might interdisciplinary knowledge enhance the effectiveness of a health education specialist in ...",
+        "model_answer": "Interdisciplinary knowledge likely enhances a health education specialist's effectiveness in addressing obesity-related issues by integrating diverse skills and perspectives.",
+        "model_explanation": "Source 2 highlights the importance of understanding psycho-social aspects and epidemiology, which are crucial for addressing obesity. Source 3 emphasi...",
+        "gold_answer": "Interdisciplinary knowledge allows health education specialists to understand and address the multifaceted factors contributing to obesity, such as mental health and genetics, enabling them to develop more comprehensive and effective health promotion strategies.",
+        "confidence": 0.036,
+        "accuracy": 0.185,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.745
+      },
+      {
+        "entry_id": "public_health_005",
+        "question": "What was a major societal influence that led to the establishment of a publicly accessible database ...",
+        "model_answer": "The establishment of a publicly accessible database of clinical trials in the United States was likely influenced by the need for transparency and ethical oversight in clinical research.",
+        "model_explanation": "Source 4 highlights the importance of ethical principles and oversight in clinical trials, which suggests a societal push for transparency and account...",
+        "gold_answer": "Advocacy from HIV-infected individuals in the gay community significantly influenced the establishment of a publicly accessible database of clinical trials, as they demanded better access to clinical trials.",
+        "confidence": 0.305,
+        "accuracy": 0.4,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.713
+      },
+      {
+        "entry_id": "public_health_006",
+        "question": "Why is the fortification of cereal grains with folic acid considered a significant public health int...",
+        "model_answer": "The fortification of cereal grains with folic acid is significant due to its cost-effectiveness in reducing micronutrient deficiencies and preventing birth defects.",
+        "model_explanation": "Source 2 highlights the low cost and high cost-benefit ratio of folic acid fortification, which prevents neural tube defects (NTDs) and saves healthca...",
+        "gold_answer": "The fortification of cereal grains with folic acid is considered a significant public health intervention because it helps reduce the occurrence of neural tube defects (NTDs) in newborns, addressing a critical health need by ensuring that more women of childbearing age receive adequate folic acid, which is essential for fetal development.",
+        "confidence": 0.411,
+        "accuracy": 0.25,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.737
+      },
+      {
+        "entry_id": "public_health_007",
+        "question": "Why might measles outbreaks occur in a country where the disease has been officially eliminated?",
+        "model_answer": "Measles outbreaks might occur in a country where the disease has been officially eliminated due to low immunization rates and vaccine hesitancy.",
+        "model_explanation": "Source 3 highlights that areas with low immunization allow the virus to circulate, increasing outbreak likelihood. Source 5 notes that vaccine hesitan...",
+        "gold_answer": "Measles outbreaks can occur in a country where the disease has been officially eliminated due to its reintroduction by unvaccinated travelers and subsequent spread in under-immunized communities.",
+        "confidence": 0.571,
+        "accuracy": 0.615,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.865
+      },
+      {
+        "entry_id": "public_health_008",
+        "question": "Can an adult born before 1957 be considered immune to measles, mumps, and rubella without vaccinatio...",
+        "model_answer": "An adult born before 1957 is likely considered immune to measles, mumps, and rubella without vaccination.",
+        "model_explanation": "Source 1 suggests that those born before 1957 likely had measles and developed lifelong immunity. However, the sources do not explicitly mention mumps...",
+        "gold_answer": "Yes, an adult born before 1957 can be considered immune to measles, mumps, and rubella without vaccination because it is presumed they were exposed to and developed natural immunity due to the prevalence of these diseases before the introduction of widespread vaccination programs.",
+        "confidence": 0.643,
+        "accuracy": 0.389,
+        "is_uncertain": 0,
+        "set_type": "clear",
+        "faithfulness": 0.902
+      },
+      {
+        "entry_id": "public_health_009",
+        "question": "How does the source of dietary sodium primarily differ from common perceptions about its origin?",
+        "model_answer": "Most dietary sodium comes from processed and restaurant foods, not just table salt.",
+        "model_explanation": "Source 4 indicates that the primary source of sodium is processed and restaurant foods, which contrasts with the common perception that table salt is ...",
+        "gold_answer": "While many people think most dietary sodium comes from table salt added during cooking or eating, the majority actually comes from packaged and prepared foods.",
+        "confidence": 0.434,
+        "accuracy": 0.304,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.881
+      },
+      {
+        "entry_id": "public_health_010",
+        "question": "How does the US Preventive Services Task Force incorporate health equity into its preventive service...",
+        "model_answer": "The sources do not provide enough information to confidently answer how the USPSTF incorporates health equity into its recommendations.",
+        "model_explanation": "The sources focus on mammography guidelines and changes over time but do not explicitly address health equity considerations. While Source 1 mentions ...",
+        "gold_answer": "The US Preventive Services Task Force incorporates health equity into its recommendations by increasingly considering health equity in its prioritization process, addressing conditions with limited data for disproportionately affected population groups, developing a health equity framework, and conducting pilot studies to understand the relationships between social constructs such as race, ethnicity, and gender with health outcomes.",
+        "confidence": 0.288,
+        "accuracy": 0.149,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.684
+      },
+      {
+        "entry_id": "public_health_011",
+        "question": "Can the presence of different symptom clusters in depression affect the cardiovascular and suicide r...",
+        "model_answer": "The sources do not provide enough information to confidently determine if different symptom clusters in depression affect cardiovascular and suicide risk profiles.",
+        "model_explanation": "Source 2 discusses the link between depression and cardiovascular disease, noting increased risk and poor prognosis, but does not specify symptom clus...",
+        "gold_answer": "Yes, patients with moderate depression exhibiting somatic symptoms may face higher cardiovascular risks due to altered autonomic modulation, while those with severe depression showing non-somatic symptoms may have a higher risk of suicide.",
+        "confidence": 0.294,
+        "accuracy": 0.143,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.358
+      },
+      {
+        "entry_id": "public_health_012",
+        "question": "What is considered the first-line treatment for anaphylaxis in emergency management protocols?",
+        "model_answer": "The first-line treatment for anaphylaxis in emergency management protocols is intramuscular epinephrine.",
+        "model_explanation": "Source 1 and Source 2 both emphasize that epinephrine is the recommended treatment of choice for anaphylaxis. Source 3 also supports this by stating t...",
+        "gold_answer": "Epinephrine is considered the first-line treatment for anaphylaxis.",
+        "confidence": 0.47,
+        "accuracy": 0.417,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.815
+      },
+      {
+        "entry_id": "public_health_013",
+        "question": "How can maternal health and nutritional status prior to conception influence the long-term health ou...",
+        "model_answer": "Maternal health and nutritional status prior to conception likely influence long-term child health outcomes through gestational weight gain (GWG).",
+        "model_explanation": "The sources suggest that maternal nutrition and GWG are linked to both short- and long-term health outcomes for the child. However, specific mechanism...",
+        "gold_answer": "Maternal health and nutritional status prior to conception can influence the long-term health outcomes of a child by shaping the intrauterine environment, which affects fetal development and has potential epigenetic impacts. This environment, influenced by maternal weight, diet, and physical activity, can predispose the child to risks such as obesity and diabetes later in life.",
+        "confidence": 0.036,
+        "accuracy": 0.279,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.886
+      },
+      {
+        "entry_id": "public_health_014",
+        "question": "How does the age at which colorectal cancer screening begins impact its effectiveness in reducing mo...",
+        "model_answer": "The effectiveness of colorectal cancer screening in reducing mortality rates likely improves when screening begins at age 45 instead of 50.",
+        "model_explanation": "Source 2 suggests that starting screening at age 45 is cost-effective and has national benefits, while Source 5 notes rising colorectal cancer rates i...",
+        "gold_answer": "Starting colorectal cancer screening earlier, particularly at age 45 instead of later ages, can significantly improve its effectiveness by detecting cancer at an earlier, more treatable stage, thus reducing mortality rates.",
+        "confidence": 0.059,
+        "accuracy": 0.393,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.789
+      },
+      {
+        "entry_id": "public_health_015",
+        "question": "How does the CDC's updated isolation guidance for COVID-19 align with general practices for handling...",
+        "model_answer": "The CDC's updated isolation guidance for COVID-19 aligns with general practices for handling common respiratory infections by focusing on symptom improvement and fever resolution.",
+        "model_explanation": "The guidance suggests ending isolation 24 hours after symptoms improve and fever subsides without medication, similar to practices for other respirato...",
+        "gold_answer": "The CDC's updated isolation guidance aligns with general practices for handling common respiratory infections by recommending that individuals stay home and away from others if they have symptoms not explained by another cause, resuming normal activities only after symptoms improve and being fever-free for 24 hours, and taking extra precautions for five days after resuming activities.",
+        "confidence": 0.412,
+        "accuracy": 0.333,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.724
+      },
+      {
+        "entry_id": "public_health_016",
+        "question": "How does the gender disparity in the prevalence of depressive disorders potentially impact the appro...",
+        "model_answer": "The gender disparity in depressive disorders likely necessitates tailored public health strategies.",
+        "model_explanation": "Source 3 suggests that societal pressures, economic inequality, and body dissatisfaction contribute to higher depression rates in females. Public heal...",
+        "gold_answer": "The higher prevalence of depressive disorders in females compared to males suggests that public health strategies should consider gender-specific factors in mental health interventions, potentially focusing more resources on women-centric mental health services and research to address unique risk factors and treatment needs.",
+        "confidence": 0.227,
+        "accuracy": 0.167,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.725
+      },
+      {
+        "entry_id": "public_health_017",
+        "question": "How do the recommended exposure limits for occupational noise by NIOSH differ in application from ge...",
+        "model_answer": "The NIOSH exposure limits focus on occupational settings, while general environmental guidelines address broader public exposure.",
+        "model_explanation": "NIOSH's 85 dBA limit is for workplace noise over an 8-hour shift to prevent hearing loss in workers. Environmental guidelines, like the EPA's 70 dB(A)...",
+        "gold_answer": "NIOSH's recommended exposure limits specifically cater to occupational settings and are based on an 8-hour time-weighted average, assuming quieter conditions outside work hours. These limits are not intended for general environmental noise conditions, which can vary in duration and intensity beyond the structured workday framework.",
+        "confidence": 0.036,
+        "accuracy": 0.167,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.824
+      },
+      {
+        "entry_id": "public_health_018",
+        "question": "How does the return policy for vaccines differ between age groups, and what might the implications b...",
+        "model_answer": "The sources do not provide specific information on how the return policy for vaccines differs between age groups.",
+        "model_explanation": "The provided sources focus on vaccine storage conditions, immune responses, and organizational recommendations but do not address return policies or a...",
+        "gold_answer": "The return policy for vaccines differs between age groups, as Pfizer offers a 100% return policy for the Pfizer-BioNTech COVID-19 Vaccine for individuals aged 6 months through 11 years, while for the COMIRNATY Vaccine for individuals 12 years and older, customers can return up to 30% of their purchases. This difference in return policy could impact how public health organizations manage their vaccine inventory, allowing more flexibility and reduced financial risk for vaccines intended for younger populations, and potentially requiring more precise demand forecasting and inventory management for older age groups.",
+        "confidence": 0.26,
+        "accuracy": 0.149,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.338
+      },
+      {
+        "entry_id": "public_health_019",
+        "question": "How does the expansion of Medicaid under the Affordable Care Act aim to improve public health outcom...",
+        "model_answer": "The expansion of Medicaid under the Affordable Care Act likely aims to improve public health outcomes for low-income adults by addressing gaps in safety net coverage and increasing access to preventive and primary care services.",
+        "model_explanation": "Source 1 suggests that Medicaid expansion will improve self-reported health and increase the use of preventive and primary care services, which can en...",
+        "gold_answer": "The expansion of Medicaid aims to improve public health outcomes for low-income adults by providing them with access to essential health services, reducing the financial barriers to care, and potentially decreasing the rates of untreated health conditions and related complications.",
+        "confidence": 0.353,
+        "accuracy": 0.5,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.881
+      },
+      {
+        "entry_id": "public_health_021",
+        "question": "How do the new hypertension guidelines by ACC/AHA differ in their approach to treating stage 1 hyper...",
+        "model_answer": "The sources do not provide specific details on the differences in treating stage 1 hypertension in high-risk versus non-high-risk individuals according to the new ACC/AHA guidelines.",
+        "model_explanation": "The provided sources discuss various aspects of hypertension management and guidelines but do not specifically address the treatment approach differen...",
+        "gold_answer": "The new ACC/AHA hypertension guidelines recommend that high-risk individuals, which include those aged 65 and older, with diabetes, chronic kidney disease, or known cardiovascular disease, initiate drug therapy when blood pressure is \u2265130/80 mm Hg. In contrast, non-high-risk individuals are advised to start drug therapy when blood pressure is \u2265140/90 mm Hg.",
+        "confidence": 0.549,
+        "accuracy": 0.209,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.718
+      },
+      {
+        "entry_id": "public_health_022",
+        "question": "How does vitamin D influence bone health, and what are the potential consequences of its deficiency?",
+        "model_answer": "Vitamin D is crucial for bone health by aiding calcium absorption; deficiency can lead to bone deformities and pain.",
+        "model_explanation": "Vitamin D helps the body absorb dietary calcium, essential for bone health (Source 1). Deficiency can cause bone deformities in children and bone pain...",
+        "gold_answer": "Vitamin D promotes calcium absorption in the gut and maintains adequate serum calcium and phosphate concentrations, essential for bone mineralization. Its deficiency can lead to thin, brittle, or misshapen bones, causing conditions such as rickets in children and osteomalacia in adults. Additionally, together with calcium, it helps protect older adults from osteoporosis.",
+        "confidence": 0.656,
+        "accuracy": 0.213,
+        "is_uncertain": 0,
+        "set_type": "clear",
+        "faithfulness": 0.912
+      },
+      {
+        "entry_id": "public_health_023",
+        "question": "How do core competencies contribute to meeting national accreditation standards in public health org...",
+        "model_answer": "Core competencies likely contribute to meeting national accreditation standards by aligning educational programs with employer needs and ethical practices.",
+        "model_explanation": "The competencies required for public health programs are established by the Council on Education in Public Health (CEPH) and align with employer needs...",
+        "gold_answer": "Core competencies provide a structured framework that public health organizations can use to develop the workforce's skills and knowledge, ensuring they meet the necessary qualifications and capabilities required by national accreditation standards. This involves defining job roles, creating effective training programs, and assessing organizational and individual performance to align with accreditation criteria.",
+        "confidence": 0.098,
+        "accuracy": 0.174,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.733
+      },
+      {
+        "entry_id": "public_health_024",
+        "question": "How did the Nuremberg Code influence the establishment of ethical guidelines in human research?",
+        "model_answer": "The Nuremberg Code likely influenced the establishment of ethical guidelines by highlighting the need for regulatory safeguards in human research.",
+        "model_explanation": "Source 4 mentions that egregious human experimentation, such as that by Nazis during WWII, led to the creation of ethical safeguards, implying the Nur...",
+        "gold_answer": "The Nuremberg Code laid the foundation for international ethical guidelines by emphasizing voluntary consent, the necessity of societal benefit, and reliance on prior research, which influenced the development of institutional review boards and ethical standards in human research.",
+        "confidence": 0.178,
+        "accuracy": 0.375,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.746
+      },
+      {
+        "entry_id": "public_health_025",
+        "question": "Why was the standard for arsenic in drinking water reduced from 50 parts per billion to 10 parts per...",
+        "model_answer": "The standard for arsenic in drinking water was reduced to 10 parts per billion primarily based on dose-response models and a cancer study of a Taiwanese population.",
+        "model_explanation": "This decision followed a review by the EPA's Science Advisory Board and public comments, as noted in Source 4. The reduction aimed to incorporate rece...",
+        "gold_answer": "The standard for arsenic in drinking water was reduced to lower the risk of adverse health effects associated with arsenic exposure, as arsenic is known to have significant health impacts, including an increased risk of cancer.",
+        "confidence": 0.47,
+        "accuracy": 0.379,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.883
+      },
+      {
+        "entry_id": "public_health_026",
+        "question": "How can national parks contribute to public health, particularly in urban areas?",
+        "model_answer": "National parks can enhance public health in urban areas by improving physical, mental, and social well-being.",
+        "model_explanation": "National parks offer natural landscapes and recreational facilities that promote physical activity and relaxation (Source 1, 5). Access to green space...",
+        "gold_answer": "National parks can enhance public health in urban areas by providing green spaces for physical activities, reducing stress, improving air quality, and offering educational programs that promote healthy lifestyles.",
+        "confidence": 0.105,
+        "accuracy": 0.414,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.902
+      },
+      {
+        "entry_id": "public_health_027",
+        "question": "How might the timing of activated charcoal administration affect its efficacy in treating acute toxi...",
+        "model_answer": "The timing of activated charcoal administration likely affects its efficacy, with recommendations suggesting it be given within one hour of ingestion.",
+        "model_explanation": "Source 4 indicates that the American Academy of Clinical Toxicology and other organizations recommend administering activated charcoal within one hour...",
+        "gold_answer": "The efficacy of activated charcoal in treating acute toxic ingestions is generally higher when administered within one hour of ingestion, as it can more effectively adsorb the toxin before it is absorbed into the bloodstream.",
+        "confidence": 0.221,
+        "accuracy": 0.267,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.77
+      },
+      {
+        "entry_id": "public_health_028",
+        "question": "At what age is it generally recommended to stop routine cervical cancer screening for women who have...",
+        "model_answer": "Women are generally recommended to stop routine cervical cancer screening at age 65 if they have had adequate prior screening and are not at high risk.",
+        "model_explanation": "This recommendation is based on Source 2, which states that the USPSTF advises against routine screening for women older than 65 under these condition...",
+        "gold_answer": "It is generally recommended to stop routine cervical cancer screening at age 65 for women who have had adequate prior screening and are not at high risk.",
+        "confidence": 0.824,
+        "accuracy": 0.84,
+        "is_uncertain": 0,
+        "set_type": "clear",
+        "faithfulness": 0.9
+      },
+      {
+        "entry_id": "public_health_029",
+        "question": "How does the mechanism of action for fluoxetine influence its effectiveness in treating psychologica...",
+        "model_answer": "Fluoxetine's mechanism of action likely influences its effectiveness by inhibiting serotonin transporters and possibly inflammatory cytokines.",
+        "model_explanation": "Fluoxetine is effective in treating various psychological disorders, including depression and anxiety, due to its ability to modulate serotonin levels...",
+        "gold_answer": "Fluoxetine's mechanism of action involves the inhibition of serotonin reuptake in presynaptic neurons by blocking the reuptake transporter protein. This increases the availability of serotonin in the synaptic cleft, which enhances mood and has been shown to be effective in treating psychological disorders such as major depressive disorder, obsessive-compulsive disorder, and others.",
+        "confidence": 0.036,
+        "accuracy": 0.171,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.78
+      },
+      {
+        "entry_id": "public_health_030",
+        "question": "Can insulin resistance alone be the primary cause of hyperglycemia in diabetes, or must it always be...",
+        "model_answer": "Insulin resistance alone can possibly cause hyperglycemia, but it is often accompanied by impaired insulin secretion.",
+        "model_explanation": "Source 3 mentions genetic defects in insulin action leading to hyperglycemia, suggesting insulin resistance can contribute to high blood sugar. Howeve...",
+        "gold_answer": "Insulin resistance alone can lead to hyperglycemia, but it often coexists with impaired insulin secretion in diabetes. Both factors can contribute to hyperglycemia, and it can be challenging to determine which is the primary cause in a given individual.",
+        "confidence": 0.036,
+        "accuracy": 0.355,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.802
+      },
+      {
+        "entry_id": "public_health_031",
+        "question": "At what age is it generally recommended to introduce solid foods to a child's diet, and what develop...",
+        "model_answer": "Solid foods are generally recommended to be introduced around 4 to 6 months of age.",
+        "model_explanation": "The American Academy of Pediatrics suggests starting at this age range, while other sources emphasize not introducing solids before 4 months and not d...",
+        "gold_answer": "It is generally recommended to introduce solid foods to a child's diet at about 6 months of age. Developmental signs indicating readiness for this transition include the ability to sit up alone or with support, control of the head and neck, opening the mouth when food is offered, swallowing food rather than pushing it back out, bringing objects to the mouth, trying to grasp small objects, and transferring food from the front to the back of the tongue to swallow.",
+        "confidence": 0.567,
+        "accuracy": 0.15,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.916
+      },
+      {
+        "entry_id": "public_health_032",
+        "question": "Are children more susceptible to higher dietary acrylamide intake compared to adults, and why might ...",
+        "model_answer": "Yes, children are more susceptible to higher dietary acrylamide intake compared to adults.",
+        "model_explanation": "Children's higher exposure is due to their lower body weight and the significant proportion of acrylamide-rich foods in their diet (Source 1). This is...",
+        "gold_answer": "Yes, children are more susceptible to higher dietary acrylamide intake compared to adults because their body-weight-adjusted intake is up to three times higher. This is a public health concern because acrylamide is classified as a 'probable human carcinogen', increasing the risk of cancer with higher exposure levels.",
+        "confidence": 0.29,
+        "accuracy": 0.289,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.814
+      },
+      {
+        "entry_id": "public_health_033",
+        "question": "How might the development and implementation of evidence-based treatment-decision algorithms impact ...",
+        "model_answer": "The development of evidence-based treatment-decision algorithms might improve the diagnosis of pulmonary TB in children by integrating multiple diagnostic methods, potentially increasing accuracy compared to traditional microbiological standards.",
+        "model_explanation": "Traditional methods like culture are limited in sensitivity, especially in children. Algorithms incorporating molecular tests and immunological assess...",
+        "gold_answer": "Developing and implementing evidence-based treatment-decision algorithms can potentially improve the diagnosis of pulmonary TB in children by providing a systematic and standardized approach that takes into account various clinical factors and local conditions. This approach may lead to more accurate and timely diagnoses, especially in settings with limited access to advanced diagnostic tests, compared to relying solely on traditional microbiological reference standards, which may not be as adaptable to different environments or resource constraints.",
+        "confidence": 0.036,
+        "accuracy": 0.277,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.724
+      },
+      {
+        "entry_id": "public_health_034",
+        "question": "How do different organizations' definitions of health education emphasize various aspects of public ...",
+        "model_answer": "Different organizations' definitions of health education emphasize various aspects like evidence-based strategies, individual voluntarism, and broad public health integration.",
+        "model_explanation": "The WHO emphasizes evidence-based strategies and core competencies (Source 1), while another source highlights individual voluntarism and critiques of...",
+        "gold_answer": "Different organizations' definitions of health education highlight varying aspects such as behavior change, knowledge improvement, skill development, and health literacy. For instance, the National Conference on Preventive Medicine emphasizes motivating behavior change and facilitating environmental changes, while the WHO focuses on improving health literacy and developing life skills that support health.",
+        "confidence": 0.036,
+        "accuracy": 0.182,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.753
+      },
+      {
+        "entry_id": "public_health_035",
+        "question": "Why is it important to differentiate between added sugars and naturally occurring sugars in the cont...",
+        "model_answer": "Differentiating between added and naturally occurring sugars is important due to their differing health impacts.",
+        "model_explanation": "Added sugars, often found in sugary beverages and processed foods, are linked to weight gain and increased risk of type 2 diabetes and cardiovascular ...",
+        "gold_answer": "Differentiating between added sugars and naturally occurring sugars is important because added sugars contribute additional calories without essential nutrients, making it harder to meet nutrient needs within calorie limits. In contrast, naturally occurring sugars are found in nutrient-rich foods like fruits and milk, which provide essential vitamins and minerals. Dietary recommendations focus on limiting added sugars to reduce the risk of health issues such as obesity and heart disease.",
+        "confidence": 0.324,
+        "accuracy": 0.2,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.776
+      },
+      {
+        "entry_id": "public_health_036",
+        "question": "How have regulatory changes influenced the operational standards of hospitals and Critical Access Ho...",
+        "model_answer": "Regulatory changes have likely influenced hospital and Critical Access Hospital standards by establishing health and safety standards through Conditions of Participation (CoPs) and Conditions for Coverage (CfCs).",
+        "model_explanation": "These standards, developed by CMS, are essential for Medicare and Medicaid participation, aiming to improve quality and safety. However, specific hist...",
+        "gold_answer": "Regulatory changes have progressively refined the operational standards of hospitals and Critical Access Hospitals by implementing new rules and amendments to ensure quality assessment, performance improvement, patient rights, and telemedicine credentialing, which help maintain high levels of patient care and safety.",
+        "confidence": 0.143,
+        "accuracy": 0.257,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.887
+      },
+      {
+        "entry_id": "public_health_037",
+        "question": "Why is it important to conduct clinical research in phases when developing new medical treatments?",
+        "model_answer": "Conducting clinical research in phases is important for safety, efficacy, and data integrity.",
+        "model_explanation": "Phases allow researchers to gather information systematically, evaluate risks and benefits, and ensure ethical standards. Each phase has specific goal...",
+        "gold_answer": "Conducting clinical research in phases is important because it allows researchers to systematically assess the safety, efficacy, and dosage of a new medical treatment. Each phase builds on the results of the previous one, starting with small groups to evaluate safety, then expanding to larger groups to assess effectiveness and monitor side effects, which ensures that any potential risks are identified and managed before the treatment is widely approved for public use.",
+        "confidence": 0.036,
+        "accuracy": 0.186,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.895
+      },
+      {
+        "entry_id": "public_health_038",
+        "question": "Why are certain vaccines contraindicated or not recommended during pregnancy?",
+        "model_answer": "Certain vaccines are contraindicated during pregnancy because they contain live viruses that might pose a risk to the developing baby.",
+        "model_explanation": "Live attenuated vaccines, such as MMR, chickenpox, and certain travel vaccines, could potentially cause infection in the baby. Therefore, they are gen...",
+        "gold_answer": "Certain vaccines, such as live attenuated vaccines, are contraindicated or not recommended during pregnancy because they may pose a risk to the developing fetus. Live vaccines contain a weakened form of the virus, which theoretically could cause harm if the virus crosses the placenta. Therefore, inactivated vaccines or those with a known safety profile during pregnancy are preferred.",
+        "confidence": 0.47,
+        "accuracy": 0.348,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.909
+      },
+      {
+        "entry_id": "public_health_039",
+        "question": "Can lifestyle changes, such as smoking cessation, significantly alter the progression of chronic res...",
+        "model_answer": "Lifestyle changes, such as smoking cessation, can likely alter the progression of COPD.",
+        "model_explanation": "Source 5 suggests that smoking cessation, along with other management strategies, can improve symptoms and functional capacity in COPD patients. Howev...",
+        "gold_answer": "Yes, smoking cessation is one of the most effective lifestyle changes for slowing the progression of chronic respiratory diseases such as COPD, as it reduces further damage to the lungs and can improve respiratory symptoms and overall lung function over time.",
+        "confidence": 0.145,
+        "accuracy": 0.229,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.723
+      },
+      {
+        "entry_id": "public_health_040",
+        "question": "How does the concept of an identifiable exposure threshold impact the assessment of systemic toxicit...",
+        "model_answer": "The concept of an identifiable exposure threshold likely impacts systemic toxicity assessment by guiding regulatory limits to prevent adverse health effects.",
+        "model_explanation": "Source 1 discusses the use of reference doses (RfD) to estimate safe exposure levels, while Source 4 highlights the challenge of setting thresholds fo...",
+        "gold_answer": "The concept of an identifiable exposure threshold impacts the assessment of systemic toxicity in public health risk management by providing a basis to establish safe exposure limits. It assumes that there is a level of exposure below which no adverse effects are observed, allowing risk managers to determine acceptable levels for chemicals in the environment and ensure they do not pose harm to human health.",
+        "confidence": 0.036,
+        "accuracy": 0.278,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.75
+      },
+      {
+        "entry_id": "public_health_041",
+        "question": "How does the flexibility provided to states in Medicaid eligibility criteria impact low-income popul...",
+        "model_answer": "The flexibility in Medicaid eligibility criteria likely impacts low-income populations' access to healthcare by varying coverage based on state decisions.",
+        "model_explanation": "States have the option to expand Medicaid, affecting eligibility based on income alone, as seen in Source 2. However, not all states have expanded, po...",
+        "gold_answer": "The flexibility allows states to expand coverage to additional groups, potentially increasing access to healthcare for more low-income individuals who may not otherwise qualify under federal mandates.",
+        "confidence": 0.036,
+        "accuracy": 0.28,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.729
+      },
+      {
+        "entry_id": "public_health_042",
+        "question": "What is the importance of Certificates of Confidentiality in research involving human subjects?",
+        "model_answer": "Certificates of Confidentiality are crucial for protecting the privacy of research subjects in sensitive studies.",
+        "model_explanation": "They prevent compelled disclosure of identifying information in legal proceedings, minimizing risks to subjects. This protection applies to both feder...",
+        "gold_answer": "Certificates of Confidentiality are important in research involving human subjects as they protect sensitive information from forced disclosure, thereby enhancing the privacy of study participants and encouraging participation in studies that collect identifiable, sensitive information.",
+        "confidence": 0.207,
+        "accuracy": 0.312,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.912
+      },
+      {
+        "entry_id": "public_health_043",
+        "question": "How does the vaccination schedule for children account for those who start late or fall behind on th...",
+        "model_answer": "The vaccination schedule for children likely does not require restarting the series if they start late or fall behind.",
+        "model_explanation": "Source 3 indicates that interrupting the primary vaccination schedule does not reduce immunity, and there is no need to restart the series if the reco...",
+        "gold_answer": "The vaccination schedule includes catch-up recommendations, allowing healthcare providers to administer missed vaccinations at the earliest opportunity as indicated in the catch-up schedule, which specifies minimum intervals between doses.",
+        "confidence": 0.479,
+        "accuracy": 0.115,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.765
+      },
+      {
+        "entry_id": "public_health_044",
+        "question": "Is it generally permissible to refreeze vaccines after they have been thawed?",
+        "model_answer": "No, it is generally not permissible to refreeze vaccines after they have been thawed.",
+        "model_explanation": "Source 3 explicitly states that Spikevax (Moderna COVID-19 Vaccine) should not be refrozen once thawed. This suggests that refreezing could potentiall...",
+        "gold_answer": "No, vaccines should not be refrozen after they have been thawed, as it can compromise their efficacy and safety.",
+        "confidence": 0.498,
+        "accuracy": 0.421,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.848
+      },
+      {
+        "entry_id": "public_health_045",
+        "question": "How does breastfeeding impact the risk of chronic diseases in both infants and mothers?",
+        "model_answer": "Breastfeeding likely reduces the risk of chronic diseases in both infants and mothers.",
+        "model_explanation": "Breastfed infants have a lower risk of asthma, obesity, type 1 diabetes, and childhood cancer. For mothers, longer breastfeeding is associated with a ...",
+        "gold_answer": "Breastfeeding reduces the risk of asthma, obesity, Type 1 diabetes, and gastrointestinal infections in infants, while lowering the mother's risk of high blood pressure, Type 2 diabetes, ovarian cancer, and breast cancer.",
+        "confidence": 0.44,
+        "accuracy": 0.269,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.868
+      },
+      {
+        "entry_id": "public_health_046",
+        "question": "How could the increasing recognition of the interconnectedness of physical and mental health issues ...",
+        "model_answer": "The increasing recognition of the interconnectedness of physical and mental health issues could likely increase demand for health education specialists across various sectors.",
+        "model_explanation": "Health education specialists develop programs addressing diverse health needs, including mental health, and the job market for these professionals is ...",
+        "gold_answer": "The increasing recognition of the interconnectedness of physical and mental health issues is likely to lead to a greater demand for health education specialists across various sectors, as these professionals are needed to educate and address the complexities of health interrelations. This trend is supported by the expected job growth rate for health education specialists and the increased job listings requiring certification, indicating that various settings such as clinical health organizations, community health organizations, and educational institutions require professionals who can address both physical and mental health challenges effectively.",
+        "confidence": 0.353,
+        "accuracy": 0.288,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.73
+      },
+      {
+        "entry_id": "public_health_047",
+        "question": "Can generalized anxiety disorder (GAD) be diagnosed if the symptoms are exclusively linked to anothe...",
+        "model_answer": "Generalized anxiety disorder (GAD) likely cannot be diagnosed if symptoms are exclusively linked to another mental health condition.",
+        "model_explanation": "Source 3 highlights the challenges in diagnosing GAD, especially with comorbid conditions. The DSM-5, mentioned in Source 5, provides diagnostic crite...",
+        "gold_answer": "No, generalized anxiety disorder cannot be diagnosed if the symptoms are better explained by another mental disorder.",
+        "confidence": 0.188,
+        "accuracy": 0.611,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.796
+      },
+      {
+        "entry_id": "public_health_048",
+        "question": "How does a multidisciplinary approach improve the management and outcomes of acute myocardial infarc...",
+        "model_answer": "A multidisciplinary approach likely improves the management and outcomes of acute myocardial infarction by facilitating timely interventions and comprehensive care.",
+        "model_explanation": "Source 5 highlights the importance of early identification and intervention, such as prehospital ECGs, which reduce treatment times. Source 3 suggests...",
+        "gold_answer": "A multidisciplinary approach improves the management and outcomes of acute myocardial infarction by integrating the expertise of various healthcare professionals, such as cardiologists, nurses, and rehabilitation specialists. This collaboration enhances comprehensive care, ensures the application of evidence-based guidelines, facilitates prompt recognition and effective management, and addresses all aspects of a patient's recovery and rehabilitation, ultimately leading to better patient outcomes.",
+        "confidence": 0.036,
+        "accuracy": 0.28,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.703
+      },
+      {
+        "entry_id": "public_health_049",
+        "question": "Why is it crucial to prioritize the treatment of individuals with latent tuberculosis infection even...",
+        "model_answer": "Prioritizing treatment for individuals with latent tuberculosis infection (LTBI) is crucial to prevent progression to active TB, which is infectious and potentially fatal.",
+        "model_explanation": "Approximately 5-10% of untreated LTBI cases develop into active TB, often within 1-2 years or during periods of weakened immunity. Treating LTBI reduc...",
+        "gold_answer": "Treating individuals with latent tuberculosis infection is crucial because it prevents the progression to active TB disease, which accounts for approximately 80% of TB cases in the U.S. By preventing latent infections from becoming active, public health efforts can control and work towards eliminating TB disease.",
+        "confidence": 0.363,
+        "accuracy": 0.31,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.833
+      },
+      {
+        "entry_id": "public_health_020",
+        "question": "How does exposure to benzene in occupational settings specifically impact worker health, particularl...",
+        "model_answer": "Exposure to benzene in occupational settings likely increases carcinogenic and reproductive risks for workers.",
+        "model_explanation": "Benzene is recognized as carcinogenic by the International Agency for Cancer Research and the EPA (Source 3). It may also harm reproductive organs, as...",
+        "gold_answer": "Occupational exposure to benzene is associated with an increased risk of developing leukemia and aplastic anemia, as it is classified as a Class 1 Human Carcinogen. It is also recognized as a reproductive toxicant, which may affect the health of workers' offspring.",
+        "confidence": 0.352,
+        "accuracy": 0.171,
+        "is_uncertain": 1,
+        "set_type": "clear",
+        "faithfulness": 0.827
+      }
+    ],
+    "ambiguous_results": [
+      {
+        "entry_id": "public_health_000",
+        "question": "How do regulatory measures impact the management of hazardous substances in public health?",
+        "model_answer": "Regulatory measures likely impact hazardous substance management by enforcing decontamination and destruction protocols.",
+        "model_explanation": "Source 1 suggests that regulations require decontamination of waste in laboratories handling infectious agents, indicating a structured approach to ma...",
+        "gold_answer": "Regulatory measures provide guidelines and standards that ensure the safe handling, exposure limits, and management of hazardous substances to protect public health. These regulations often require regular monitoring, reporting, and compliance with safety protocols to minimize health risks associated with exposure to toxic materials.",
+        "confidence": 0.036,
+        "accuracy": 0.132,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.231
+      },
+      {
+        "entry_id": "public_health_001",
+        "question": "How can managing cholesterol levels impact the risk of cardiovascular complications in individuals w...",
+        "model_answer": "Managing cholesterol levels likely impacts cardiovascular risk in diabetes, but the sources don't provide specific details.",
+        "model_explanation": "Source 1 mentions that people with diabetes have twice the risk for heart disease, implying that managing risk factors like cholesterol could be benef...",
+        "gold_answer": "Managing cholesterol levels can significantly reduce the risk of cardiovascular complications in individuals with diabetes by preventing the build-up of plaque in the arteries, which can lead to heart attacks and strokes.",
+        "confidence": 0.036,
+        "accuracy": 0.259,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.698
+      },
+      {
+        "entry_id": "public_health_002",
+        "question": "Is the concept of a threshold level of exposure for toxic chemicals universally accepted in public h...",
+        "model_answer": "The concept of a threshold level of exposure for toxic chemicals is not universally accepted in public health risk assessments.",
+        "model_explanation": "The sources do not directly address the universal acceptance of threshold levels. Source 3 suggests that exposure risk depends on multiple factors, im...",
+        "gold_answer": "No, the concept of a threshold for exposure is debated; some experts argue that even low levels of exposure can have cumulative adverse effects over time, especially for vulnerable populations.",
+        "confidence": 0.036,
+        "accuracy": 0.296,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.335
+      },
+      {
+        "entry_id": "public_health_003",
+        "question": "How does the eligibility for premium-free Medicare Part A differ between individuals who work for mo...",
+        "model_answer": "The sources do not provide specific information on the eligibility differences for premium-free Medicare Part A between individuals working for most employers and certain government employees.",
+        "model_explanation": "The provided sources focus on general Medicare coverage and eligibility but do not detail specific differences in eligibility for premium-free Medicar...",
+        "gold_answer": "Most individuals earn quarters of coverage (QCs) through the full payment of FICA taxes, which count towards both monthly Social Security benefits and premium-free Medicare Part A. However, certain government employees only pay the Part A portion of FICA taxes, so their QCs can only be used to meet the requirements for premium-free Medicare Part A, not for monthly Social Security benefits.",
+        "confidence": 0.343,
+        "accuracy": 0.255,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.736
+      },
+      {
+        "entry_id": "public_health_004",
+        "question": "How might interdisciplinary knowledge enhance the effectiveness of a health education specialist in ...",
+        "model_answer": "Interdisciplinary knowledge likely enhances a health education specialist's effectiveness in addressing obesity-related health issues.",
+        "model_explanation": "Source 3 suggests that health education involves soft skills like communication and teamwork, which can be enriched by interdisciplinary knowledge. Ho...",
+        "gold_answer": "Interdisciplinary knowledge allows health education specialists to understand and address the multifaceted factors contributing to obesity, such as mental health and genetics, enabling them to develop more comprehensive and effective health promotion strategies.",
+        "confidence": 0.243,
+        "accuracy": 0.148,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.611
+      },
+      {
+        "entry_id": "public_health_005",
+        "question": "What was a major societal influence that led to the establishment of a publicly accessible database ...",
+        "model_answer": "The sources do not provide enough information to confidently answer the question.",
+        "model_explanation": "None of the provided sources directly address the societal influences that led to the establishment of a publicly accessible database of clinical tria...",
+        "gold_answer": "Advocacy from HIV-infected individuals in the gay community significantly influenced the establishment of a publicly accessible database of clinical trials, as they demanded better access to clinical trials.",
+        "confidence": 0.471,
+        "accuracy": 0.08,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.35
+      },
+      {
+        "entry_id": "public_health_006",
+        "question": "Why is the fortification of cereal grains with folic acid considered a significant public health int...",
+        "model_answer": "The fortification of cereal grains with folic acid is significant for reducing birth defects.",
+        "model_explanation": "Folic acid is crucial for DNA synthesis, supporting growth and development, especially during pregnancy (Source 1). It reduces the risk of neural tube...",
+        "gold_answer": "The fortification of cereal grains with folic acid is considered a significant public health intervention because it helps reduce the occurrence of neural tube defects (NTDs) in newborns, addressing a critical health need by ensuring that more women of childbearing age receive adequate folic acid, which is essential for fetal development.",
+        "confidence": 0.187,
+        "accuracy": 0.25,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.803
+      },
+      {
+        "entry_id": "public_health_007",
+        "question": "Why might measles outbreaks occur in a country where the disease has been officially eliminated?",
+        "model_answer": "Measles outbreaks might occur in a country where the disease has been officially eliminated due to imported cases and unvaccinated individuals.",
+        "model_explanation": "Source 1 highlights the importance of monitoring imported cases, which can lead to outbreaks. Source 3 emphasizes that unvaccinated individuals expose...",
+        "gold_answer": "Measles outbreaks can occur in a country where the disease has been officially eliminated due to its reintroduction by unvaccinated travelers and subsequent spread in under-immunized communities.",
+        "confidence": 0.216,
+        "accuracy": 0.654,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.835
+      },
+      {
+        "entry_id": "public_health_008",
+        "question": "Can an adult born before 1957 be considered immune to measles, mumps, and rubella without vaccinatio...",
+        "model_answer": "An adult born before 1957 might be considered immune to measles, mumps, and rubella without vaccination.",
+        "model_explanation": "Source 1 suggests that people born before 1957 are generally considered immune due to likely exposure to the diseases during childhood. However, the s...",
+        "gold_answer": "Yes, an adult born before 1957 can be considered immune to measles, mumps, and rubella without vaccination because it is presumed they were exposed to and developed natural immunity due to the prevalence of these diseases before the introduction of widespread vaccination programs.",
+        "confidence": 0.296,
+        "accuracy": 0.389,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.824
+      },
+      {
+        "entry_id": "public_health_009",
+        "question": "How does the source of dietary sodium primarily differ from common perceptions about its origin?",
+        "model_answer": "The primary source of dietary sodium likely differs from common perceptions, as it is not just from table salt but also from sodium added during cooking or manufacturing.",
+        "model_explanation": "Source 2 clarifies that sodium is a component of table salt and is also added to foods for flavor, texture, or preservation. This suggests that sodium...",
+        "gold_answer": "While many people think most dietary sodium comes from table salt added during cooking or eating, the majority actually comes from packaged and prepared foods.",
+        "confidence": 0.036,
+        "accuracy": 0.4,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.744
+      },
+      {
+        "entry_id": "public_health_010",
+        "question": "How does the US Preventive Services Task Force incorporate health equity into its preventive service...",
+        "model_answer": "The sources do not provide enough information to confidently answer how the USPSTF incorporates health equity into its recommendations.",
+        "model_explanation": "The provided sources discuss various health topics, including mammogram screening and the impact of disabilities on health, but they do not specifical...",
+        "gold_answer": "The US Preventive Services Task Force incorporates health equity into its recommendations by increasingly considering health equity in its prioritization process, addressing conditions with limited data for disproportionately affected population groups, developing a health equity framework, and conducting pilot studies to understand the relationships between social constructs such as race, ethnicity, and gender with health outcomes.",
+        "confidence": 0.369,
+        "accuracy": 0.149,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.647
+      },
+      {
+        "entry_id": "public_health_011",
+        "question": "Can the presence of different symptom clusters in depression affect the cardiovascular and suicide r...",
+        "model_answer": "The sources do not provide enough information to answer confidently.",
+        "model_explanation": "The sources discuss depression, anxiety, and related disorders but do not specifically address how different symptom clusters in depression affect car...",
+        "gold_answer": "Yes, patients with moderate depression exhibiting somatic symptoms may face higher cardiovascular risks due to altered autonomic modulation, while those with severe depression showing non-somatic symptoms may have a higher risk of suicide.",
+        "confidence": 0.436,
+        "accuracy": 0.036,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.25
+      },
+      {
+        "entry_id": "public_health_012",
+        "question": "What is considered the first-line treatment for anaphylaxis in emergency management protocols?",
+        "model_answer": "Epinephrine is considered the first-line treatment for anaphylaxis.",
+        "model_explanation": "Source 3 explicitly states that epinephrine (adrenaline) is the only emergency treatment for anaphylaxis. There is no conflicting information in the p...",
+        "gold_answer": "Epinephrine is considered the first-line treatment for anaphylaxis.",
+        "confidence": 0.804,
+        "accuracy": 1.0,
+        "is_uncertain": 0,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.863
+      },
+      {
+        "entry_id": "public_health_013",
+        "question": "How can maternal health and nutritional status prior to conception influence the long-term health ou...",
+        "model_answer": "Maternal health and nutritional status prior to conception can likely influence a child's long-term health outcomes.",
+        "model_explanation": "Source 2 suggests that assessing a woman's diet and providing tailored nutritional advice before pregnancy can be beneficial. Source 3 indicates that ...",
+        "gold_answer": "Maternal health and nutritional status prior to conception can influence the long-term health outcomes of a child by shaping the intrauterine environment, which affects fetal development and has potential epigenetic impacts. This environment, influenced by maternal weight, diet, and physical activity, can predispose the child to risks such as obesity and diabetes later in life.",
+        "confidence": 0.164,
+        "accuracy": 0.279,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.725
+      },
+      {
+        "entry_id": "public_health_014",
+        "question": "How does the age at which colorectal cancer screening begins impact its effectiveness in reducing mo...",
+        "model_answer": "The age at which colorectal cancer screening begins likely impacts its effectiveness in reducing mortality rates by allowing earlier detection and treatment.",
+        "model_explanation": "Screening from age 45, as recommended by the USPSTF, can find precancerous polyps and early-stage cancer, improving treatment outcomes. However, the s...",
+        "gold_answer": "Starting colorectal cancer screening earlier, particularly at age 45 instead of later ages, can significantly improve its effectiveness by detecting cancer at an earlier, more treatable stage, thus reducing mortality rates.",
+        "confidence": 0.293,
+        "accuracy": 0.357,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.708
+      },
+      {
+        "entry_id": "public_health_015",
+        "question": "How does the CDC's updated isolation guidance for COVID-19 align with general practices for handling...",
+        "model_answer": "The sources do not provide enough information to confidently answer how the CDC's updated isolation guidance for COVID-19 aligns with general practices for handling common respiratory infections.",
+        "model_explanation": "The sources focus on COVID-19 isolation and quarantine practices but do not compare these to general practices for other respiratory infections. Witho...",
+        "gold_answer": "The CDC's updated isolation guidance aligns with general practices for handling common respiratory infections by recommending that individuals stay home and away from others if they have symptoms not explained by another cause, resuming normal activities only after symptoms improve and being fever-free for 24 hours, and taking extra precautions for five days after resuming activities.",
+        "confidence": 0.154,
+        "accuracy": 0.292,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.706
+      },
+      {
+        "entry_id": "public_health_016",
+        "question": "How does the gender disparity in the prevalence of depressive disorders potentially impact the appro...",
+        "model_answer": "The sources do not provide enough information to answer the question confidently.",
+        "model_explanation": "The provided sources focus on panic attacks, ketamine therapy for depression, and vitamin D deficiency in postmenopausal women, but do not address gen...",
+        "gold_answer": "The higher prevalence of depressive disorders in females compared to males suggests that public health strategies should consider gender-specific factors in mental health interventions, potentially focusing more resources on women-centric mental health services and research to address unique risk factors and treatment needs.",
+        "confidence": 0.356,
+        "accuracy": 0.056,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.244
+      },
+      {
+        "entry_id": "public_health_017",
+        "question": "How do the recommended exposure limits for occupational noise by NIOSH differ in application from ge...",
+        "model_answer": "The sources do not provide enough information to confidently answer how NIOSH's occupational noise exposure limits differ from general environmental noise guidelines.",
+        "model_explanation": "The sources focus on occupational noise exposure limits, such as the 85 dB(A) 8-hour TWA, but do not detail general environmental noise guidelines or ...",
+        "gold_answer": "NIOSH's recommended exposure limits specifically cater to occupational settings and are based on an 8-hour time-weighted average, assuming quieter conditions outside work hours. These limits are not intended for general environmental noise conditions, which can vary in duration and intensity beyond the structured workday framework.",
+        "confidence": 0.046,
+        "accuracy": 0.238,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.416
+      },
+      {
+        "entry_id": "public_health_018",
+        "question": "How does the return policy for vaccines differ between age groups, and what might the implications b...",
+        "model_answer": "The sources do not provide information on the return policy for vaccines or its differences between age groups.",
+        "model_explanation": "The provided sources focus on topics such as COVID-19 vaccine authorization, vaccination efforts in Texas, observable phenomena, and climate change im...",
+        "gold_answer": "The return policy for vaccines differs between age groups, as Pfizer offers a 100% return policy for the Pfizer-BioNTech COVID-19 Vaccine for individuals aged 6 months through 11 years, while for the COMIRNATY Vaccine for individuals 12 years and older, customers can return up to 30% of their purchases. This difference in return policy could impact how public health organizations manage their vaccine inventory, allowing more flexibility and reduced financial risk for vaccines intended for younger populations, and potentially requiring more precise demand forecasting and inventory management for older age groups.",
+        "confidence": 0.227,
+        "accuracy": 0.119,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.229
+      },
+      {
+        "entry_id": "public_health_019",
+        "question": "How does the expansion of Medicaid under the Affordable Care Act aim to improve public health outcom...",
+        "model_answer": "The expansion of Medicaid under the Affordable Care Act aims to improve public health outcomes for low-income adults by providing free healthcare coverage to those making less than 138% of the poverty level in states that expanded Medicaid.",
+        "model_explanation": "This is inferred from Source 2, which mentions that in states with expanded Medicaid, individuals below 138% of the poverty level qualify for Medicaid...",
+        "gold_answer": "The expansion of Medicaid aims to improve public health outcomes for low-income adults by providing them with access to essential health services, reducing the financial barriers to care, and potentially decreasing the rates of untreated health conditions and related complications.",
+        "confidence": 0.499,
+        "accuracy": 0.441,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.781
+      },
+      {
+        "entry_id": "public_health_021",
+        "question": "How do the new hypertension guidelines by ACC/AHA differ in their approach to treating stage 1 hyper...",
+        "model_answer": "The sources do not provide specific details on the new ACC/AHA guidelines for treating stage 1 hypertension in high-risk versus non-high-risk individuals.",
+        "model_explanation": "The provided sources focus on general hypertension management, dietary sodium intake, and lifestyle changes but do not detail the specific treatment a...",
+        "gold_answer": "The new ACC/AHA hypertension guidelines recommend that high-risk individuals, which include those aged 65 and older, with diabetes, chronic kidney disease, or known cardiovascular disease, initiate drug therapy when blood pressure is \u2265130/80 mm Hg. In contrast, non-high-risk individuals are advised to start drug therapy when blood pressure is \u2265140/90 mm Hg.",
+        "confidence": 0.068,
+        "accuracy": 0.186,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.269
+      },
+      {
+        "entry_id": "public_health_022",
+        "question": "How does vitamin D influence bone health, and what are the potential consequences of its deficiency?",
+        "model_answer": "Vitamin D is crucial for bone health, and its deficiency can lead to rickets in children and osteomalacia in adults.",
+        "model_explanation": "Source 1 explains that vitamin D deficiency causes rickets in children and osteomalacia in adults, both affecting bone strength. It also mentions that...",
+        "gold_answer": "Vitamin D promotes calcium absorption in the gut and maintains adequate serum calcium and phosphate concentrations, essential for bone mineralization. Its deficiency can lead to thin, brittle, or misshapen bones, causing conditions such as rickets in children and osteomalacia in adults. Additionally, together with calcium, it helps protect older adults from osteoporosis.",
+        "confidence": 0.404,
+        "accuracy": 0.319,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.835
+      },
+      {
+        "entry_id": "public_health_023",
+        "question": "How do core competencies contribute to meeting national accreditation standards in public health org...",
+        "model_answer": "Core competencies likely contribute to meeting national accreditation standards by providing a framework for workforce development and performance improvement.",
+        "model_explanation": "The Core Competencies for Public Health Professionals offer foundational knowledge and skills that help public health organizations prepare for accred...",
+        "gold_answer": "Core competencies provide a structured framework that public health organizations can use to develop the workforce's skills and knowledge, ensuring they meet the necessary qualifications and capabilities required by national accreditation standards. This involves defining job roles, creating effective training programs, and assessing organizational and individual performance to align with accreditation criteria.",
+        "confidence": 0.255,
+        "accuracy": 0.217,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.77
+      },
+      {
+        "entry_id": "public_health_024",
+        "question": "How did the Nuremberg Code influence the establishment of ethical guidelines in human research?",
+        "model_answer": "The Nuremberg Code likely influenced the establishment of ethical guidelines in human research by highlighting the need for participant protection and informed consent.",
+        "model_explanation": "The sources suggest that the Nuremberg Code, along with other historical events, shaped modern ethical frameworks like IRBs, which ensure participant ...",
+        "gold_answer": "The Nuremberg Code laid the foundation for international ethical guidelines by emphasizing voluntary consent, the necessity of societal benefit, and reliance on prior research, which influenced the development of institutional review boards and ethical standards in human research.",
+        "confidence": 0.138,
+        "accuracy": 0.375,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.793
+      },
+      {
+        "entry_id": "public_health_025",
+        "question": "Why was the standard for arsenic in drinking water reduced from 50 parts per billion to 10 parts per...",
+        "model_answer": "The standard for arsenic in drinking water was reduced to 10 ppb due to its health risks, including cancer.",
+        "model_explanation": "The EPA lowered the arsenic standard from 50 ppb to 10 ppb in 2001, as arsenic is linked to various cancers and non-cancer effects like skin issues an...",
+        "gold_answer": "The standard for arsenic in drinking water was reduced to lower the risk of adverse health effects associated with arsenic exposure, as arsenic is known to have significant health impacts, including an increased risk of cancer.",
+        "confidence": 0.214,
+        "accuracy": 0.448,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.775
+      },
+      {
+        "entry_id": "public_health_026",
+        "question": "How can national parks contribute to public health, particularly in urban areas?",
+        "model_answer": "National parks likely contribute to public health in urban areas by offering natural spaces for recreation and escape from urbanization.",
+        "model_explanation": "Source 1 suggests that national parks provide opportunities for people to experience nature, which can be beneficial for mental and physical health. H...",
+        "gold_answer": "National parks can enhance public health in urban areas by providing green spaces for physical activities, reducing stress, improving air quality, and offering educational programs that promote healthy lifestyles.",
+        "confidence": 0.176,
+        "accuracy": 0.414,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.784
+      },
+      {
+        "entry_id": "public_health_027",
+        "question": "How might the timing of activated charcoal administration affect its efficacy in treating acute toxi...",
+        "model_answer": "The timing of activated charcoal administration likely affects its efficacy, with effectiveness decreasing as time since exposure increases.",
+        "model_explanation": "Source 3 indicates that studies have shown the effectiveness of activated charcoal decreases with time after ingestion. However, the exact timing and ...",
+        "gold_answer": "The efficacy of activated charcoal in treating acute toxic ingestions is generally higher when administered within one hour of ingestion, as it can more effectively adsorb the toxin before it is absorbed into the bloodstream.",
+        "confidence": 0.403,
+        "accuracy": 0.167,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.84
+      },
+      {
+        "entry_id": "public_health_028",
+        "question": "At what age is it generally recommended to stop routine cervical cancer screening for women who have...",
+        "model_answer": "It is generally recommended to stop routine cervical cancer screening at age 65 for women with adequate prior screening and not at high risk.",
+        "model_explanation": "This conclusion is drawn from Source 2, which mentions cervical cancer screening guidelines for ages 30-65. However, the sources do not explicitly sta...",
+        "gold_answer": "It is generally recommended to stop routine cervical cancer screening at age 65 for women who have had adequate prior screening and are not at high risk.",
+        "confidence": 0.421,
+        "accuracy": 0.84,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.789
+      },
+      {
+        "entry_id": "public_health_029",
+        "question": "How does the mechanism of action for fluoxetine influence its effectiveness in treating psychologica...",
+        "model_answer": "Fluoxetine's mechanism as an SSRI likely enhances its effectiveness in treating psychological disorders by increasing serotonin levels.",
+        "model_explanation": "Fluoxetine, a selective serotonin reuptake inhibitor (SSRI), affects neurotransmitters by preventing serotonin reuptake, thus increasing its availabil...",
+        "gold_answer": "Fluoxetine's mechanism of action involves the inhibition of serotonin reuptake in presynaptic neurons by blocking the reuptake transporter protein. This increases the availability of serotonin in the synaptic cleft, which enhances mood and has been shown to be effective in treating psychological disorders such as major depressive disorder, obsessive-compulsive disorder, and others.",
+        "confidence": 0.052,
+        "accuracy": 0.244,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.69
+      },
+      {
+        "entry_id": "public_health_030",
+        "question": "Can insulin resistance alone be the primary cause of hyperglycemia in diabetes, or must it always be...",
+        "model_answer": "The sources do not provide enough information to answer confidently.",
+        "model_explanation": "The provided sources discuss insulin resistance and sensitivity but do not directly address whether insulin resistance alone can cause hyperglycemia w...",
+        "gold_answer": "Insulin resistance alone can lead to hyperglycemia, but it often coexists with impaired insulin secretion in diabetes. Both factors can contribute to hyperglycemia, and it can be challenging to determine which is the primary cause in a given individual.",
+        "confidence": 0.62,
+        "accuracy": 0.065,
+        "is_uncertain": 0,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.254
+      },
+      {
+        "entry_id": "public_health_031",
+        "question": "At what age is it generally recommended to introduce solid foods to a child's diet, and what develop...",
+        "model_answer": "It is generally recommended to introduce solid foods around 6 months of age.",
+        "model_explanation": "Source 1 and Source 3 both suggest delaying the introduction of solid foods until around 6 months, as infants are typically not developmentally ready ...",
+        "gold_answer": "It is generally recommended to introduce solid foods to a child's diet at about 6 months of age. Developmental signs indicating readiness for this transition include the ability to sit up alone or with support, control of the head and neck, opening the mouth when food is offered, swallowing food rather than pushing it back out, bringing objects to the mouth, trying to grasp small objects, and transferring food from the front to the back of the tongue to swallow.",
+        "confidence": 0.659,
+        "accuracy": 0.2,
+        "is_uncertain": 0,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.903
+      },
+      {
+        "entry_id": "public_health_032",
+        "question": "Are children more susceptible to higher dietary acrylamide intake compared to adults, and why might ...",
+        "model_answer": "Children are likely more susceptible to higher dietary acrylamide intake compared to adults.",
+        "model_explanation": "Source 3 suggests that infants and children are the most at risk for acrylamide exposure. This could be a public health concern because acrylamide is ...",
+        "gold_answer": "Yes, children are more susceptible to higher dietary acrylamide intake compared to adults because their body-weight-adjusted intake is up to three times higher. This is a public health concern because acrylamide is classified as a 'probable human carcinogen', increasing the risk of cancer with higher exposure levels.",
+        "confidence": 0.622,
+        "accuracy": 0.263,
+        "is_uncertain": 0,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.771
+      },
+      {
+        "entry_id": "public_health_033",
+        "question": "How might the development and implementation of evidence-based treatment-decision algorithms impact ...",
+        "model_answer": "The development of evidence-based treatment-decision algorithms might improve the diagnosis of pulmonary TB in children by providing structured guidance and faster results compared to traditional methods.",
+        "model_explanation": "Source 3 suggests these algorithms offer structured guidance for TB treatment decisions, while Source 2 indicates rapid tests like Xpert MTB/RIF provi...",
+        "gold_answer": "Developing and implementing evidence-based treatment-decision algorithms can potentially improve the diagnosis of pulmonary TB in children by providing a systematic and standardized approach that takes into account various clinical factors and local conditions. This approach may lead to more accurate and timely diagnoses, especially in settings with limited access to advanced diagnostic tests, compared to relying solely on traditional microbiological reference standards, which may not be as adaptable to different environments or resource constraints.",
+        "confidence": 0.036,
+        "accuracy": 0.262,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.803
+      },
+      {
+        "entry_id": "public_health_034",
+        "question": "How do different organizations' definitions of health education emphasize various aspects of public ...",
+        "model_answer": "Different organizations' definitions of health education emphasize various aspects of public health, such as knowledge promotion, healthy practices, and broad versus narrow health perspectives.",
+        "model_explanation": "Source 1 highlights health education as a tool for promoting knowledge and healthy practices. Source 2 contrasts narrow and broad health perspectives,...",
+        "gold_answer": "Different organizations' definitions of health education highlight varying aspects such as behavior change, knowledge improvement, skill development, and health literacy. For instance, the National Conference on Preventive Medicine emphasizes motivating behavior change and facilitating environmental changes, while the WHO focuses on improving health literacy and developing life skills that support health.",
+        "confidence": 0.036,
+        "accuracy": 0.25,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.756
+      },
+      {
+        "entry_id": "public_health_035",
+        "question": "Why is it important to differentiate between added sugars and naturally occurring sugars in the cont...",
+        "model_answer": "Differentiating between added and natural sugars is important for dietary recommendations due to their differing health impacts.",
+        "model_explanation": "Source 2 suggests that added sugars, unlike natural sugars found in whole foods, are more problematic for health. Source 1 implies that monitoring add...",
+        "gold_answer": "Differentiating between added sugars and naturally occurring sugars is important because added sugars contribute additional calories without essential nutrients, making it harder to meet nutrient needs within calorie limits. In contrast, naturally occurring sugars are found in nutrient-rich foods like fruits and milk, which provide essential vitamins and minerals. Dietary recommendations focus on limiting added sugars to reduce the risk of health issues such as obesity and heart disease.",
+        "confidence": 0.036,
+        "accuracy": 0.2,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.686
+      },
+      {
+        "entry_id": "public_health_036",
+        "question": "How have regulatory changes influenced the operational standards of hospitals and Critical Access Ho...",
+        "model_answer": "Regulatory changes have likely influenced hospital standards by updating accreditation and participation requirements to ensure high-quality care.",
+        "model_explanation": "Accreditation standards and Medicare Conditions of Participation (CoPs) are regularly updated to reflect new research and best practices (Sources 1, 2...",
+        "gold_answer": "Regulatory changes have progressively refined the operational standards of hospitals and Critical Access Hospitals by implementing new rules and amendments to ensure quality assessment, performance improvement, patient rights, and telemedicine credentialing, which help maintain high levels of patient care and safety.",
+        "confidence": 0.036,
+        "accuracy": 0.229,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.815
+      },
+      {
+        "entry_id": "public_health_037",
+        "question": "Why is it important to conduct clinical research in phases when developing new medical treatments?",
+        "model_answer": "Conducting clinical research in phases is crucial for ensuring safety, efficacy, and regulatory compliance of new treatments.",
+        "model_explanation": "Each phase of clinical trials addresses specific questions about a drug's pharmacology, therapeutic effect, dosage, and long-term safety (Source 3). T...",
+        "gold_answer": "Conducting clinical research in phases is important because it allows researchers to systematically assess the safety, efficacy, and dosage of a new medical treatment. Each phase builds on the results of the previous one, starting with small groups to evaluate safety, then expanding to larger groups to assess effectiveness and monitor side effects, which ensures that any potential risks are identified and managed before the treatment is widely approved for public use.",
+        "confidence": 0.403,
+        "accuracy": 0.203,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.869
+      },
+      {
+        "entry_id": "public_health_038",
+        "question": "Why are certain vaccines contraindicated or not recommended during pregnancy?",
+        "model_answer": "Certain vaccines are contraindicated or not recommended during pregnancy due to potential risks to the fetus.",
+        "model_explanation": "The sources highlight that while some vaccines like Tdap are recommended during pregnancy for protection against diseases, others like MMR are advised...",
+        "gold_answer": "Certain vaccines, such as live attenuated vaccines, are contraindicated or not recommended during pregnancy because they may pose a risk to the developing fetus. Live vaccines contain a weakened form of the virus, which theoretically could cause harm if the virus crosses the placenta. Therefore, inactivated vaccines or those with a known safety profile during pregnancy are preferred.",
+        "confidence": 0.142,
+        "accuracy": 0.261,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.793
+      },
+      {
+        "entry_id": "public_health_039",
+        "question": "Can lifestyle changes, such as smoking cessation, significantly alter the progression of chronic res...",
+        "model_answer": "Lifestyle changes, such as smoking cessation, can likely alter the progression of COPD.",
+        "model_explanation": "Source 2 highlights smoking as a primary component influencing COPD progression, suggesting that cessation could impact disease progression. However, ...",
+        "gold_answer": "Yes, smoking cessation is one of the most effective lifestyle changes for slowing the progression of chronic respiratory diseases such as COPD, as it reduces further damage to the lungs and can improve respiratory symptoms and overall lung function over time.",
+        "confidence": 0.055,
+        "accuracy": 0.229,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.724
+      },
+      {
+        "entry_id": "public_health_040",
+        "question": "How does the concept of an identifiable exposure threshold impact the assessment of systemic toxicit...",
+        "model_answer": "The concept of an identifiable exposure threshold likely complicates systemic toxicity assessment in public health risk management.",
+        "model_explanation": "Source 1 suggests there might be no apparent threshold for certain adverse health effects, complicating risk assessments. Source 2 discusses risk fact...",
+        "gold_answer": "The concept of an identifiable exposure threshold impacts the assessment of systemic toxicity in public health risk management by providing a basis to establish safe exposure limits. It assumes that there is a level of exposure below which no adverse effects are observed, allowing risk managers to determine acceptable levels for chemicals in the environment and ensure they do not pose harm to human health.",
+        "confidence": 0.051,
+        "accuracy": 0.259,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.807
+      },
+      {
+        "entry_id": "public_health_041",
+        "question": "How does the flexibility provided to states in Medicaid eligibility criteria impact low-income popul...",
+        "model_answer": "The flexibility in Medicaid eligibility criteria likely impacts low-income populations' access to healthcare by creating coverage gaps.",
+        "model_explanation": "Source 3 highlights that many low-income individuals, especially adults without dependent children, fall into a coverage gap due to stringent eligibil...",
+        "gold_answer": "The flexibility allows states to expand coverage to additional groups, potentially increasing access to healthcare for more low-income individuals who may not otherwise qualify under federal mandates.",
+        "confidence": 0.036,
+        "accuracy": 0.28,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.73
+      },
+      {
+        "entry_id": "public_health_042",
+        "question": "What is the importance of Certificates of Confidentiality in research involving human subjects?",
+        "model_answer": "The importance of Certificates of Confidentiality in research involving human subjects is not directly addressed in the provided sources.",
+        "model_explanation": "The sources focus on ethical guidelines, lack of ethics approval, and informed consent issues in research but do not specifically mention Certificates...",
+        "gold_answer": "Certificates of Confidentiality are important in research involving human subjects as they protect sensitive information from forced disclosure, thereby enhancing the privacy of study participants and encouraging participation in studies that collect identifiable, sensitive information.",
+        "confidence": 0.575,
+        "accuracy": 0.281,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.723
+      },
+      {
+        "entry_id": "public_health_043",
+        "question": "How does the vaccination schedule for children account for those who start late or fall behind on th...",
+        "model_answer": "The sources do not provide specific information on how the vaccination schedule for children accounts for those who start late or fall behind on their immunizations.",
+        "model_explanation": "The provided sources focus on tetanus, diphtheria, and pertussis vaccinations, but do not address catch-up schedules for children who are behind. With...",
+        "gold_answer": "The vaccination schedule includes catch-up recommendations, allowing healthcare providers to administer missed vaccinations at the earliest opportunity as indicated in the catch-up schedule, which specifies minimum intervals between doses.",
+        "confidence": 0.23,
+        "accuracy": 0.115,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.351
+      },
+      {
+        "entry_id": "public_health_044",
+        "question": "Is it generally permissible to refreeze vaccines after they have been thawed?",
+        "model_answer": "It is generally not permissible to refreeze vaccines after they have been thawed.",
+        "model_explanation": "Source 2 suggests that freezing and thawing according to instructions is not detrimental for some vaccines like Pfizer's COVID vaccine. However, Sourc...",
+        "gold_answer": "No, vaccines should not be refrozen after they have been thawed, as it can compromise their efficacy and safety.",
+        "confidence": 0.2,
+        "accuracy": 0.368,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.754
+      },
+      {
+        "entry_id": "public_health_045",
+        "question": "How does breastfeeding impact the risk of chronic diseases in both infants and mothers?",
+        "model_answer": "Breastfeeding likely reduces the risk of chronic diseases in both infants and mothers.",
+        "model_explanation": "Sources suggest breastfeeding reduces risks of obesity, type 2 diabetes, and certain cancers in mothers, and lowers risks of obesity, infectious disea...",
+        "gold_answer": "Breastfeeding reduces the risk of asthma, obesity, Type 1 diabetes, and gastrointestinal infections in infants, while lowering the mother's risk of high blood pressure, Type 2 diabetes, ovarian cancer, and breast cancer.",
+        "confidence": 0.549,
+        "accuracy": 0.269,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.89
+      },
+      {
+        "entry_id": "public_health_046",
+        "question": "How could the increasing recognition of the interconnectedness of physical and mental health issues ...",
+        "model_answer": "The increasing recognition of the interconnectedness of physical and mental health issues could likely increase the demand for health education specialists across various sectors.",
+        "model_explanation": "This is because health education specialists focus on improving public health through education programs that promote wellness and prevent disease (So...",
+        "gold_answer": "The increasing recognition of the interconnectedness of physical and mental health issues is likely to lead to a greater demand for health education specialists across various sectors, as these professionals are needed to educate and address the complexities of health interrelations. This trend is supported by the expected job growth rate for health education specialists and the increased job listings requiring certification, indicating that various settings such as clinical health organizations, community health organizations, and educational institutions require professionals who can address both physical and mental health challenges effectively.",
+        "confidence": 0.108,
+        "accuracy": 0.288,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.711
+      },
+      {
+        "entry_id": "public_health_047",
+        "question": "Can generalized anxiety disorder (GAD) be diagnosed if the symptoms are exclusively linked to anothe...",
+        "model_answer": "GAD likely cannot be diagnosed if symptoms are exclusively linked to another mental health condition.",
+        "model_explanation": "The DSM-5 criteria for GAD require excessive worry and anxiety across various life aspects, not solely linked to another condition. However, the sourc...",
+        "gold_answer": "No, generalized anxiety disorder cannot be diagnosed if the symptoms are better explained by another mental disorder.",
+        "confidence": 0.528,
+        "accuracy": 0.471,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.799
+      },
+      {
+        "entry_id": "public_health_048",
+        "question": "How does a multidisciplinary approach improve the management and outcomes of acute myocardial infarc...",
+        "model_answer": "A multidisciplinary approach likely improves management and outcomes of acute myocardial infarction by integrating diverse expertise and perspectives.",
+        "model_explanation": "The sources do not directly address the benefits of a multidisciplinary approach for acute myocardial infarction. However, Source 3 highlights the imp...",
+        "gold_answer": "A multidisciplinary approach improves the management and outcomes of acute myocardial infarction by integrating the expertise of various healthcare professionals, such as cardiologists, nurses, and rehabilitation specialists. This collaboration enhances comprehensive care, ensures the application of evidence-based guidelines, facilitates prompt recognition and effective management, and addresses all aspects of a patient's recovery and rehabilitation, ultimately leading to better patient outcomes.",
+        "confidence": 0.036,
+        "accuracy": 0.28,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.697
+      },
+      {
+        "entry_id": "public_health_049",
+        "question": "Why is it crucial to prioritize the treatment of individuals with latent tuberculosis infection even...",
+        "model_answer": "Prioritizing treatment for latent tuberculosis infection is crucial to prevent progression to active TB.",
+        "model_explanation": "Source 3 indicates that individuals with latent TB can progress to active TB if untreated, and treating with antibiotics can prevent this. This sugges...",
+        "gold_answer": "Treating individuals with latent tuberculosis infection is crucial because it prevents the progression to active TB disease, which accounts for approximately 80% of TB cases in the U.S. By preventing latent infections from becoming active, public health efforts can control and work towards eliminating TB disease.",
+        "confidence": 0.172,
+        "accuracy": 0.214,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.818
+      },
+      {
+        "entry_id": "public_health_020",
+        "question": "How does exposure to benzene in occupational settings specifically impact worker health, particularl...",
+        "model_answer": "Exposure to benzene in occupational settings likely increases carcinogenic risks, particularly leukemia, and may harm bone marrow function.",
+        "model_explanation": "Source 2 indicates benzene is a human carcinogen linked to blood cancers and bone marrow damage. Source 1 mentions occupational exposure limits, sugge...",
+        "gold_answer": "Occupational exposure to benzene is associated with an increased risk of developing leukemia and aplastic anemia, as it is classified as a Class 1 Human Carcinogen. It is also recognized as a reproductive toxicant, which may affect the health of workers' offspring.",
+        "confidence": 0.148,
+        "accuracy": 0.171,
+        "is_uncertain": 1,
+        "set_type": "ambiguous",
+        "ambiguity_type": "conflicting",
+        "faithfulness": 0.81
+      }
+    ]
+  }
+}
