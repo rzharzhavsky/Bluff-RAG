@@ -220,4 +220,47 @@ class ConfidenceCalibrator:
             'calibration_samples': self.calibration_samples,
             'has_calibration_function': self.calibration_function is not None
         }
+    
+    def get_calibration_function_description(self) -> str:
+        """
+        Get a human-readable description of the calibration function.
+        
+        Returns:
+            String description of the calibration function
+        """
+        if not self.calibration_function or not self.is_calibrated:
+            return "No calibration function available"
+        
+        # Try to extract function parameters by inspecting the function
+        try:
+            # Get the function's source code or closure variables
+            import inspect
+            
+            # Check if it's a lambda or nested function
+            if hasattr(self.calibration_function, '__code__'):
+                # Try to get closure variables
+                if self.calibration_function.__closure__:
+                    closure_vars = {}
+                    for i, cell in enumerate(self.calibration_function.__closure__):
+                        var_name = self.calibration_function.__code__.co_freevars[i]
+                        closure_vars[var_name] = cell.cell_contents
+                    
+                    # Check if it's linear scaling
+                    if 'raw_min' in closure_vars and 'raw_max' in closure_vars:
+                        raw_min = closure_vars['raw_min']
+                        raw_max = closure_vars['raw_max']
+                        acc_min = closure_vars.get('acc_min', 0.0)
+                        acc_max = closure_vars.get('acc_max', 1.0)
+                        return f"Linear scaling: raw_conf [{raw_min:.3f}, {raw_max:.3f}] -> calibrated_conf [{acc_min:.3f}, {acc_max:.3f}]"
+                    
+                    # Check if it's isotonic regression
+                    elif 'iso_reg' in closure_vars:
+                        iso_reg = closure_vars['iso_reg']
+                        return f"Isotonic regression with {len(iso_reg.X_) if hasattr(iso_reg, 'X_') else 'unknown'} calibration points"
+            
+            # Fallback to function name
+            return f"Calibration function: {self.calibration_function.__name__ if hasattr(self.calibration_function, '__name__') else 'lambda'}"
+            
+        except Exception as e:
+            return f"Calibration function: {type(self.calibration_function).__name__} (details unavailable)"
 

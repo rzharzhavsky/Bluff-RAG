@@ -1,20 +1,20 @@
 {
   "model": "gpt-4o",
   "total_evaluations": 50,
-  "answer_correctness": 0.0,
-  "total_ece": 0.19,
-  "total_asi_score": 0.148,
-  "vui_metric": 0.524,
-  "faithfulness_overall_score": 0.726,
-  "h5_composite_score": 0.27,
-  "brier_score": 0.067,
-  "confidence_accuracy_correlation": 0.303,
-  "h1_composite_score": 0.548,
+  "answer_correctness": 0.5870000000000001,
+  "total_ece": 0.267,
+  "asi": 0.173,
+  "vui": 0.619,
+  "faithfulness_overall_score": 0.729,
+  "retrieval_relevance_awareness(h1)": 0.653,
   "h1_metrics": {
     "avg_retrieval_recall": 0.502,
-    "overconfidence_index": 0.149,
-    "wrong_answer_rate": 0.708,
+    "overconfidence_index": 0.131,
+    "wrong_answer_rate": 0.413,
     "refusal_rate": 0.0,
-    "retrieval_recall_confidence_correlation": 0.11
-  }
+    "retrieval_recall_confidence_correlation": 0.008
+  },
+  "source_awareness_score(h5)": 0.237,
+  "brier_score": 0.157,
+  "confidence_accuracy_correlation": 0.082
 }

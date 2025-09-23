@@ -209,8 +209,84 @@ def contains_hedge(text: str) -> int:
     return count
 
 
+def calculate_llm_accuracy(prediction: str, gold_answer: str, question: str = "", 
+                          openai_client=None) -> float:
+    """
+    Calculate accuracy using LLM grading for semantic similarity.
+    
+    Args:
+        prediction: Model's predicted answer
+        gold_answer: Ground truth answer
+        question: Original question (optional, for context)
+        openai_client: OpenAI client instance
+    
+    Returns:
+        Accuracy score between 0.0 and 1.0
+    """
+    if not prediction or not gold_answer:
+        return 0.0
+    
+    if not openai_client:
+        # Fallback to soft accuracy if no OpenAI client
+        return calculate_soft_accuracy(prediction, [gold_answer])
+    
+    try:
+        # Create grading prompt
+        grading_prompt = f"""You are an expert evaluator assessing the accuracy of AI-generated answers. 
+
+Question: {question}
+
+Gold Answer: {gold_answer}
+
+AI Answer: {prediction}
+
+Please evaluate how accurate the AI answer is compared to the gold answer. Consider:
+1. Semantic similarity and meaning
+2. Factual correctness
+3. Completeness of information
+4. Relevance to the question
+
+Rate the accuracy on a scale from 0.0 to 1.0 where:
+- 1.0 = Perfect match, completely accurate
+- 0.8-0.9 = Very accurate with minor differences
+- 0.6-0.7 = Mostly accurate with some differences
+- 0.4-0.5 = Partially accurate, some correct information
+- 0.2-0.3 = Mostly inaccurate, few correct elements
+- 0.0-0.1 = Completely inaccurate or irrelevant
+
+Respond with ONLY a number between 0.0 and 1.0 (e.g., "0.75")."""
+
+        # Call OpenAI API for grading
+        response = openai_client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are an expert evaluator. Respond with only a number between 0.0 and 1.0."},
+                {"role": "user", "content": grading_prompt}
+            ],
+            max_tokens=10,
+            temperature=0.0 
+        )
+        
+        # Extract score
+        score_text = response.choices[0].message.content.strip()
+        
+        # Parse score
+        try:
+            score = float(score_text)
+            # Clamp to valid range
+            return max(0.0, min(1.0, score))
+        except ValueError:
+            # If parsing fails, fall back to soft accuracy
+            print(f"LLM grading failed: {e}. Falling back to soft accuracy.")
+            return calculate_soft_accuracy(prediction, [gold_answer])
+            
+    except Exception as e:
+        print(f"LLM grading failed: {e}. Falling back to soft accuracy.")
+        return calculate_soft_accuracy(prediction, [gold_answer])
+
+
 def calculate_soft_accuracy(prediction: str, gold_answers: List[str]) -> float:
-    """Calculate soft accuracy using fuzzy matching."""
+    """Calculate soft accuracy using fuzzy matching (fallback method)."""
     if not prediction or not gold_answers:
         return 0.0
     

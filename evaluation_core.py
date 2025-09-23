@@ -27,7 +27,7 @@ from metrics_calm_rag import (
     calm_rag_h1_metrics, calm_rag_h3_metrics,
     calm_rag_h4_metrics, calm_rag_h5_metrics,
     calculate_ambiguity_sensitivity_index, calculate_batch_asi,
-    calculate_continuous_uncertainty, calculate_soft_accuracy,
+    calculate_continuous_uncertainty, calculate_llm_accuracy,
     calm_rag_faithfulness_metrics, calm_rag_faithfulness_metrics_with_individuals
 )
 from calibration import ConfidenceCalibrator
@@ -79,41 +79,68 @@ def generate_calm_rag_report(evaluation_summary: Dict[str, Any]) -> Dict[str, An
     
     # Calculate answer correctness (average of all accuracies)
     # We need to get this from the individual results if available
+    print(f"Evaluation summary keys: {list(evaluation_summary.keys())}")
     all_results = []
-    if 'clear_results' in evaluation_summary:
-        all_results.extend(evaluation_summary['clear_results'])
-    if 'ambiguous_results' in evaluation_summary:
-        all_results.extend(evaluation_summary['ambiguous_results'])
+    
+    # Check if results are in summary_results
+    if 'summary_results' in evaluation_summary:
+        summary_results = evaluation_summary['summary_results']
+        if 'clear_results' in summary_results:
+            print(f"Clear results count: {len(summary_results['clear_results'])}")
+            all_results.extend(summary_results['clear_results'])
+        if 'ambiguous_results' in summary_results:
+            print(f"Ambiguous results count: {len(summary_results['ambiguous_results'])}")
+            all_results.extend(summary_results['ambiguous_results'])
+    else:
+        # Fallback to direct keys
+        if 'clear_results' in evaluation_summary:
+            print(f"Clear results count: {len(evaluation_summary['clear_results'])}")
+            all_results.extend(evaluation_summary['clear_results'])
+        if 'ambiguous_results' in evaluation_summary:
+            print(f"Ambiguous results count: {len(evaluation_summary['ambiguous_results'])}")
+            all_results.extend(evaluation_summary['ambiguous_results'])
+    
+    print(f"Total all_results count: {len(all_results)}")
     
     answer_correctness = 0.0
+    amount_of_none_accuracies = 0
+    for result in all_results:
+        if result.get('accuracy') is None:
+            amount_of_none_accuracies += 1
+    print(f"Amount of none accuracies: {amount_of_none_accuracies}")
     if all_results:
-        accuracies = [result.get('accuracy') for result in all_results]
-        answer_correctness = sum(accuracies) / len(accuracies)
+        accuracies = [result.get('accuracy', 0.0) for result in all_results if result.get('accuracy') is not None]
+        if accuracies:
+            answer_correctness = sum(accuracies) / len(accuracies)
+        else:
+            print(f"Warning: No valid accuracy values found in {len(all_results)} results")
+    else:
+        print("Warning: No results found for answer correctness calculation")
     
     # Create streamlined report structure
     core_report = {
         'model': evaluation_summary['model'],
         'total_evaluations': evaluation_summary['successful_evaluations'],
         
-        # Requested metrics
         'answer_correctness': answer_correctness,
         'total_ece': calm_rag_metrics.get('expected_calibration_error', 0.0),
-        'total_asi_score': asi_metrics.get('mean_asi', 0.0),
-        'vui_metric': calm_rag_metrics.get('hedge_f1', 0.0),  # VUI = hedge_f1
+        'asi': asi_metrics.get('mean_asi', 0.0),
+        'vui': calm_rag_metrics.get('hedge_f1', 0.0),  # VUI = hedge_f1
         'faithfulness_overall_score': faithfulness_metrics.get('overall_faithfulness', 0.0),
-        'h5_composite_score': calm_rag_metrics.get('h5_source_quality_score', 0.0),
-        'brier_score': calm_rag_metrics.get('brier_score', 0.0),
-        'confidence_accuracy_correlation': calm_rag_metrics.get('confidence_accuracy_correlation', 0.0),
-        
         # H1 composite score with all H1 metrics
-        'h1_composite_score': calm_rag_metrics.get('h1_composite_score', 0.0),
+        'retrieval_relevance_awareness(h1)': calm_rag_metrics.get('h1_composite_score', 0.0),
         'h1_metrics': {
             'avg_retrieval_recall': calm_rag_metrics.get('avg_retrieval_recall', 0.0),
             'overconfidence_index': calm_rag_metrics.get('overconfidence_index', 0.0),
             'wrong_answer_rate': calm_rag_metrics.get('wrong_answer_rate', 0.0),
             'refusal_rate': calm_rag_metrics.get('refusal_rate', 0.0),
             'retrieval_recall_confidence_correlation': calm_rag_metrics.get('retrieval_recall_confidence_correlation', 0.0)
-        }
+        },
+        'source_awareness_score(h5)': calm_rag_metrics.get('h5_source_quality_score', 0.0),
+        'brier_score': calm_rag_metrics.get('brier_score', 0.0),
+        'confidence_accuracy_correlation': calm_rag_metrics.get('confidence_accuracy_correlation', 0.0)
+        
+        
     }
     
     return core_report
@@ -124,10 +151,10 @@ class RAGModelEvaluator:
     
     def __init__(self, dataset_path: str = "calmrag_dataset.json", 
                  output_dir: str = "evaluation_results", 
-                 use_soft_accuracy: bool = True):
+                 use_llm_grading: bool = True):
         self.dataset_path = dataset_path
         self.output_dir = output_dir
-        self.use_soft_accuracy = use_soft_accuracy
+        self.use_llm_grading = use_llm_grading
         self.dataset = self._load_dataset()
         
         # Create output directory
@@ -143,10 +170,29 @@ class RAGModelEvaluator:
         # Initialize calibration system
         self.calibrator = ConfidenceCalibrator()
         
+        # Initialize LLM grading client if needed
+        if self.use_llm_grading:
+            self._initialize_grading_client()
+        
     def _load_dataset(self) -> List[Dict[str, Any]]:
         """Load the CALM-RAG dataset."""
         with open(self.dataset_path, 'r', encoding='utf-8') as f:
             return json.load(f)
+    
+    def _initialize_grading_client(self):
+        """Initialize OpenAI client for LLM grading."""
+        try:
+            import openai
+            api_key = os.getenv('OPENAI_API_KEY')
+            if api_key:
+                self.openai_client = openai.OpenAI(api_key=api_key)
+                print("LLM grading client initialized")
+            else:
+                print("OPENAI_API_KEY not found. LLM grading will fall back to soft accuracy.")
+                self.use_llm_grading = False
+        except ImportError:
+            print("OpenAI library not installed. LLM grading will fall back to soft accuracy.")
+            self.use_llm_grading = False
     
     def setup_openai(self, api_key: str, model: str = "gpt-4o"):
         """Setup OpenAI client."""
@@ -486,15 +532,24 @@ class RAGModelEvaluator:
         
         relevant_docs = [s['url'] for s in entry['source_sets']['clear']]
         
-        # Calculate accuracy
+        # Calculate accuracy using LLM grading
         gold_answer = entry.get('gold_answer', '')
         if gold_answer and parsed['answer']:
-            if self.use_soft_accuracy:
-                accuracy = calculate_soft_accuracy(parsed['answer'], [gold_answer])
+            if self.use_llm_grading:
+                # Use LLM grading for semantic accuracy
+                accuracy = calculate_llm_accuracy(
+                    prediction=parsed['answer'],
+                    gold_answer=gold_answer,
+                    question=entry.get('question', ''),
+                    openai_client=self.openai_client
+                )
             else:
+                # Fallback to exact string matching
                 accuracy = 1.0 if parsed['answer'].strip().lower() == gold_answer.strip().lower() else 0.0
+                print("LLM grading didn't work, using 1.0 or 0")
         else:
             accuracy = 0.5  # Fallback
+            print("LLM grading didn't work, using 0.5")
         
         # Calculate continuous uncertainty score
         continuous_uncertainty = calculate_continuous_uncertainty(entry, retrieved_docs, entry['question'])
@@ -570,6 +625,7 @@ class RAGModelEvaluator:
             calibration_success = self.calibrator.update_calibration(all_results, original_model_responses)
             if calibration_success:
                 print(f"✓ Calibration function created and frozen!")
+                print(f"Calibration function: {self.calibrator.get_calibration_function_description()}")
                 print(f"Calibration samples: {self.calibrator.calibration_samples}")
             else:
                 print(f"⚠ Calibration failed - will use internal confidence")
@@ -837,11 +893,11 @@ class RAGModelEvaluator:
 
 def main():
     """Main evaluation function."""
-    print("CALM-RAG Model Evaluation - Streamlined Version")
+    print("CALM-RAG Model Evaluation")
     print("=" * 50)
     
     # Initialize evaluator
-    evaluator = RAGModelEvaluator(use_soft_accuracy=True)
+    evaluator = RAGModelEvaluator(use_llm_grading=True)
     
     # Try to get API keys
     openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -897,7 +953,8 @@ def main():
             print(f"\nCalibration Information:")
             print(f"  Was calibrated: {calibration_info['is_calibrated']}")
             print(f"  Calibration samples: {calibration_info['calibration_samples']}")
-            
+            print(f"Calibration function: {evaluator.calibrator.get_calibration_function_description()}")
+
             # Print some key metrics
             calm_rag = result['calm_rag_metrics']
             print(f"\nKey CALM-RAG Metrics:")
@@ -920,6 +977,7 @@ def main():
             # Print Faithfulness metrics
             faithfulness = result.get('faithfulness_metrics', {})
             print(f"  Overall Faithfulness: {safe_format(faithfulness.get('overall_faithfulness'))}")
+
             
         else:
             print("Evaluation failed - no results returned")
