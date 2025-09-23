@@ -15,6 +15,19 @@ class ConfidenceCalibrator:
         self.calibration_function: Optional[Callable] = None
         self.is_calibrated = False
         self.calibration_samples = 0
+
+    def calculate_internal_confidence_v2(self, log_probs: List[Dict]) -> float:
+        if not log_probs:
+            return 0.5
+        
+        log_prob_values = [log_prob['logprob'] for log_prob in log_probs]
+        max_log_prob = max(log_prob_values)
+        mean_log_prob = np.mean(log_prob_values)
+        
+        log_ratio = max_log_prob - mean_log_prob
+        confidence = 0.1 + 0.8 * (1 - np.exp(-log_ratio / 2.0))
+        
+        return np.clip(confidence, 0.01, 0.99)
     
     def calculate_internal_confidence(self, log_probs: List[Dict]) -> float:
         """
