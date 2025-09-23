@@ -25,7 +25,7 @@ class ConfidenceCalibrator:
         mean_log_prob = np.mean(log_prob_values)
         
         log_ratio = max_log_prob - mean_log_prob
-        confidence = 0.1 + 0.8 * (1 - np.exp(-log_ratio / 2.0))
+        confidence = 0.005 + 0.995 * (1 - np.exp(-log_ratio / 0.8))
         
         return np.clip(confidence, 0.01, 0.99)
     
