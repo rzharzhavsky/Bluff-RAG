@@ -19,7 +19,7 @@ class ConfidenceCalibrator:
     def calculate_internal_confidence(self, log_probs: List[Dict]) -> float:
         """
         Calculate internal confidence from token log probabilities.
-        Uses multiple factors to create more varied confidence scores.
+        Focuses on the model's actual confidence signals rather than averaging.
         
         Args:
             log_probs: List of token log probability dictionaries
@@ -30,45 +30,65 @@ class ConfidenceCalibrator:
         if not log_probs:
             return 0.5
         
-        # Convert log probs to probabilities
-        probs = [np.exp(log_prob['logprob']) for log_prob in log_probs]
+        # Extract log probabilities (these are already negative values)
+        log_prob_values = [log_prob['logprob'] for log_prob in log_probs]
         
-        if len(probs) == 0:
+        if len(log_prob_values) == 0:
             return 0.5
         
-        # Multiple confidence signals for better variation
+        # Method 1: Focus on the highest confidence tokens (top-k approach)
+        # Sort log probabilities in descending order (higher log prob = more confident)
+        sorted_log_probs = sorted(log_prob_values, reverse=True)
+        top_k = min(5, len(sorted_log_probs))  # Use top 5 tokens or all if fewer
+        top_log_probs = sorted_log_probs[:top_k]
         
-        # 1. Geometric mean (sensitive to low probabilities)
-        geom_mean = np.exp(np.mean([np.log(max(p, 1e-10)) for p in probs]))
+        # Arithmetic mean of top log probabilities (equivalent to geometric mean of probabilities)
+        top_log_mean = np.mean(top_log_probs)
+        # Convert back to probability for confidence score
+        top_confidence = np.exp(top_log_mean)
         
-        # 2. Minimum probability (worst case)
-        min_prob = min(probs)
+        # Method 2: Entropy of the token distribution (proper calculation)
+        # Convert log probs to probabilities for entropy calculation
+        probs = [np.exp(log_prob) for log_prob in log_prob_values]
+        prob_sum = sum(probs)
+        if prob_sum > 0:
+            normalized_probs = [p / prob_sum for p in probs]
+            # Calculate Shannon entropy
+            entropy = -sum([p * np.log(max(p, 1e-10)) for p in normalized_probs])
+            max_entropy = np.log(len(probs))  # Maximum entropy for this number of tokens
+            normalized_entropy = entropy / max_entropy if max_entropy > 0 else 0
+            entropy_confidence = 1 - normalized_entropy  # Higher entropy = lower confidence
+        else:
+            entropy_confidence = 0.0
         
-        # 3. Standard deviation (uncertainty measure - lower std = higher confidence)
-        prob_std = np.std(probs)
-        consistency_factor = max(0, 1 - prob_std * 2)  # Scale std to 0-1 range
+        # Method 3: Consistency measure (how similar are the top log probabilities)
+        if len(top_log_probs) > 1:
+            # Standard deviation of top log probabilities - lower is more consistent
+            top_log_std = np.std(top_log_probs)
+            # Convert to a consistency score (lower std = higher consistency)
+            consistency = np.exp(-top_log_std)  # Exponential decay with std
+            consistency = max(0, min(1, consistency))  # Clamp to [0,1]
+        else:
+            consistency = 1.0
         
-        # 4. Entropy-based measure
-        # Higher entropy = more uncertainty = lower confidence
-        entropy = -np.sum([p * np.log(max(p, 1e-10)) for p in probs])
-        max_entropy = np.log(len(probs))  # Maximum possible entropy
-        normalized_entropy = entropy / max_entropy if max_entropy > 0 else 0
-        entropy_confidence = 1 - normalized_entropy
+        # Method 4: Minimum log probability (worst case scenario)
+        min_log_prob = min(log_prob_values)
+        min_confidence = np.exp(min_log_prob)
         
-        # Combine multiple signals with weights
+        # Combine signals with weights (focus on top-k and entropy)
         confidence = (
-            0.4 * geom_mean +           # Main signal: geometric mean
-            0.2 * min_prob +            # Worst case scenario
-            0.2 * consistency_factor +  # Consistency across tokens
-            0.2 * entropy_confidence    # Information-theoretic measure
+            0.5 * top_confidence +     # Main signal: mean of top log probabilities
+            0.3 * entropy_confidence +  # Entropy-based confidence
+            0.1 * consistency +        # Consistency across top tokens
+            0.1 * min_confidence       # Worst case scenario
         )
         
-        # Apply a more aggressive scaling to increase variation
-        # Map from typical range [0.3, 0.9] to [0.1, 0.9]
-        confidence = 0.1 + 0.8 * confidence
+        # Apply sigmoid-like transformation to spread the range
+        # This helps create more variation in confidence scores
+        confidence = 1 / (1 + np.exp(-10 * (confidence - 0.5)))
         
         # Ensure bounds
-        confidence = max(0.05, min(0.95, confidence))
+        confidence = max(0.01, min(0.99, confidence))
         
         return confidence
     
