@@ -689,7 +689,7 @@ def calculate_ambiguity_sensitivity_index(clear_entry: Dict[str, Any],
     
     # ASI components
     confidence_sensitivity = abs(clear_confidence - ambiguous_confidence)
-    accuracy_sensitivity = abs(clear_accuracy - ambiguous_accuracy)
+    accuracy_sensitivity = clear_accuracy - ambiguous_accuracy
     
     # Overall ASI (normalized combination)
     asi = (confidence_sensitivity + accuracy_sensitivity) / 2.0
@@ -745,6 +745,47 @@ def calculate_continuous_uncertainty(entry: Dict[str, Any],
     return min(1.0, max(0.0, uncertainty))
 
 
+def calculate_source_set_hedging_metric(results: List[Dict[str, Any]]) -> Dict[str, float]:
+    """
+    Calculate SourceSetOnHedging metric: difference in hedging between clear and ambiguous source sets.
+    """
+    if not results:
+        return {}
+    
+    clear_hedging_counts = []
+    ambiguous_hedging_counts = []
+    
+    for result in results:
+        prediction_text = result.get('prediction_text', '')
+        explanation_text = result.get('prediction_explanation', '')
+        set_type = result.get('set_type', '')
+        
+        # Count hedge terms in both prediction and explanation
+        combined_text = f"{prediction_text} {explanation_text}"
+        hedge_count = contains_hedge(combined_text)
+        
+        if set_type == 'clear':
+            clear_hedging_counts.append(hedge_count)
+        elif set_type == 'ambiguous':
+            ambiguous_hedging_counts.append(hedge_count)
+    
+    if not clear_hedging_counts or not ambiguous_hedging_counts:
+        return {'source_set_on_hedging': 0.0}
+    
+    # Calculate average hedging for each set type
+    avg_clear_hedging = np.mean(clear_hedging_counts)
+    avg_ambiguous_hedging = np.mean(ambiguous_hedging_counts)
+    
+    # Calculate the difference (ambiguous - clear)
+    hedging_difference = avg_ambiguous_hedging - avg_clear_hedging
+    
+    return {
+        'source_set_on_hedging': hedging_difference,
+        'avg_clear_hedging': avg_clear_hedging,
+        'avg_ambiguous_hedging': avg_ambiguous_hedging
+    }
+
+
 def compute_all_calm_rag_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
     """Compute all CALM-RAG metrics (excluding faithfulness, which is calculated separately)."""
     all_metrics = {}
@@ -754,6 +795,9 @@ def compute_all_calm_rag_metrics(results: List[Dict[str, Any]]) -> Dict[str, flo
     all_metrics.update(calm_rag_h3_metrics(results))
     all_metrics.update(calm_rag_h4_metrics(results))
     all_metrics.update(calm_rag_h5_metrics(results))
+    
+    # Source set hedging metric
+    all_metrics.update(calculate_source_set_hedging_metric(results))
     
     return all_metrics
 

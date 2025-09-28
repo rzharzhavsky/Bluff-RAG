@@ -138,8 +138,8 @@ def generate_calm_rag_report(evaluation_summary: Dict[str, Any]) -> Dict[str, An
         },
         'source_awareness_score(h5)': calm_rag_metrics.get('h5_source_quality_score', 0.0),
         'brier_score': calm_rag_metrics.get('brier_score', 0.0),
-        'confidence_accuracy_correlation': calm_rag_metrics.get('confidence_accuracy_correlation', 0.0)
-        
+        'confidence_accuracy_correlation': calm_rag_metrics.get('confidence_accuracy_correlation', 0.0),
+        'source_set_on_hedging': calm_rag_metrics.get('source_set_on_hedging', 0.0)
         
     }
     
