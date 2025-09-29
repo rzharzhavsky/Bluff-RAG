@@ -540,7 +540,19 @@ class RAGModelEvaluator:
             }
             retrieved_docs.append(doc)
         
-        relevant_docs = [s['url'] for s in entry['source_sets']['clear']]
+        # Create relevant_docs in same format as retrieved_docs for proper comparison
+        relevant_docs = []
+        for s in entry['source_sets']['clear']:
+            doc = {
+                'url': s['url'], 
+                'domain': s['domain'], 
+                'category': s['category'],
+                'title': s.get('title', ''),
+                'text': s.get('text', ''),
+                'timestamp': s.get('timestamp', ''),
+                'score': s.get('score', None)
+            }
+            relevant_docs.append(doc)
         
         # Calculate accuracy using LLM grading
         gold_answer = entry.get('gold_answer', '')
@@ -579,7 +591,8 @@ class RAGModelEvaluator:
             'model': model_name,
             'tokens_used': result['tokens_used'],
             'set_type': source_set_type,
-            'ambiguity_type': entry.get('ambiguity_type', 'conflicting')
+            'ambiguity_type': entry.get('ambiguity_type', 'conflicting'),
+            'log_probs': result.get('log_probs', [])
         }
         
         return evaluation_result, result  # Return both cleaned result and original model response
@@ -796,7 +809,10 @@ class RAGModelEvaluator:
                         'accuracy': result['accuracy'],
                         'is_uncertain': result['is_uncertain'],
                         'set_type': result['set_type'],
-                        'faithfulness': result['faithfulness']
+                        'faithfulness': result['faithfulness'],
+                        'log_probs': result.get('log_probs', []),
+                        'retrieved_docs': result.get('retrieved_docs', []),
+                        'relevant_docs': result.get('relevant_docs', [])
                     }
                     for result in clear_results
                 ],
@@ -812,7 +828,10 @@ class RAGModelEvaluator:
                         'is_uncertain': result['is_uncertain'],
                         'set_type': result['set_type'],
                         'ambiguity_type': result['ambiguity_type'],
-                        'faithfulness': result['faithfulness']
+                        'faithfulness': result['faithfulness'],
+                        'log_probs': result.get('log_probs', []),
+                        'retrieved_docs': result.get('retrieved_docs', []),
+                        'relevant_docs': result.get('relevant_docs', [])
                     }
                     for result in ambiguous_results
                 ]
