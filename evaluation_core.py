@@ -117,30 +117,40 @@ def generate_calm_rag_report(evaluation_summary: Dict[str, Any]) -> Dict[str, An
     else:
         print("Warning: No results found for answer correctness calculation")
     
-    # Create streamlined report structure
+    # Create streamlined report structure organized by hypothesis
     core_report = {
         'model': evaluation_summary['model'],
         'total_evaluations': evaluation_summary['successful_evaluations'],
         
-        'answer_correctness': answer_correctness,
-        'total_ece': calm_rag_metrics.get('expected_calibration_error', 0.0),
-        'asi': asi_metrics.get('mean_asi', 0.0),
-        'vui': calm_rag_metrics.get('hedge_f1', 0.0),  # VUI = hedge_f1
-        'faithfulness_overall_score': faithfulness_metrics.get('overall_faithfulness', 0.0),
-        # H1 composite score with all H1 metrics
-        'retrieval_relevance_awareness(h1)': calm_rag_metrics.get('h1_composite_score', 0.0),
-        'h1_metrics': {
-            'avg_retrieval_recall': calm_rag_metrics.get('avg_retrieval_recall', 0.0),
+        # HYPOTHESIS 1: Overconfidence Gap
+        'h1_overconfidence_gap': {
+            'evidence_confidence_gap': calm_rag_metrics.get('evidence_confidence_gap', 0.0),
             'overconfidence_index': calm_rag_metrics.get('overconfidence_index', 0.0),
+            'retrieval_recall_confidence_correlation': calm_rag_metrics.get('retrieval_recall_confidence_correlation', 0.0),
+            'expected_calibration_error': calm_rag_metrics.get('expected_calibration_error', 0.0),
+            'confidence_accuracy_correlation': calm_rag_metrics.get('confidence_accuracy_correlation', 0.0),
+            'avg_retrieval_recall': calm_rag_metrics.get('avg_retrieval_recall', 0.0),
+            'ambiguity_sensitivity_index': asi_metrics.get('mean_asi', 0.0)
+        },
+        
+        # HYPOTHESIS 2: Hedging Behavior
+        'h2_hedging_behavior': {
+            'hedge_f1': calm_rag_metrics.get('hedge_f1', 0.0),
+            'source_set_on_hedging': calm_rag_metrics.get('source_set_on_hedging', 0.0),
+            'lexical_overconfidence_index': calm_rag_metrics.get('lexical_overconfidence_index', 0.0),
+            'hedge_precision': calm_rag_metrics.get('hedge_precision', 0.0),
+            'hedge_recall': calm_rag_metrics.get('hedge_recall', 0.0)
+        },
+        
+        # DIAGNOSTIC METRICS
+        'diagnostics': {
+            'answer_correctness': answer_correctness,
+            'brier_score': calm_rag_metrics.get('brier_score', 0.0),
             'wrong_answer_rate': calm_rag_metrics.get('wrong_answer_rate', 0.0),
             'refusal_rate': calm_rag_metrics.get('refusal_rate', 0.0),
-            'retrieval_recall_confidence_correlation': calm_rag_metrics.get('retrieval_recall_confidence_correlation', 0.0)
-        },
-        'source_awareness_score(h5)': calm_rag_metrics.get('h5_source_quality_score', 0.0),
-        'brier_score': calm_rag_metrics.get('brier_score', 0.0),
-        'confidence_accuracy_correlation': calm_rag_metrics.get('confidence_accuracy_correlation', 0.0),
-        'source_set_on_hedging': calm_rag_metrics.get('source_set_on_hedging', 0.0)
-        
+            'source_awareness_score': calm_rag_metrics.get('h5_source_quality_score', 0.0),
+            'overall_faithfulness': faithfulness_metrics.get('overall_faithfulness', 0.0)
+        }
     }
     
     return core_report
@@ -530,7 +540,19 @@ class RAGModelEvaluator:
             }
             retrieved_docs.append(doc)
         
-        relevant_docs = [s['url'] for s in entry['source_sets']['clear']]
+        # Create relevant_docs in same format as retrieved_docs for proper comparison
+        relevant_docs = []
+        for s in entry['source_sets']['clear']:
+            doc = {
+                'url': s['url'], 
+                'domain': s['domain'], 
+                'category': s['category'],
+                'title': s.get('title', ''),
+                'text': s.get('text', ''),
+                'timestamp': s.get('timestamp', ''),
+                'score': s.get('score', None)
+            }
+            relevant_docs.append(doc)
         
         # Calculate accuracy using LLM grading
         gold_answer = entry.get('gold_answer', '')
@@ -569,7 +591,8 @@ class RAGModelEvaluator:
             'model': model_name,
             'tokens_used': result['tokens_used'],
             'set_type': source_set_type,
-            'ambiguity_type': entry.get('ambiguity_type', 'conflicting')
+            'ambiguity_type': entry.get('ambiguity_type', 'conflicting'),
+            'log_probs': result.get('log_probs', [])
         }
         
         return evaluation_result, result  # Return both cleaned result and original model response
@@ -786,7 +809,10 @@ class RAGModelEvaluator:
                         'accuracy': result['accuracy'],
                         'is_uncertain': result['is_uncertain'],
                         'set_type': result['set_type'],
-                        'faithfulness': result['faithfulness']
+                        'faithfulness': result['faithfulness'],
+                        'log_probs': result.get('log_probs', []),
+                        'retrieved_docs': result.get('retrieved_docs', []),
+                        'relevant_docs': result.get('relevant_docs', [])
                     }
                     for result in clear_results
                 ],
@@ -802,7 +828,10 @@ class RAGModelEvaluator:
                         'is_uncertain': result['is_uncertain'],
                         'set_type': result['set_type'],
                         'ambiguity_type': result['ambiguity_type'],
-                        'faithfulness': result['faithfulness']
+                        'faithfulness': result['faithfulness'],
+                        'log_probs': result.get('log_probs', []),
+                        'retrieved_docs': result.get('retrieved_docs', []),
+                        'relevant_docs': result.get('relevant_docs', [])
                     }
                     for result in ambiguous_results
                 ]

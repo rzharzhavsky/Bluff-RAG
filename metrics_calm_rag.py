@@ -467,8 +467,8 @@ def calm_rag_h3_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
     true_uncertainties = []
     
     for result in results:
-        prediction = result.get('prediction_text', '')
-        explanation = result.get('prediction_explanation', '')
+        prediction = result.get('prediction_text', '') or result.get('model_answer', '')
+        explanation = result.get('prediction_explanation', '') or result.get('model_explanation', '')
         combined_text = f"{prediction} {explanation}"
         
         texts.append(combined_text)
@@ -756,8 +756,8 @@ def calculate_source_set_hedging_metric(results: List[Dict[str, Any]]) -> Dict[s
     ambiguous_hedging_counts = []
     
     for result in results:
-        prediction_text = result.get('prediction_text', '')
-        explanation_text = result.get('prediction_explanation', '')
+        prediction_text = result.get('prediction_text', '') or result.get('model_answer', '')
+        explanation_text = result.get('prediction_explanation', '') or result.get('model_explanation', '')
         set_type = result.get('set_type', '')
         
         # Count hedge terms in both prediction and explanation
@@ -786,6 +786,36 @@ def calculate_source_set_hedging_metric(results: List[Dict[str, Any]]) -> Dict[s
     }
 
 
+def calculate_evidence_confidence_gap(results: List[Dict[str, Any]]) -> Dict[str, float]:
+    """
+    Calculate the evidence-confidence gap metric for Hypothesis 1.
+    Measures the discrepancy between expressed confidence and evidence quality.
+    """
+    if not results:
+        return {'evidence_confidence_gap': 0.0}
+    
+    confidences = []
+    evidence_quality_scores = []
+    
+    for result in results:
+        confidence = result.get('confidence', 0.5)
+        retrieval_recall = result.get('retrieval_recall', 0.0)
+        
+        # Use retrieval recall as proxy for evidence quality
+        # Could be enhanced with source quality metrics
+        evidence_quality = retrieval_recall
+        
+        confidences.append(confidence)
+        evidence_quality_scores.append(evidence_quality)
+    
+    # Calculate absolute differences between confidence and evidence quality
+    evidence_confidence_gaps = [abs(c - e) for c, e in zip(confidences, evidence_quality_scores)]
+    
+    return {
+        'evidence_confidence_gap': np.mean(evidence_confidence_gaps)
+    }
+
+
 def compute_all_calm_rag_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
     """Compute all CALM-RAG metrics (excluding faithfulness, which is calculated separately)."""
     all_metrics = {}
@@ -798,6 +828,9 @@ def compute_all_calm_rag_metrics(results: List[Dict[str, Any]]) -> Dict[str, flo
     
     # Source set hedging metric
     all_metrics.update(calculate_source_set_hedging_metric(results))
+    
+    # Evidence-confidence gap metric
+    all_metrics.update(calculate_evidence_confidence_gap(results))
     
     return all_metrics
 
@@ -1258,7 +1291,7 @@ def calm_rag_faithfulness_metrics_with_individuals(results: List[Dict[str, Any]]
     
     # Process each result
     for result in results:
-        prediction = result.get('prediction_text', '')
+        prediction = result.get('prediction_text', '') or result.get('model_answer', '')
         retrieved_docs = result.get('retrieved_docs', [])
         gold_answer = result.get('gold_answer', '')
         
