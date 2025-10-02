@@ -647,11 +647,11 @@ class RAGModelEvaluator:
             all_results = clear_results + ambiguous_results
             calibration_success = self.calibrator.update_calibration(all_results, original_model_responses)
             if calibration_success:
-                print(f"✓ Calibration function created and frozen!")
+                print(f"Calibration function created and frozen!")
                 print(f"Calibration function: {self.calibrator.get_calibration_function_description()}")
                 print(f"Calibration samples: {self.calibrator.calibration_samples}")
             else:
-                print(f"⚠ Calibration failed - will use internal confidence")
+                print(f"Calibration failed - will use internal confidence")
             
             # Phase 2: Re-run the same 20 entries with frozen calibration
             print(f"\nPhase 2: Re-evaluating first 20 entries with frozen calibration...")
@@ -928,27 +928,67 @@ def main():
     # Initialize evaluator
     evaluator = RAGModelEvaluator(use_llm_grading=True)
     
-    # Try to get API keys
+    # Try to get all API keys
+    print("Loading API keys from environment variables...")
     openai_api_key = os.getenv("OPENAI_API_KEY")
     anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
+    google_api_key = os.getenv("GOOGLE_API_KEY")
+    mistral_api_key = os.getenv("MISTRAL_API_KEY")
+    together_api_key = os.getenv("TOGETHER_API_KEY")
     
-    if not openai_api_key:
-        print("OpenAI API key not found. Please create a .env file with your API keys.")
+    # Print which API keys are found
+    print("\nAPI Key Status:")
+    print(f"  OpenAI API Key: {'Found' if openai_api_key else 'Not found'}")
+    print(f"  Anthropic API Key: {'Found' if anthropic_api_key else 'Not found'}")
+    print(f"  Google API Key: {'Found' if google_api_key else 'Not found'}")
+    print(f"  Mistral API Key: {'Found' if mistral_api_key else 'Not found'}")
+    print(f"  Together API Key: {'Found' if together_api_key else 'Not found'}")
+    
+    if not any([openai_api_key, anthropic_api_key, google_api_key, mistral_api_key, together_api_key]):
+        print("\nNo API keys found! Please create a .env file with your API keys.")
         print("Format for .env file:")
         print("OPENAI_API_KEY=your_key_here")
         print("ANTHROPIC_API_KEY=your_key_here")
+        print("GOOGLE_API_KEY=your_key_here")
+        print("MISTRAL_API_KEY=your_key_here")
+        print("TOGETHER_API_KEY=your_key_here")
         return
     
-    # Setup models
-    evaluator.setup_openai(openai_api_key, "gpt-4o")
+    # Setup models based on available API keys
+    models_to_evaluate = []
+    
+    if openai_api_key:
+        print("\nSetting up OpenAI client...")
+        evaluator.setup_openai(openai_api_key, "gpt-4o")
+        models_to_evaluate.append("gpt-4o")
+        print("OpenAI client initialized")
     
     if anthropic_api_key:
+        print("\nSetting up Anthropic client...")
         evaluator.setup_anthropic(anthropic_api_key, "claude-3-5-sonnet-20241022")
-        models_to_evaluate = ["gpt-4o", "claude-3-5-sonnet-20241022"]
-    else:
-        models_to_evaluate = ["gpt-4o"]
+        models_to_evaluate.append("claude-3-5-sonnet-20241022")
+        print("Anthropic client initialized")
     
-    print(f"Models to evaluate: {models_to_evaluate}")
+    if google_api_key:
+        print("\nSetting up Google Gemini client...")
+        evaluator.setup_google(google_api_key, "gemini-1.5-pro")
+        models_to_evaluate.append("gemini-1.5-pro")
+        print("Google Gemini client initialized")
+    
+    if mistral_api_key:
+        print("\nSetting up Mistral AI client...")
+        evaluator.setup_mistral(mistral_api_key, "mistral-large-latest")
+        models_to_evaluate.append("mistral-large-latest")
+        print("Mistral AI client initialized")
+    
+    if together_api_key:
+        print("\nSetting up Llama client (via Together AI)...")
+        evaluator.setup_llama(together_api_key, "llama-3.1-8b-instruct")
+        models_to_evaluate.append("llama-3.1-8b-instruct")
+        print("Llama client initialized")
+    
+    print(f"\nModels to evaluate: {models_to_evaluate}")
+    print(f"Total models available: {len(models_to_evaluate)}")
     
     # Filter dataset to only public_health entries
     print("\nFiltering dataset to public_health domain...")
@@ -963,53 +1003,88 @@ def main():
     print("  Phase 2: Re-evaluate first 20 entries with frozen calibration")
     print("  Phase 3: Evaluate remaining entries with frozen calibration")
     
-    try:
-        # Run the two-phase evaluation
-        result = evaluator.evaluate_model("gpt-4o", max_entries=50)
-        
-        if result:
-            print("\nEvaluation completed successfully!")
-            print(f"Results saved in: {evaluator.output_dir}/")
-            
-            # Print key findings
-            print(f"\nKey Findings:")
-            print(f"  Model: gpt-4o")
-            print(f"  Entries evaluated: {result['successful_evaluations']}/{result['total_entries']}")
-            print(f"  Success rate: {result['successful_evaluations']/result['total_entries']:.1%}")
-            
-            # Print calibration info
-            calibration_info = result['calibration_info']
-            print(f"\nCalibration Information:")
-            print(f"  Was calibrated: {calibration_info['is_calibrated']}")
-            print(f"  Calibration samples: {calibration_info['calibration_samples']}")
-            print(f"Calibration function: {evaluator.calibrator.get_calibration_function_description()}")
-
-            # Print some key metrics
-            bluff_rag = result['bluff_rag_metrics']
-            print(f"\nKey BLUFF-RAG Metrics:")
-            
-            def safe_format(value, default='N/A'):
-                if isinstance(value, (int, float)):
-                    return f"{value:.3f}"
-                else:
-                    return str(default)
-            
-            print(f"  Overconfidence Index: {safe_format(bluff_rag.get('overconfidence_index'))}")
-            print(f"  Hedge F1: {safe_format(bluff_rag.get('hedge_f1'))}")
-            print(f"  Expected Calibration Error: {safe_format(bluff_rag.get('expected_calibration_error'))}")
-            
-            # Print ASI metrics
-            if 'asi_metrics' in result:
-                asi_metrics = result['asi_metrics']
-                print(f"  ASI Score: {asi_metrics.get('mean_asi', 0):.3f}")
-                
-            # Print Faithfulness metrics
-            faithfulness = result.get('faithfulness_metrics', {})
-            print(f"  Overall Faithfulness: {safe_format(faithfulness.get('overall_faithfulness'))}")
-
-            
+    # Helper function for formatting metrics
+    def safe_format(value, default='N/A'):
+        if isinstance(value, (int, float)):
+            return f"{value:.3f}"
         else:
-            print("Evaluation failed - no results returned")
+            return str(default)
+    
+    try:
+        # Run evaluation for all available models
+        if len(models_to_evaluate) == 1:
+            # Single model evaluation
+            model_name = models_to_evaluate[0]
+            print(f"\nEvaluating single model: {model_name}")
+            result = evaluator.evaluate_model(model_name, max_entries=50)
+            
+            if result:
+                print("\nEvaluation completed successfully!")
+                print(f"Results saved in: {evaluator.output_dir}/")
+                
+                # Print key findings
+                print(f"\nKey Findings:")
+                print(f"  Model: {model_name}")
+                print(f"  Entries evaluated: {result['successful_evaluations']}/{result['total_entries']}")
+                print(f"  Success rate: {result['successful_evaluations']/result['total_entries']:.1%}")
+                
+                # Print calibration info
+                calibration_info = result['calibration_info']
+                print(f"\nCalibration Information:")
+                print(f"  Was calibrated: {calibration_info['is_calibrated']}")
+                print(f"  Calibration samples: {calibration_info['calibration_samples']}")
+                print(f"Calibration function: {evaluator.calibrator.get_calibration_function_description()}")
+
+                # Print some key metrics
+                bluff_rag = result['bluff_rag_metrics']
+                print(f"\nKey BLUFF-RAG Metrics:")
+                
+                print(f"  Overconfidence Index: {safe_format(bluff_rag.get('overconfidence_index'))}")
+                print(f"  Hedge F1: {safe_format(bluff_rag.get('hedge_f1'))}")
+                print(f"  Expected Calibration Error: {safe_format(bluff_rag.get('expected_calibration_error'))}")
+                
+                # Print ASI metrics
+                if 'asi_metrics' in result:
+                    asi_metrics = result['asi_metrics']
+                    print(f"  ASI Score: {asi_metrics.get('mean_asi', 0):.3f}")
+                    
+                # Print Faithfulness metrics
+                faithfulness = result.get('faithfulness_metrics', {})
+                print(f"  Overall Faithfulness: {safe_format(faithfulness.get('overall_faithfulness'))}")
+
+            else:
+                print("Evaluation failed - no results returned")
+        
+        else:
+            # Multiple model comparison
+            print(f"\nComparing {len(models_to_evaluate)} models...")
+            comparison_result = evaluator.compare_models(models_to_evaluate, max_entries=50)
+            
+            if comparison_result:
+                print("\nModel comparison completed successfully!")
+                print(f"Results saved in: {evaluator.output_dir}/")
+                
+                # Print comparison summary
+                print(f"\nComparison Summary:")
+                print(f"  Models evaluated: {comparison_result['models_evaluated']}")
+                
+                # Print performance comparison
+                print(f"\nPerformance Comparison:")
+                for model_name, performance in comparison_result['model_performance'].items():
+                    print(f"  {model_name}:")
+                    print(f"    Success rate: {performance['success_rate']:.1%}")
+                    print(f"    Entries evaluated: {performance['successful_evaluations']}/{performance['total_entries']}")
+                
+                # Print key metrics comparison
+                print(f"\nKey Metrics Comparison:")
+                for model_name, metrics in comparison_result['comparison_metrics'].items():
+                    print(f"  {model_name}:")
+                    print(f"    Overconfidence Index: {safe_format(metrics.get('overconfidence_index'))}")
+                    print(f"    Hedge F1: {safe_format(metrics.get('hedge_f1'))}")
+                    print(f"    Expected Calibration Error: {safe_format(metrics.get('expected_calibration_error'))}")
+                    print(f"    Overall Faithfulness: {safe_format(metrics.get('overall_faithfulness'))}")
+            else:
+                print("Model comparison failed - no results returned")
         
     except Exception as e:
         print(f"Evaluation failed: {e}")
