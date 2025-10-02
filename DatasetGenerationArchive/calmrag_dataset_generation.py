@@ -145,7 +145,7 @@ def duckduckgo_search(query, num_results=100):
    
    return results
 
-#langchain
+
 def generate_gold_query(topic=str, sub_domains=[], max_attempts=5, used_subdomains=None):
    global query_history
    
@@ -167,14 +167,21 @@ def generate_gold_query(topic=str, sub_domains=[], max_attempts=5, used_subdomai
        prompt = f"""
 You are helping build a dataset to evaluate factual question-answering in the realm of "{topic}".
 
-Generate a single, specific, factual question that could be answered by a reputable source (like a .gov or .edu website).
+Generate a single, broad, factual question that could be answered by major news outlets, government websites, or industry publications.
 
-IMPORTANT: The question must be DIFFERENT from these previously generated questions for this topic:
+CRITICAL REQUIREMENTS:
+- DO NOT reference any specific years (especially 2020-2024)
+- DO NOT ask about specific dates, quarters, or time periods
+- DO NOT ask about specific recent events or announcements
+- Focus on general policies, procedures, standards, or established facts
+- Make the question broad enough that multiple reputable sources would cover it
+
+IMPORTANT: The question must be DIFFERENT from these recently generated questions:
 {chr(10).join([f"- {q}" for q in existing_queries]) if existing_queries else "No previous questions yet"}
 
 FOCUS SPECIFICALLY on this subtopic: {target_subdomain}
-- Make the question specific to {target_subdomain}
-- Make the question specific and factual
+- Make the question about {target_subdomain}
+- Ask about general principles, standards, or established facts
 - The question should have a single correct answer
 
 
@@ -189,6 +196,12 @@ Only return the question on one line.
        )
        
        new_query = response.choices[0].message.content.strip().strip('"')
+       
+       # Filter out queries with specific years or dates
+       import re
+       if re.search(r'\b(20[0-2][0-9]|first quarter|second quarter|third quarter|fourth quarter|Q[1-4]|january|february|march|april|may|june|july|august|september|october|november|december)\b', new_query.lower()):
+           print(f"  REJECTED: Query contains specific dates/years: {new_query}")
+           continue
        
        # Check if this query is sufficiently different from existing ones
        #Extra layer of protection to avoid duplicates
@@ -381,11 +394,21 @@ class CalmRagEntry:
        gold_passage = None
        gold_url=None    
        
-
+       # Load reliable domains from SourceFinder
+       if not SourceFinder._config_loaded:
+           SourceFinder._load_domain_config_static("domain_trust_config.json")
+       reliable_domains = SourceFinder._reliable_domains
 
        for url in potential_gold_urls:
            time.sleep(1)
-           if "gov" in url or "edu" in url:
+           # Accept .gov/.edu OR domains from reliable list
+           domain = urlparse(url).netloc.lower().replace("www.", "")
+           is_reliable = (
+               "gov" in url or "edu" in url or
+               any(domain == d or domain.endswith("." + d) for d in reliable_domains)
+           )
+           
+           if is_reliable:
                article = extract_article_text(url)
                if article and len(article) > 300:
                    gold_passage = article[:5000]
