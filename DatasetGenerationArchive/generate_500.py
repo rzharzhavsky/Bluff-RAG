@@ -3,9 +3,9 @@ import json
 import time
 import random
 from datetime import datetime
-from calmrag_dataset_generation import CalmRagEntry
+from bluffrag_dataset_generation import BluffRagEntry
 
-# Query history is now managed directly by calmrag_dataset_generation.py
+# Query history is now managed directly by bluffrag_dataset_generation.py
 
 def load_progress():
     """Load progress tracking from file"""
@@ -42,7 +42,7 @@ def regenerate_failed_entries():
     print(f"=== Regenerating {len(failed_entries)} Failed Entries ===")
     
     # Load existing dataset
-    dataset_file = "calmrag_dataset.json"
+    dataset_file = "bluffrag_dataset.json"
     try:
         with open(dataset_file, "r", encoding='utf-8') as f:
             existing_dataset = json.load(f)
@@ -65,7 +65,7 @@ def regenerate_failed_entries():
         
         try:
             # Create entry with persistent subdomain tracking
-            entry = CalmRagEntry(entry_id, topic)
+            entry = BluffRagEntry(entry_id, topic)
             
             # Generate the entry
             result = entry.build()
@@ -117,7 +117,7 @@ def regenerate_failed_entries():
     print(f"Total entries in dataset: {len(existing_dataset)}")
 
 def generate_dataset_batch_full():
-    """Generate the complete CALM-RAG dataset with 500 QA pairs (50 per topic)"""
+    """Generate the complete BLUFF-RAG dataset with 500 QA pairs (50 per topic)"""
     
     # Define all 10 topics for full dataset
     topics = [
@@ -129,14 +129,14 @@ def generate_dataset_batch_full():
     # Load existing data
     progress = load_progress()
     
-    print(f"=== CALM-RAG Dataset Generation (FULL DATASET MODE) ===")
+    print(f"=== BLUFF-RAG Dataset Generation (FULL DATASET MODE) ===")
     print(f"Target: {len(topics)} topics with {entries_per_topic} entries each")
     print(f"Current progress: {progress['total_generated']} entries generated")
     print(f"Topics: {', '.join(topics)}")
     print(f"{'='*50}")
     
     # Load existing dataset
-    dataset_file = "calmrag_dataset.json"
+    dataset_file = "bluffrag_dataset.json"
     try:
         with open(dataset_file, "r", encoding='utf-8') as f:
             existing_dataset = json.load(f)
@@ -176,7 +176,7 @@ def generate_dataset_batch_full():
                 
                 try:
                     # Create entry with persistent subdomain tracking
-                    entry = CalmRagEntry(entry_id, topic)
+                    entry = BluffRagEntry(entry_id, topic)
                     
                     # Generate the entry
                     result = entry.build()
@@ -237,7 +237,7 @@ def generate_dataset_batch_full():
                 # Check if we've hit the target for this topic
                 if progress["topic_progress"].get(topic, 0) >= entries_per_topic:
                     print(f"\n Target of {entries_per_topic} entries reached for topic {topic}!")
-                    print(f"  Query history for {topic} managed by calmrag_dataset_generation.py")
+                    print(f"  Query history for {topic} managed by bluffrag_dataset_generation.py")
                     break
             
             # Continue to next topic (full dataset generation)
@@ -260,8 +260,8 @@ def generate_dataset_batch_full():
         save_progress(progress)
         print(f"Progress saved: generation_progress.json")
         
-        # Save query history (now managed by calmrag_dataset_generation.py)
-        print(f"Query history managed by calmrag_dataset_generation.py")
+        # Save query history (now managed by bluffrag_dataset_generation.py)
+        print(f"Query history managed by bluffrag_dataset_generation.py")
         
         # Summary
         print(f"\n=== Generation Summary (FULL DATASET MODE) ===")
@@ -279,7 +279,7 @@ def generate_dataset_batch_full():
         print(f"\n Full dataset generation complete! Check the generated files:")
         print(f"  - {dataset_file} (main dataset)")
         print(f"  - subdomain_usage_*.json (subdomain tracking for all topics)")
-        print(f"  - query_history.json (managed by calmrag_dataset_generation.py)")
+        print(f"  - query_history.json (managed by bluffrag_dataset_generation.py)")
         print(f"  - generation_progress.json (progress tracking)")
 
 if __name__ == "__main__":

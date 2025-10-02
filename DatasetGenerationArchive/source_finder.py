@@ -53,7 +53,7 @@ class SourceFinder:
         # Reddit API credentials
         self.reddit_client_id = os.getenv("REDDIT_CLIENT_ID")
         self.reddit_client_secret = os.getenv("REDDIT_CLIENT_SECRET")
-        self.reddit_user_agent = os.getenv("REDDIT_USER_AGENT", "CALM-RAG-SourceFinder/1.0")
+        self.reddit_user_agent = os.getenv("REDDIT_USER_AGENT", "BLUFF-RAG-SourceFinder/1.0")
         
         print(f"SourceFinder initialized for query: '{self.gold_query}'")
         print(f"Extracted topic: {self.topic}")
@@ -946,7 +946,7 @@ class SourceFinder:
         try:
             paired_sets = self.find_sources()
             
-            # Convert to the exact format expected by one_calmrag_entry.py
+            # Convert to the exact format expected by one_bluffrag_entry.py
             formatted_result = {
                 'clear_set': paired_sets['clear_set'],
                 'unclear_set': paired_sets['unclear_set']

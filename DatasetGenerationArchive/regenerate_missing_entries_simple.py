@@ -1,26 +1,26 @@
 #!/usr/bin/env python3
 """
 Simplified script to regenerate missing entries to reach 50 entries per domain.
-The CalmRagEntry class automatically selects the least-used subdomain and updates usage files.
+The BluffRagEntry class automatically selects the least-used subdomain and updates usage files.
 """
 
 import os
 import json
 import time
 from datetime import datetime
-from calmrag_dataset_generation import CalmRagEntry, save_query_history_to_file
+from bluffrag_dataset_generation import BluffRagEntry, save_query_history_to_file
 
 # Target: 50 entries per domain
 TARGET_ENTRIES_PER_DOMAIN = 50
 
 def load_dataset():
     """Load the main dataset"""
-    with open('../calmrag_dataset.json', 'r', encoding='utf-8') as f:
+    with open('../bluffrag_dataset.json', 'r', encoding='utf-8') as f:
         return json.load(f)
 
 def save_dataset(dataset):
     """Save the updated dataset"""
-    with open('../calmrag_dataset.json', 'w', encoding='utf-8') as f:
+    with open('../bluffrag_dataset.json', 'w', encoding='utf-8') as f:
         json.dump(dataset, f, indent=2)
 
 def get_domain_counts(dataset):
@@ -32,13 +32,13 @@ def get_domain_counts(dataset):
     return domain_counts
 
 def generate_entry(domain, entry_index):
-    """Generate a new entry - CalmRagEntry will automatically pick the least-used subdomain"""
+    """Generate a new entry - BluffRagEntry will automatically pick the least-used subdomain"""
     entry_id = f"{domain}_{entry_index:03d}"
     print(f"Generating {entry_id}...")
     
     try:
-        # Create CalmRagEntry - it automatically selects least-used subdomain
-        entry = CalmRagEntry(entry_id, domain)
+        # Create BluffRagEntry - it automatically selects least-used subdomain
+        entry = BluffRagEntry(entry_id, domain)
         
         # Build the entry
         entry_dict = entry.build()
@@ -56,7 +56,7 @@ def generate_entry(domain, entry_index):
 
 def regenerate_missing_entries():
     """Main function to regenerate missing entries"""
-    print("=== CALM-RAG Missing Entry Regeneration ===")
+    print("=== BLUFF-RAG Missing Entry Regeneration ===")
     
     # Load current dataset
     dataset = load_dataset()
@@ -94,7 +94,7 @@ def regenerate_missing_entries():
             existing_indices = [int(id.split('_')[-1]) for id in existing_ids if id.startswith(f"{domain}_")]
             next_index = len(existing_indices) + 1  # Next sequential number
             
-            # Generate the entry (CalmRagEntry will pick the least-used subdomain)
+            # Generate the entry (BluffRagEntry will pick the least-used subdomain)
             retry_count = 0
             new_entry = None
             

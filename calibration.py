@@ -1,5 +1,5 @@
 """
-CALM-RAG Calibration Module
+BLUFF-RAG Calibration Module
 Handles isotonic regression calibration for confidence scores derived from log probabilities.
 """
 
