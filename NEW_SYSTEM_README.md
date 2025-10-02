@@ -1,8 +1,8 @@
-# CALM-RAG Evaluation System - Streamlined Version
+# BLUFF-RAG Evaluation System - Streamlined Version
 
 ## Overview
 
-This is a complete rewrite of the CALM-RAG evaluation system, designed to be more maintainable, debuggable, and easier to understand. The new system maintains all the functionality of the original while being significantly more organized and streamlined.
+This is a complete rewrite of the BLUFF-RAG evaluation system, designed to be more maintainable, debuggable, and easier to understand. The new system maintains all the functionality of the original while being significantly more organized and streamlined.
 
 ## New File Structure
 
@@ -14,8 +14,8 @@ The original three files (`metrics.py`, `evaluate_rag_models.py`, `prompts.py`) 
 - **Calibration workflow**: Two-phase evaluation with calibration
 - **Report generation**: Comprehensive evaluation reports
 
-### 2. `metrics_calm_rag.py` - All Metrics Implementation
-- **CALM-RAG Hypotheses H1-H5**: All hypothesis-specific metrics
+### 2. `metrics_bluff_rag.py` - All Metrics Implementation
+- **BLUFF-RAG Hypotheses H1-H5**: All hypothesis-specific metrics
 - **Core metrics**: ECE, Brier score, confidence-accuracy correlation
 - **Utility metrics**: Retrieval quality, source quality, diversity
 - **ASI metrics**: Ambiguity Sensitivity Index calculations
@@ -49,7 +49,7 @@ The original three files (`metrics.py`, `evaluate_rag_models.py`, `prompts.py`) 
 - Robust confidence extraction
 
 ### 4. **Streamlined Metrics**
-- All CALM-RAG hypothesis metrics in one place
+- All BLUFF-RAG hypothesis metrics in one place
 - Consistent naming and documentation
 - Reduced complexity while maintaining functionality
 
@@ -67,7 +67,7 @@ from evaluation_core import RAGModelEvaluator
 
 # Initialize evaluator
 evaluator = RAGModelEvaluator(
-    dataset_path="calmrag_dataset.json",
+    dataset_path="bluffrag_dataset.json",
     output_dir="evaluation_results",
     use_soft_accuracy=True
 )
@@ -91,8 +91,8 @@ comparison = evaluator.compare_models(models, max_entries=20)
 
 ```python
 # Use metrics directly
-from metrics_calm_rag import compute_all_calm_rag_metrics
-metrics = compute_all_calm_rag_metrics(evaluation_results)
+from metrics_bluff_rag import compute_all_bluff_rag_metrics
+metrics = compute_all_bluff_rag_metrics(evaluation_results)
 
 # Use calibration directly
 from calibration import ConfidenceCalibrator
@@ -117,7 +117,7 @@ parsed = parse_response(model_response)
 
 ### 3. **Metrics Implementation**
 - **Before**: Functions scattered throughout massive metrics.py
-- **After**: All CALM-RAG hypothesis metrics organized by hypothesis
+- **After**: All BLUFF-RAG hypothesis metrics organized by hypothesis
 
 ### 4. **Model Integration**
 - **Before**: Model calling logic mixed with evaluation logic
@@ -131,11 +131,11 @@ parsed = parse_response(model_response)
 
 All original functionality has been preserved:
 
-✅ **All 5 CALM-RAG hypotheses** (H1-H5) with full metrics  
+✅ **All 5 BLUFF-RAG hypotheses** (H1-H5) with full metrics  
 ✅ **Isotonic regression calibration** using log probabilities  
 ✅ **Multi-model support** (GPT, Claude, Gemini, Mistral, Llama)  
 ✅ **Two-phase evaluation** (calibrate on 20 entries, then evaluate all)  
-✅ **Comprehensive reporting** with CALM-RAG scores  
+✅ **Comprehensive reporting** with BLUFF-RAG scores  
 ✅ **Soft accuracy calculation** for nuanced evaluation  
 ✅ **ASI (Ambiguity Sensitivity Index)** calculations  
 ✅ **Source quality and diversity** metrics  
@@ -154,7 +154,7 @@ All original functionality has been preserved:
 - Improved text cleaning
 
 ### 3. **Streamlined Reports**
-- Focused CALM-RAG reports with key metrics
+- Focused BLUFF-RAG reports with key metrics
 - Better metric descriptions and interpretations
 - Cleaner JSON output
 
@@ -166,12 +166,12 @@ If you have existing code that imports from the old modules:
 
 ```python
 # Old imports
-from metrics import compute_all_calm_rag_metrics
+from metrics import compute_all_bluff_rag_metrics
 from evaluate_rag_models import RAGModelEvaluator
 from prompts import format_prompt
 
 # New imports
-from metrics_calm_rag import compute_all_calm_rag_metrics
+from metrics_bluff_rag import compute_all_bluff_rag_metrics
 from evaluation_core import RAGModelEvaluator
 from prompts_core import format_prompt
 ```
@@ -181,7 +181,7 @@ from prompts_core import format_prompt
 The main APIs remain largely the same:
 
 - `RAGModelEvaluator` class interface is preserved
-- `compute_all_calm_rag_metrics()` function signature is the same
+- `compute_all_bluff_rag_metrics()` function signature is the same
 - `format_prompt()` function interface is maintained
 - All metric names and outputs are consistent
 

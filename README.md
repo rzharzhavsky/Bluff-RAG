@@ -1,8 +1,8 @@
-# CALM-RAG-500 Benchmark
+# BLUFF-RAG-500 Benchmark
 
-> **Calibration-Aware Language Model Retrieval-Augmented Generation Benchmark**
+> **Benchmark for Large Language Model Understanding of Factual Fallibility in Retrieval-Augmented Generation**
 
-CALM-RAG-500 is a comprehensive benchmark and evaluation harness for assessing calibration-aware Retrieval-Augmented Generation (RAG) systems across multiple models (GPT-4o, LLaMA-2/70B, Mistral-7B, Gemini).
+BLUFF-RAG-500 is a comprehensive benchmark and evaluation harness for assessing calibration-aware Retrieval-Augmented Generation (RAG) systems across multiple models (GPT-4o, LLaMA-2/70B, Mistral-7B, Gemini).
 
 ## 🎯 Core Hypotheses
 
@@ -19,8 +19,8 @@ CALM-RAG-500 is a comprehensive benchmark and evaluation harness for assessing c
 ### Installation
 
 ```bash
-git clone https://github.com/your-repo/CALM-RAG500.git
-cd CALM-RAG500
+git clone https://github.com/your-repo/BLUFF-RAG500.git
+cd BLUFF-RAG500
 pip install -r requirements.txt
 ```
 
@@ -45,7 +45,7 @@ evaluator.save_results(results)
 
 ## 📊 Dataset Schema
 
-Each item in the CALM-RAG-500 dataset follows this structure:
+Each item in the BLUFF-RAG-500 dataset follows this structure:
 
 ```json
 {
@@ -125,7 +125,7 @@ results = evaluator.run_evaluation("openai", prompt_type="uncertainty")
 
 ## 📋 Reference Datasets
 
-CALM-RAG-500 builds upon several established benchmarks:
+BLUFF-RAG-500 builds upon several established benchmarks:
 - **RAGBench (2023)**: Factuality/robustness
 - **PubMedQA (2019)**: Medical QA with confidence
 - **MedMCQA (2022)**: Multiple choice with explanations
@@ -167,12 +167,12 @@ Evaluation results include:
 
 ## 📚 Citation
 
-If you use CALM-RAG-500 in your research, please cite:
+If you use BLUFF-RAG-500 in your research, please cite:
 
 ```bibtex
-@misc{calm-rag-500,
-  title={CALM-RAG-500: A Calibration-Aware Benchmark for Retrieval-Augmented Generation},
+@misc{bluff-rag-500,
+  title={BLUFF-RAG-500: Benchmark for Large Language Model Understanding of Factual Fallibility in Retrieval-Augmented Generation},
   author={Ron, Emma, Daniel, and Ahan},
   year={2024},
-  url={https://github.com/Ahanmr/CALM-RAG500}
+  url={https://github.com/Ahanmr/BLUFF-RAG500}
 }

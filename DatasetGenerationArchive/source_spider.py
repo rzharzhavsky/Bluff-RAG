@@ -45,7 +45,7 @@ class SourceSpider(scrapy.Spider):
         # Generate starting URLs
         self.start_urls = self._generate_strategic_start_urls()
         
-        self.results_for_calmrag = {"clear_set": [], "ambiguous_set": []}
+        self.results_for_bluffrag = {"clear_set": [], "ambiguous_set": []}
         self.targets = {"reliable": 6, "unreliable": 5}  # Slightly higher targets
         
         # Track domains and failed requests
@@ -682,8 +682,8 @@ class SourceSpider(scrapy.Spider):
         # Create paired sets
         paired = self._create_paired_sets()
         if paired:
-            self.results_for_calmrag["clear_set"] = paired["clear_set"]["sources"]
-            self.results_for_calmrag["ambiguous_set"] = paired["ambiguous_set"]["sources"]
+            self.results_for_bluffrag["clear_set"] = paired["clear_set"]["sources"]
+            self.results_for_bluffrag["ambiguous_set"] = paired["ambiguous_set"]["sources"]
             
             with open("paired_sets.json", "w") as f:
                 json.dump(paired, f, indent=2)

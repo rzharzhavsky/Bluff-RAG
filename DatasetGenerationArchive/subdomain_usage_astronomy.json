@@ -1,12 +1,13 @@
 {
-  "planets_and_moons": 5,
-  "stars_and_galaxies": 5,
+  "planets_and_moons": 7,
+  "stars_and_galaxies": 7,
   "black_holes": 5,
-  "space_exploration": 5,
-  "telescopes": 5,
-  "cosmology": 5,
-  "exoplanets": 5,
+  "space_exploration": 8,
+  "telescopes": 3,
+  "cosmology": 10,
+  "exoplanets": 4,
   "astrobiology": 5,
-  "universe_origin": 5,
-  "moon_landing": 5
+  "universe_origin": 1,
+  "moon_landing": 1,
+  "unknown": 1
 }

@@ -1,5 +1,5 @@
 """
-CALM-RAG Prompts Module - Streamlined Version
+BLUFF-RAG Prompts Module - Streamlined Version
 Handles prompt formatting for different RAG models and confidence extraction.
 """
 

@@ -2,10 +2,11 @@
   "constitutional_law": 6,
   "criminal_law": 6,
   "international_law": 6,
-  "civil_rights": 5,
+  "civil_rights": 6,
   "supreme_court_cases": 5,
   "intellectual_property": 6,
   "environmental_law": 6,
   "human_rights_law": 5,
-  "immigration_law": 6
+  "immigration_law": 6,
+  "unknown": 1
 }

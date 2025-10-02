@@ -53,7 +53,7 @@ class SourceFinder:
         # Reddit API credentials
         self.reddit_client_id = os.getenv("REDDIT_CLIENT_ID")
         self.reddit_client_secret = os.getenv("REDDIT_CLIENT_SECRET")
-        self.reddit_user_agent = os.getenv("REDDIT_USER_AGENT", "CALM-RAG-SourceFinder/1.0")
+        self.reddit_user_agent = os.getenv("REDDIT_USER_AGENT", "BLUFF-RAG-SourceFinder/1.0")
         
         print(f"SourceFinder initialized for query: '{self.gold_query}'")
         print(f"Extracted topic: {self.topic}")
@@ -308,7 +308,7 @@ class SourceFinder:
         return final_score
     
     def _classify_domain(self, url: str) -> str:
-        """Classify domain as reliable, unreliable, or unknown."""
+        """Classify domain as reliable or unreliable (unknown domains default to unreliable)."""
         try:
             domain = urlparse(url).netloc.lower().replace("www.", "")
             
@@ -317,15 +317,17 @@ class SourceFinder:
             # Check for exact match or subdomain
             if any(domain == d or domain.endswith("." + d) for d in SourceFinder._reliable_domains):
                 return "reliable"
-            elif (".gov" in domain or ".edu" in domain):
+            elif (".edu" in domain or ".gov" in domain):
                 return "reliable"
             elif any(domain == d or domain.endswith("." + d) for d in SourceFinder._unreliable_domains):
                 return "unreliable"
             else:
-                return "unknown"
+                # Treat unknown domains as unreliable (fallback)
+                return "unreliable"
         except Exception as e:
             print(f"Error classifying domain for {url}: {e}")
-            return "unknown"
+            # Treat errors as unreliable (fallback)
+            return "unreliable"
     
     def _search_duckduckgo(self, query: str, max_results: int = 30) -> List[Dict]:  # Reduced from 80 to 30
         """Search Duck for urls (ddgs returns keys: href/title/body)"""
@@ -605,7 +607,11 @@ class SourceFinder:
                 return None
 
         # Skip problematic domains that consistently timeout
-        problematic_domains = {'gatorcountry.com', 'totalenergies.fr', 'statbase.org'}
+        problematic_domains = {
+            'gatorcountry.com', 'totalenergies.fr', 'statbase.org',
+            'olympics.com', 'worldatlas.com', 'cdn.bookey.app',
+            'research-information.bris.ac.uk', 'tiktok.com'
+        }
         domain = urlparse(url).netloc.lower()
         if any(prob_domain in domain for prob_domain in problematic_domains):
             print(f"    Skipping problematic domain: {domain}")
@@ -614,9 +620,9 @@ class SourceFinder:
         with ThreadPoolExecutor(max_workers=1) as executor:
             future = executor.submit(_do_extract)
             try:
-                text = future.result(timeout=15)  # Reduced timeout for faster failure
+                text = future.result(timeout=8)  # Faster timeout to avoid long waits
             except FuturesTimeout:
-                print("    Extraction timed out (>15s), skipping")
+                print("    Extraction timed out (>8s), skipping")
                 return None
             
         if not text:
@@ -940,7 +946,7 @@ class SourceFinder:
         try:
             paired_sets = self.find_sources()
             
-            # Convert to the exact format expected by one_calmrag_entry.py
+            # Convert to the exact format expected by one_bluffrag_entry.py
             formatted_result = {
                 'clear_set': paired_sets['clear_set'],
                 'unclear_set': paired_sets['unclear_set']

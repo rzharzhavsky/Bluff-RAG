@@ -1,5 +1,5 @@
 """
-CALM-RAG Evaluation Core Module - Streamlined Version
+BLUFF-RAG Evaluation Core Module - Streamlined Version
 Main orchestrator for RAG model evaluation with calibration support.
 """
 
@@ -22,13 +22,13 @@ except Exception as e:
 
 # Import our streamlined modules
 from prompts_core import format_prompt, extract_confidence_from_response, parse_response
-from metrics_calm_rag import (
-    compute_all_calm_rag_metrics, calculate_all_utility_metrics,
-    calm_rag_h1_metrics, calm_rag_h3_metrics,
-    calm_rag_h4_metrics, calm_rag_h5_metrics,
+from metrics_bluff_rag import (
+    compute_all_bluff_rag_metrics, calculate_all_utility_metrics,
+    bluff_rag_h1_metrics, bluff_rag_h3_metrics,
+    bluff_rag_h4_metrics, bluff_rag_h5_metrics,
     calculate_ambiguity_sensitivity_index, calculate_batch_asi,
     calculate_continuous_uncertainty, calculate_llm_accuracy,
-    calm_rag_faithfulness_metrics, calm_rag_faithfulness_metrics_with_individuals
+    bluff_rag_faithfulness_metrics, bluff_rag_faithfulness_metrics_with_individuals
 )
 from calibration import ConfidenceCalibrator
 
@@ -71,9 +71,9 @@ def make_json_serializable(data: Any) -> Any:
         return str(data)
 
 
-def generate_calm_rag_report(evaluation_summary: Dict[str, Any]) -> Dict[str, Any]:
-    """Generate a comprehensive CALM-RAG report with structure."""
-    calm_rag_metrics = evaluation_summary.get('calm_rag_metrics', {})
+def generate_bluff_rag_report(evaluation_summary: Dict[str, Any]) -> Dict[str, Any]:
+    """Generate a comprehensive BLUFF-RAG report with structure."""
+    bluff_rag_metrics = evaluation_summary.get('bluff_rag_metrics', {})
     faithfulness_metrics = evaluation_summary.get('faithfulness_metrics', {})
     asi_metrics = evaluation_summary.get('asi_metrics', {})
     
@@ -124,31 +124,31 @@ def generate_calm_rag_report(evaluation_summary: Dict[str, Any]) -> Dict[str, An
         
         # HYPOTHESIS 1: Overconfidence Gap
         'h1_overconfidence_gap': {
-            'evidence_confidence_gap': calm_rag_metrics.get('evidence_confidence_gap', 0.0),
-            'overconfidence_index': calm_rag_metrics.get('overconfidence_index', 0.0),
-            'retrieval_recall_confidence_correlation': calm_rag_metrics.get('retrieval_recall_confidence_correlation', 0.0),
-            'expected_calibration_error': calm_rag_metrics.get('expected_calibration_error', 0.0),
-            'confidence_accuracy_correlation': calm_rag_metrics.get('confidence_accuracy_correlation', 0.0),
-            'avg_retrieval_recall': calm_rag_metrics.get('avg_retrieval_recall', 0.0),
-            'ambiguity_sensitivity_index': asi_metrics.get('mean_asi', 0.0)
+            'evidence_confidence_gap': bluff_rag_metrics.get('evidence_confidence_gap', 0.0),
+            'overconfidence_index': bluff_rag_metrics.get('overconfidence_index', 0.0),
+            'retrieval_recall_confidence_correlation': bluff_rag_metrics.get('retrieval_recall_confidence_correlation', 0.0),
+            'expected_calibration_error': bluff_rag_metrics.get('expected_calibration_error', 0.0),
+            'confidence_accuracy_correlation': bluff_rag_metrics.get('confidence_accuracy_correlation', 0.0),
+            'avg_retrieval_recall': bluff_rag_metrics.get('avg_retrieval_recall', 0.0),
+            'ASI': asi_metrics.get('mean_asi', 0.0)
         },
         
         # HYPOTHESIS 2: Hedging Behavior
         'h2_hedging_behavior': {
-            'hedge_f1': calm_rag_metrics.get('hedge_f1', 0.0),
-            'source_set_on_hedging': calm_rag_metrics.get('source_set_on_hedging', 0.0),
-            'lexical_overconfidence_index': calm_rag_metrics.get('lexical_overconfidence_index', 0.0),
-            'hedge_precision': calm_rag_metrics.get('hedge_precision', 0.0),
-            'hedge_recall': calm_rag_metrics.get('hedge_recall', 0.0)
+            'VUI': bluff_rag_metrics.get('hedge_f1', 0.0),
+            'source_set_on_hedging': bluff_rag_metrics.get('source_set_on_hedging', 0.0),
+            'lexical_overconfidence_index': bluff_rag_metrics.get('lexical_overconfidence_index', 0.0),
+            'hedge_precision': bluff_rag_metrics.get('hedge_precision', 0.0),
+            'hedge_recall': bluff_rag_metrics.get('hedge_recall', 0.0)
         },
         
         # DIAGNOSTIC METRICS
         'diagnostics': {
             'answer_correctness': answer_correctness,
-            'brier_score': calm_rag_metrics.get('brier_score', 0.0),
-            'wrong_answer_rate': calm_rag_metrics.get('wrong_answer_rate', 0.0),
-            'refusal_rate': calm_rag_metrics.get('refusal_rate', 0.0),
-            'source_awareness_score': calm_rag_metrics.get('h5_source_quality_score', 0.0),
+            'brier_score': bluff_rag_metrics.get('brier_score', 0.0),
+            'wrong_answer_rate': bluff_rag_metrics.get('wrong_answer_rate', 0.0),
+            'refusal_rate': bluff_rag_metrics.get('refusal_rate', 0.0),
+            'source_awareness_score': bluff_rag_metrics.get('h5_source_quality_score', 0.0),
             'overall_faithfulness': faithfulness_metrics.get('overall_faithfulness', 0.0)
         }
     }
@@ -157,9 +157,9 @@ def generate_calm_rag_report(evaluation_summary: Dict[str, Any]) -> Dict[str, An
 
 
 class RAGModelEvaluator:
-    """Streamlined evaluator for RAG models on the CALM-RAG dataset."""
+    """Streamlined evaluator for RAG models on the BLUFF-RAG dataset."""
     
-    def __init__(self, dataset_path: str = "calmrag_dataset.json", 
+    def __init__(self, dataset_path: str = "bluffrag_dataset.json", 
                  output_dir: str = "evaluation_results", 
                  use_llm_grading: bool = True):
         self.dataset_path = dataset_path
@@ -185,7 +185,7 @@ class RAGModelEvaluator:
             self._initialize_grading_client()
         
     def _load_dataset(self) -> List[Dict[str, Any]]:
-        """Load the CALM-RAG dataset."""
+        """Load the BLUFF-RAG dataset."""
         with open(self.dataset_path, 'r', encoding='utf-8') as f:
             return json.load(f)
     
@@ -599,7 +599,7 @@ class RAGModelEvaluator:
     
     def evaluate_model(self, model_name: str, max_entries: Optional[int] = None, skip_calibration: bool = False) -> Dict[str, Any]:
         """Evaluate a model on the dataset with two-phase calibration approach."""
-        print(f"\nEvaluating {model_name} on CALM-RAG dataset...")
+        print(f"\nEvaluating {model_name} on BLUFF-RAG dataset...")
         
         if max_entries:
             dataset_subset = self.dataset[:max_entries]
@@ -752,13 +752,13 @@ class RAGModelEvaluator:
         all_results = clear_results + ambiguous_results
         
         # Compute all metrics
-        print("Computing CALM-RAG metrics...")
+        print("Computing BLUFF-RAG metrics...")
         
-        # Core CALM-RAG metrics
-        calm_rag_metrics = compute_all_calm_rag_metrics(all_results)
+        # Core BLUFF-RAG metrics
+        bluff_rag_metrics = compute_all_bluff_rag_metrics(all_results)
         
         # Calculate faithfulness metrics with individual scores
-        faithfulness_batch_metrics, individual_faithfulness_scores = calm_rag_faithfulness_metrics_with_individuals(all_results)
+        faithfulness_batch_metrics, individual_faithfulness_scores = bluff_rag_faithfulness_metrics_with_individuals(all_results)
         
         # Add individual faithfulness scores to results
         for i, result in enumerate(all_results):
@@ -792,7 +792,7 @@ class RAGModelEvaluator:
             'total_entries': len(dataset_subset),
             'successful_evaluations': successful_evaluations,
             'calibration_info': self.calibrator.get_calibration_info(),
-            'calm_rag_metrics': calm_rag_metrics,
+            'bluff_rag_metrics': bluff_rag_metrics,
             'faithfulness_metrics': faithfulness_batch_metrics,
             'utility_metrics': utility_metrics,
             'asi_metrics': batch_asi,
@@ -842,26 +842,26 @@ class RAGModelEvaluator:
         evaluation_summary = round_metrics(evaluation_summary, precision=3)
         evaluation_summary = make_json_serializable(evaluation_summary)
         
-        # Generate streamlined CALM-RAG report
-        calm_rag_report = generate_calm_rag_report(evaluation_summary)
+        # Generate streamlined BLUFF-RAG report
+        bluff_rag_report = generate_bluff_rag_report(evaluation_summary)
         
         # Save results
         output_file = os.path.join(self.output_dir, f"{model_name}_evaluation.json")
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(evaluation_summary, f, indent=2)
         
-        report_file = os.path.join(self.output_dir, f"{model_name}_calm_rag_report.json")
+        report_file = os.path.join(self.output_dir, f"{model_name}_bluff_rag_report.json")
         with open(report_file, 'w', encoding='utf-8') as f:
-            json.dump(calm_rag_report, f, indent=2)
+            json.dump(bluff_rag_report, f, indent=2)
         
         print(f"Results saved to {output_file}")
-        print(f"Streamlined CALM-RAG report saved to {report_file}")
+        print(f"Streamlined BLUFF-RAG report saved to {report_file}")
         
         return evaluation_summary
     
     def compare_models(self, model_names: List[str], max_entries: Optional[int] = None) -> Dict[str, Any]:
         """Compare multiple models on the dataset."""
-        print(f"Comparing {len(model_names)} models on CALM-RAG dataset")
+        print(f"Comparing {len(model_names)} models on BLUFF-RAG dataset")
         print("=" * 60)
         
         comparison_results = {}
@@ -889,14 +889,14 @@ class RAGModelEvaluator:
                 'success_rate': result['successful_evaluations'] / result['total_entries']
             }
             
-            # Key CALM-RAG metrics for comparison
-            calm_rag = result['calm_rag_metrics']
+            # Key BLUFF-RAG metrics for comparison
+            bluff_rag = result['bluff_rag_metrics']
             faithfulness = result.get('faithfulness_metrics', {})
             comparison_summary['comparison_metrics'][model_name] = {
-                'overconfidence_index': calm_rag.get('overconfidence_index', 'N/A'),
-                'hedge_f1': calm_rag.get('hedge_f1', 'N/A'),
-                'expected_calibration_error': calm_rag.get('expected_calibration_error', 'N/A'),
-                'source_quality_confidence_correlation': calm_rag.get('source_quality_confidence_correlation', 'N/A'),
+                'overconfidence_index': bluff_rag.get('overconfidence_index', 'N/A'),
+                'hedge_f1': bluff_rag.get('hedge_f1', 'N/A'),
+                'expected_calibration_error': bluff_rag.get('expected_calibration_error', 'N/A'),
+                'source_quality_confidence_correlation': bluff_rag.get('source_quality_confidence_correlation', 'N/A'),
                 # Faithfulness metrics
                 'overall_faithfulness': faithfulness.get('overall_faithfulness', 'N/A'),
                 'answer_source_overlap': faithfulness.get('answer_source_overlap', 'N/A'),
@@ -922,7 +922,7 @@ class RAGModelEvaluator:
 
 def main():
     """Main evaluation function."""
-    print("CALM-RAG Model Evaluation")
+    print("BLUFF-RAG Model Evaluation")
     print("=" * 50)
     
     # Initialize evaluator
@@ -985,8 +985,8 @@ def main():
             print(f"Calibration function: {evaluator.calibrator.get_calibration_function_description()}")
 
             # Print some key metrics
-            calm_rag = result['calm_rag_metrics']
-            print(f"\nKey CALM-RAG Metrics:")
+            bluff_rag = result['bluff_rag_metrics']
+            print(f"\nKey BLUFF-RAG Metrics:")
             
             def safe_format(value, default='N/A'):
                 if isinstance(value, (int, float)):
@@ -994,9 +994,9 @@ def main():
                 else:
                     return str(default)
             
-            print(f"  Overconfidence Index: {safe_format(calm_rag.get('overconfidence_index'))}")
-            print(f"  Hedge F1: {safe_format(calm_rag.get('hedge_f1'))}")
-            print(f"  Expected Calibration Error: {safe_format(calm_rag.get('expected_calibration_error'))}")
+            print(f"  Overconfidence Index: {safe_format(bluff_rag.get('overconfidence_index'))}")
+            print(f"  Hedge F1: {safe_format(bluff_rag.get('hedge_f1'))}")
+            print(f"  Expected Calibration Error: {safe_format(bluff_rag.get('expected_calibration_error'))}")
             
             # Print ASI metrics
             if 'asi_metrics' in result:
