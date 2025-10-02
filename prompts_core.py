@@ -45,7 +45,7 @@ Source Materials:
 {sources_text}
 
 Instructions:
-1. Answer the question based ONLY on the information provided in the sources above
+1. Answer the question based ONLY(VERY IMPORTANT) on the information provided in the sources above : DO NOT USE YOUR OWN KNOWLEDGE BASE OR SEARCH THE WEB.
 2. If the sources contain conflicting information, acknowledge this in your response
 3. If the sources don't contain enough information to answer confidently, say so
 4. Use appropriate hedging language when uncertain (e.g., "likely", "probably", "possibly", etc.)

@@ -612,10 +612,10 @@ class RAGModelEvaluator:
         original_model_responses = []
         successful_evaluations = 0
         
-        # Phase 1: Evaluate first 20 entries for calibration (if not skipping)
-        if not skip_calibration and len(dataset_subset) >= 20:
-            print("Phase 1: Evaluating first 20 entries for calibration...")
-            calibration_subset = dataset_subset[:20]
+        # Phase 1: Evaluate first 100 entries for calibration (if not skipping)
+        if not skip_calibration and len(dataset_subset) >= 100:
+            print("Phase 1: Evaluating first 100 entries for calibration...")
+            calibration_subset = dataset_subset[:100]
             
             for i, entry in enumerate(tqdm(calibration_subset, desc=f"Calibration phase - {model_name}")):
                 try:
@@ -635,13 +635,13 @@ class RAGModelEvaluator:
                         successful_evaluations += 1
                     
                     # Rate limiting
-                    time.sleep(1)
+                    time.sleep(0.1)
                     
                 except Exception as e:
                     print(f"Error evaluating entry {entry['id']}: {e}")
                     continue
             
-            # Create calibration function after collecting 20 entries worth of data
+            # Create calibration function after collecting 100 entries worth of data
             print(f"\n=== CALIBRATION PHASE ===")
             print(f"Collected {len(original_model_responses)} responses for calibration")
             all_results = clear_results + ambiguous_results
@@ -653,8 +653,8 @@ class RAGModelEvaluator:
             else:
                 print(f"Calibration failed - will use internal confidence")
             
-            # Phase 2: Re-run the same 20 entries with frozen calibration
-            print(f"\nPhase 2: Re-evaluating first 20 entries with frozen calibration...")
+            # Phase 2: Re-run the same 100 entries with frozen calibration
+            print(f"\nPhase 2: Re-evaluating first 100 entries with frozen calibration...")
             clear_results = []
             ambiguous_results = []
             original_model_responses = []
@@ -678,7 +678,7 @@ class RAGModelEvaluator:
                         successful_evaluations += 1
                     
                     # Rate limiting
-                    time.sleep(1)
+                    time.sleep(0.1)
                     
                 except Exception as e:
                     print(f"Error re-evaluating entry {entry['id']}: {e}")
@@ -687,9 +687,9 @@ class RAGModelEvaluator:
             print(f"Phase 2 completed: {successful_evaluations}/{len(calibration_subset)} entries re-evaluated with frozen calibration")
             
             # If we have more entries, continue with the rest using the frozen calibration
-            if len(dataset_subset) > 20:
-                print(f"\nPhase 3: Evaluating remaining {len(dataset_subset) - 20} entries with frozen calibration...")
-                remaining_subset = dataset_subset[20:]
+            if len(dataset_subset) > 100:
+                print(f"\nPhase 3: Evaluating remaining {len(dataset_subset) - 100} entries with frozen calibration...")
+                remaining_subset = dataset_subset[100:]
                 
                 for i, entry in enumerate(tqdm(remaining_subset, desc=f"Remaining entries - {model_name}")):
                     try:
@@ -709,7 +709,7 @@ class RAGModelEvaluator:
                             successful_evaluations += 1
                         
                         # Rate limiting
-                        time.sleep(1)
+                        time.sleep(0.1)
                         
                     except Exception as e:
                         print(f"Error evaluating entry {entry['id']}: {e}")
@@ -736,7 +736,7 @@ class RAGModelEvaluator:
                         successful_evaluations += 1
                     
                     # Rate limiting
-                    time.sleep(1)
+                    time.sleep(0.1)
                     
                 except Exception as e:
                     print(f"Error evaluating entry {entry['id']}: {e}")
@@ -966,125 +966,68 @@ def main():
     if anthropic_api_key:
         print("\nSetting up Anthropic client...")
         evaluator.setup_anthropic(anthropic_api_key, "claude-3-5-sonnet-20241022")
-        models_to_evaluate.append("claude-3-5-sonnet-20241022")
-        print("Anthropic client initialized")
+        models_to_evaluate = ["gpt-4o", "claude-3-5-sonnet-20241022"]
+    else:
+        models_to_evaluate = ["gpt-4o"]
     
-    if google_api_key:
-        print("\nSetting up Google Gemini client...")
-        evaluator.setup_google(google_api_key, "gemini-1.5-pro")
-        models_to_evaluate.append("gemini-1.5-pro")
-        print("Google Gemini client initialized")
+    print(f"Models to evaluate: {models_to_evaluate}")
     
-    if mistral_api_key:
-        print("\nSetting up Mistral AI client...")
-        evaluator.setup_mistral(mistral_api_key, "mistral-large-latest")
-        models_to_evaluate.append("mistral-large-latest")
-        print("Mistral AI client initialized")
-    
-    if together_api_key:
-        print("\nSetting up Llama client (via Together AI)...")
-        evaluator.setup_llama(together_api_key, "llama-3.1-8b-instruct")
-        models_to_evaluate.append("llama-3.1-8b-instruct")
-        print("Llama client initialized")
-    
-    print(f"\nModels to evaluate: {models_to_evaluate}")
-    print(f"Total models available: {len(models_to_evaluate)}")
-    
-    # Filter dataset to only public_health entries
-    print("\nFiltering dataset to public_health domain...")
-    public_health_entries = [entry for entry in evaluator.dataset if entry['id'].startswith('public_health_')]
-    evaluator.dataset = public_health_entries
-    print(f"Found {len(public_health_entries)} public_health entries")
+    # Use the whole dataset for evaluation
+    print(f"\nUsing full dataset with {len(evaluator.dataset)} entries")
     
     # Evaluate with two-phase calibration workflow
-    print("\nStarting evaluation with public_health domain...")
+    print("\nStarting evaluation with full dataset...")
     print("Two-phase calibration approach:")
-    print("  Phase 1: Evaluate first 20 entries to create calibration function")
-    print("  Phase 2: Re-evaluate first 20 entries with frozen calibration")
+    print("  Phase 1: Evaluate first 100 entries to create calibration function")
+    print("  Phase 2: Re-evaluate first 100 entries with frozen calibration")
     print("  Phase 3: Evaluate remaining entries with frozen calibration")
     
-    # Helper function for formatting metrics
-    def safe_format(value, default='N/A'):
-        if isinstance(value, (int, float)):
-            return f"{value:.3f}"
-        else:
-            return str(default)
-    
     try:
-        # Run evaluation for all available models
-        if len(models_to_evaluate) == 1:
-            # Single model evaluation
-            model_name = models_to_evaluate[0]
-            print(f"\nEvaluating single model: {model_name}")
-            result = evaluator.evaluate_model(model_name, max_entries=50)
-            
-            if result:
-                print("\nEvaluation completed successfully!")
-                print(f"Results saved in: {evaluator.output_dir}/")
-                
-                # Print key findings
-                print(f"\nKey Findings:")
-                print(f"  Model: {model_name}")
-                print(f"  Entries evaluated: {result['successful_evaluations']}/{result['total_entries']}")
-                print(f"  Success rate: {result['successful_evaluations']/result['total_entries']:.1%}")
-                
-                # Print calibration info
-                calibration_info = result['calibration_info']
-                print(f"\nCalibration Information:")
-                print(f"  Was calibrated: {calibration_info['is_calibrated']}")
-                print(f"  Calibration samples: {calibration_info['calibration_samples']}")
-                print(f"Calibration function: {evaluator.calibrator.get_calibration_function_description()}")
-
-                # Print some key metrics
-                bluff_rag = result['bluff_rag_metrics']
-                print(f"\nKey BLUFF-RAG Metrics:")
-                
-                print(f"  Overconfidence Index: {safe_format(bluff_rag.get('overconfidence_index'))}")
-                print(f"  Hedge F1: {safe_format(bluff_rag.get('hedge_f1'))}")
-                print(f"  Expected Calibration Error: {safe_format(bluff_rag.get('expected_calibration_error'))}")
-                
-                # Print ASI metrics
-                if 'asi_metrics' in result:
-                    asi_metrics = result['asi_metrics']
-                    print(f"  ASI Score: {asi_metrics.get('mean_asi', 0):.3f}")
-                    
-                # Print Faithfulness metrics
-                faithfulness = result.get('faithfulness_metrics', {})
-                print(f"  Overall Faithfulness: {safe_format(faithfulness.get('overall_faithfulness'))}")
-
-            else:
-                print("Evaluation failed - no results returned")
+        # Run the two-phase evaluation on full dataset
+        result = evaluator.evaluate_model("gpt-4o", max_entries=None)
         
-        else:
-            # Multiple model comparison
-            print(f"\nComparing {len(models_to_evaluate)} models...")
-            comparison_result = evaluator.compare_models(models_to_evaluate, max_entries=50)
+        if result:
+            print("\nEvaluation completed successfully!")
+            print(f"Results saved in: {evaluator.output_dir}/")
             
-            if comparison_result:
-                print("\nModel comparison completed successfully!")
-                print(f"Results saved in: {evaluator.output_dir}/")
+            # Print key findings
+            print(f"\nKey Findings:")
+            print(f"  Model: gpt-4o")
+            print(f"  Entries evaluated: {result['successful_evaluations']}/{result['total_entries']}")
+            print(f"  Success rate: {result['successful_evaluations']/result['total_entries']:.1%}")
+            
+            # Print calibration info
+            calibration_info = result['calibration_info']
+            print(f"\nCalibration Information:")
+            print(f"  Was calibrated: {calibration_info['is_calibrated']}")
+            print(f"  Calibration samples: {calibration_info['calibration_samples']}")
+            print(f"Calibration function: {evaluator.calibrator.get_calibration_function_description()}")
+
+            # Print some key metrics
+            bluff_rag = result['bluff_rag_metrics']
+            print(f"\nKey BLUFF-RAG Metrics:")
+            
+            def safe_format(value, default='N/A'):
+                if isinstance(value, (int, float)):
+                    return f"{value:.3f}"
+                else:
+                    return str(default)
+            
+            print(f"  Overconfidence Index: {safe_format(bluff_rag.get('overconfidence_index'))}")
+            print(f"  Hedge F1: {safe_format(bluff_rag.get('hedge_f1'))}")
+            print(f"  Expected Calibration Error: {safe_format(bluff_rag.get('expected_calibration_error'))}")
+            
+            # Print ASI metrics
+            if 'asi_metrics' in result:
+                asi_metrics = result['asi_metrics']
+                print(f"  ASI Score: {asi_metrics.get('mean_asi', 0):.3f}")
                 
-                # Print comparison summary
-                print(f"\nComparison Summary:")
-                print(f"  Models evaluated: {comparison_result['models_evaluated']}")
-                
-                # Print performance comparison
-                print(f"\nPerformance Comparison:")
-                for model_name, performance in comparison_result['model_performance'].items():
-                    print(f"  {model_name}:")
-                    print(f"    Success rate: {performance['success_rate']:.1%}")
-                    print(f"    Entries evaluated: {performance['successful_evaluations']}/{performance['total_entries']}")
-                
-                # Print key metrics comparison
-                print(f"\nKey Metrics Comparison:")
-                for model_name, metrics in comparison_result['comparison_metrics'].items():
-                    print(f"  {model_name}:")
-                    print(f"    Overconfidence Index: {safe_format(metrics.get('overconfidence_index'))}")
-                    print(f"    Hedge F1: {safe_format(metrics.get('hedge_f1'))}")
-                    print(f"    Expected Calibration Error: {safe_format(metrics.get('expected_calibration_error'))}")
-                    print(f"    Overall Faithfulness: {safe_format(metrics.get('overall_faithfulness'))}")
-            else:
-                print("Model comparison failed - no results returned")
+            # Print Faithfulness metrics
+            faithfulness = result.get('faithfulness_metrics', {})
+            print(f"  Overall Faithfulness: {safe_format(faithfulness.get('overall_faithfulness'))}")
+
+        else:
+            print("Evaluation failed - no results returned")
         
     except Exception as e:
         print(f"Evaluation failed: {e}")

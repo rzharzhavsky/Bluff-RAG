@@ -275,7 +275,7 @@ Respond with ONLY a number between 0.0 and 1.0 (e.g., "0.75")."""
             score = float(score_text)
             # Clamp to valid range
             return max(0.0, min(1.0, score))
-        except ValueError:
+        except ValueError as e:
             # If parsing fails, fall back to soft accuracy
             print(f"LLM grading failed: {e}. Falling back to soft accuracy.")
             return calculate_soft_accuracy(prediction, [gold_answer])
