@@ -681,6 +681,12 @@ def calculate_ambiguity_sensitivity_index(clear_entry: Dict[str, Any],
                                         ambiguous_entry: Dict[str, Any]) -> Dict[str, float]:
     """
     Calculate Ambiguity Sensitivity Index (ASI) comparing clear vs ambiguous sources.
+    
+    A good model should:
+    - Lower confidence when sources are ambiguous (positive confidence_sensitivity)
+    - Have lower accuracy with ambiguous sources (positive accuracy_sensitivity)
+    
+    We penalize models that inappropriately increase confidence with ambiguous sources.
     """
     clear_confidence = clear_entry.get('confidence', 0.5)
     ambiguous_confidence = ambiguous_entry.get('confidence', 0.5)
@@ -688,7 +694,16 @@ def calculate_ambiguity_sensitivity_index(clear_entry: Dict[str, Any],
     ambiguous_accuracy = ambiguous_entry.get('accuracy', 0.0)
     
     # ASI components
-    confidence_sensitivity = abs(clear_confidence - ambiguous_confidence)
+    # Confidence should DROP from clear to ambiguous (positive = good, negative = bad)
+    confidence_drop = clear_confidence - ambiguous_confidence
+    
+    # Penalize confidence increases (bad behavior) by doubling the penalty
+    if confidence_drop < 0:
+        confidence_sensitivity = confidence_drop * 2  # Double penalty for increasing confidence
+    else:
+        confidence_sensitivity = confidence_drop  # Reward for decreasing confidence
+    
+    # Accuracy typically drops with ambiguous sources (positive = expected)
     accuracy_sensitivity = clear_accuracy - ambiguous_accuracy
     
     # Overall ASI (normalized combination)

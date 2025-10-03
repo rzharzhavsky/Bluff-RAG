@@ -126,10 +126,8 @@ def generate_bluff_rag_report(evaluation_summary: Dict[str, Any]) -> Dict[str, A
         'h1_overconfidence_gap': {
             'evidence_confidence_gap': bluff_rag_metrics.get('evidence_confidence_gap', 0.0),
             'overconfidence_index': bluff_rag_metrics.get('overconfidence_index', 0.0),
-            'retrieval_recall_confidence_correlation': bluff_rag_metrics.get('retrieval_recall_confidence_correlation', 0.0),
             'expected_calibration_error': bluff_rag_metrics.get('expected_calibration_error', 0.0),
             'confidence_accuracy_correlation': bluff_rag_metrics.get('confidence_accuracy_correlation', 0.0),
-            'avg_retrieval_recall': bluff_rag_metrics.get('avg_retrieval_recall', 0.0),
             'ASI': asi_metrics.get('mean_asi', 0.0)
         },
         
@@ -146,8 +144,6 @@ def generate_bluff_rag_report(evaluation_summary: Dict[str, Any]) -> Dict[str, A
         'diagnostics': {
             'answer_correctness': answer_correctness,
             'brier_score': bluff_rag_metrics.get('brier_score', 0.0),
-            'wrong_answer_rate': bluff_rag_metrics.get('wrong_answer_rate', 0.0),
-            'refusal_rate': bluff_rag_metrics.get('refusal_rate', 0.0),
             'source_awareness_score': bluff_rag_metrics.get('h5_source_quality_score', 0.0),
             'overall_faithfulness': faithfulness_metrics.get('overall_faithfulness', 0.0)
         }
