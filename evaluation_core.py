@@ -966,11 +966,38 @@ def main():
     if anthropic_api_key:
         print("\nSetting up Anthropic client...")
         evaluator.setup_anthropic(anthropic_api_key, "claude-3-5-sonnet-20241022")
-        models_to_evaluate = ["gpt-4o", "claude-3-5-sonnet-20241022"]
-    else:
-        models_to_evaluate = ["gpt-4o"]
+        models_to_evaluate.append("claude-3-5-sonnet-20241022")
+        print("Anthropic client initialized")
     
-    print(f"Models to evaluate: {models_to_evaluate}")
+    if google_api_key:
+        print("\nSetting up Google client...")
+        evaluator.setup_google(google_api_key, "gemini-1.5-pro")
+        models_to_evaluate.append("gemini-1.5-pro")
+        print("Google client initialized")
+    
+    if mistral_api_key:
+        print("\nSetting up Mistral client...")
+        evaluator.setup_mistral(mistral_api_key, "mistral-large-latest")
+        models_to_evaluate.append("mistral-large-latest")
+        print("Mistral client initialized")
+    
+    if together_api_key:
+        print("\nSetting up Llama client...")
+        evaluator.setup_llama(together_api_key, "llama-3.1-8b-instruct")
+        models_to_evaluate.append("llama-3.1-8b-instruct")
+        print("Llama client initialized")
+    
+    if not models_to_evaluate:
+        print("\nNo API keys found! Please create a .env file with your API keys.")
+        print("Format for .env file:")
+        print("OPENAI_API_KEY=your_key_here")
+        print("ANTHROPIC_API_KEY=your_key_here")
+        print("GOOGLE_API_KEY=your_key_here")
+        print("MISTRAL_API_KEY=your_key_here")
+        print("TOGETHER_API_KEY=your_key_here")
+        return
+    
+    print(f"\nModels to evaluate: {models_to_evaluate}")
     
     # Use the whole dataset for evaluation
     print(f"\nUsing full dataset with {len(evaluator.dataset)} entries")
@@ -982,57 +1009,78 @@ def main():
     print("  Phase 2: Re-evaluate first 100 entries with frozen calibration")
     print("  Phase 3: Evaluate remaining entries with frozen calibration")
     
-    try:
-        # Run the two-phase evaluation on full dataset
-        result = evaluator.evaluate_model("gpt-4o", max_entries=None)
-        
-        if result:
-            print("\nEvaluation completed successfully!")
-            print(f"Results saved in: {evaluator.output_dir}/")
+    # Evaluate all models
+    all_results = {}
+    
+    for model_name in models_to_evaluate:
+        try:
+            print(f"\n{'='*60}")
+            print(f"Evaluating {model_name}...")
+            print(f"{'='*60}")
             
-            # Print key findings
-            print(f"\nKey Findings:")
-            print(f"  Model: gpt-4o")
-            print(f"  Entries evaluated: {result['successful_evaluations']}/{result['total_entries']}")
-            print(f"  Success rate: {result['successful_evaluations']/result['total_entries']:.1%}")
+            result = evaluator.evaluate_model(model_name, max_entries=None)
             
-            # Print calibration info
-            calibration_info = result['calibration_info']
-            print(f"\nCalibration Information:")
-            print(f"  Was calibrated: {calibration_info['is_calibrated']}")
-            print(f"  Calibration samples: {calibration_info['calibration_samples']}")
-            print(f"Calibration function: {evaluator.calibrator.get_calibration_function_description()}")
-
-            # Print some key metrics
-            bluff_rag = result['bluff_rag_metrics']
-            print(f"\nKey BLUFF-RAG Metrics:")
-            
-            def safe_format(value, default='N/A'):
-                if isinstance(value, (int, float)):
-                    return f"{value:.3f}"
-                else:
-                    return str(default)
-            
-            print(f"  Overconfidence Index: {safe_format(bluff_rag.get('overconfidence_index'))}")
-            print(f"  Hedge F1: {safe_format(bluff_rag.get('hedge_f1'))}")
-            print(f"  Expected Calibration Error: {safe_format(bluff_rag.get('expected_calibration_error'))}")
-            
-            # Print ASI metrics
-            if 'asi_metrics' in result:
-                asi_metrics = result['asi_metrics']
-                print(f"  ASI Score: {asi_metrics.get('mean_asi', 0):.3f}")
+            if result:
+                all_results[model_name] = result
+                print(f"\n{model_name} evaluation completed successfully!")
                 
-            # Print Faithfulness metrics
-            faithfulness = result.get('faithfulness_metrics', {})
-            print(f"  Overall Faithfulness: {safe_format(faithfulness.get('overall_faithfulness'))}")
+                # Print key findings for this model
+                print(f"\nKey Findings for {model_name}:")
+                print(f"  Entries evaluated: {result['successful_evaluations']}/{result['total_entries']}")
+                print(f"  Success rate: {result['successful_evaluations']/result['total_entries']:.1%}")
+                
+                # Print calibration info
+                calibration_info = result['calibration_info']
+                print(f"\nCalibration Information:")
+                print(f"  Was calibrated: {calibration_info['is_calibrated']}")
+                print(f"  Calibration samples: {calibration_info['calibration_samples']}")
 
-        else:
-            print("Evaluation failed - no results returned")
+                # Print some key metrics
+                bluff_rag = result['bluff_rag_metrics']
+                print(f"\nKey BLUFF-RAG Metrics:")
+                
+                def safe_format(value, default='N/A'):
+                    if isinstance(value, (int, float)):
+                        return f"{value:.3f}"
+                    else:
+                        return str(default)
+                
+                print(f"  Overconfidence Index: {safe_format(bluff_rag.get('overconfidence_index'))}")
+                print(f"  Hedge F1: {safe_format(bluff_rag.get('hedge_f1'))}")
+                print(f"  Expected Calibration Error: {safe_format(bluff_rag.get('expected_calibration_error'))}")
+                
+                # Print ASI metrics
+                if 'asi_metrics' in result:
+                    asi_metrics = result['asi_metrics']
+                    print(f"  ASI Score: {asi_metrics.get('mean_asi', 0):.3f}")
+                    
+                # Print Faithfulness metrics
+                faithfulness = result.get('faithfulness_metrics', {})
+                print(f"  Overall Faithfulness: {safe_format(faithfulness.get('overall_faithfulness'))}")
+
+            else:
+                print(f"{model_name} evaluation failed - no results returned")
         
-    except Exception as e:
-        print(f"Evaluation failed: {e}")
-        import traceback
-        traceback.print_exc()
+        except Exception as e:
+            print(f"{model_name} evaluation failed: {e}")
+            import traceback
+            traceback.print_exc()
+    
+    # Generate comparison if we have multiple models
+    if len(all_results) > 1:
+        print(f"\n{'='*60}")
+        print("Generating model comparison...")
+        print(f"{'='*60}")
+        
+        try:
+            comparison_result = evaluator.compare_models(list(all_results.keys()))
+            print("Model comparison completed successfully!")
+        except Exception as e:
+            print(f"Model comparison failed: {e}")
+    
+    print(f"\nAll evaluations completed!")
+    print(f"Results saved in: {evaluator.output_dir}/")
+    print(f"Successfully evaluated {len(all_results)} out of {len(models_to_evaluate)} models")
 
 
 if __name__ == "__main__":
