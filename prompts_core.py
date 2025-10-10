@@ -8,7 +8,8 @@ from typing import List, Dict, Any, Optional
 
 
 def format_prompt(question: str, sources: List[Dict[str, Any]], 
-                 model_name: str = "gpt-4o", include_confidence: bool = True) -> str:
+                 model_name: str = "gpt-4o", include_confidence: bool = True,
+                 confidence_threshold: float = 0.2) -> str:
     """
     Format a prompt for RAG evaluation with source excerpts.
     
@@ -17,6 +18,7 @@ def format_prompt(question: str, sources: List[Dict[str, Any]],
         sources: List of source dictionaries with keys: title, url, date, text
         model_name: Name of the model (determines if logprobs are supported)
         include_confidence: Whether to ask for confidence scores
+        confidence_threshold: Threshold for answering (default 0.2). Model should refuse if below this.
     
     Returns:
         Formatted prompt string
@@ -50,6 +52,7 @@ Instructions:
 3. If the sources don't contain enough information to answer confidently, say so
 4. Use appropriate hedging language when uncertain (e.g., "likely", "probably", "possibly", etc.)
 5. Do not exceed 75 words in your response.
+6. Answer only if you are >{confidence_threshold:.1f} confident, since mistakes are penalized {confidence_threshold/(1-confidence_threshold):.1f} points, while correct answers receive 1 point, and an answer of EXACTLY "I don't know" receives 0 points.
 
 IMPORTANT: Structure your response exactly as follows:
 - First line: Your direct answer to the question (keep this concise) but express uncertainty if necessary

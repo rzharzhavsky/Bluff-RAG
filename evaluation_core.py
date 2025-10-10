@@ -131,13 +131,15 @@ def generate_bluff_rag_report(evaluation_summary: Dict[str, Any]) -> Dict[str, A
             'ASI': asi_metrics.get('mean_asi', 0.0)
         },
         
-        # HYPOTHESIS 2: Hedging Behavior
+        # HYPOTHESIS 2: Hedging Behavior & Refusal
         'h2_hedging_behavior': {
             'VUI': bluff_rag_metrics.get('hedge_f1', 0.0),
             'source_set_on_hedging': bluff_rag_metrics.get('source_set_on_hedging', 0.0),
             'lexical_overconfidence_index': bluff_rag_metrics.get('lexical_overconfidence_index', 0.0),
             'hedge_precision': bluff_rag_metrics.get('hedge_precision', 0.0),
-            'hedge_recall': bluff_rag_metrics.get('hedge_recall', 0.0)
+            'hedge_recall': bluff_rag_metrics.get('hedge_recall', 0.0),
+            'refusal_count': bluff_rag_metrics.get('total_refusals', 0.0),
+            'refusal_sensitivity': bluff_rag_metrics.get('refusal_sensitivity', 0.0)
         },
         
         # DIAGNOSTIC METRICS
@@ -767,17 +769,24 @@ class RAGModelEvaluator:
         # Calculate ASI metrics
         print("Computing ASI metrics...")
         asi_results = []
+        skipped_refusals = 0
         for i in range(min(len(clear_results), len(ambiguous_results))):
             clear_entry = clear_results[i]
             ambiguous_entry = ambiguous_results[i]
             
             if clear_entry['entry_id'] == ambiguous_entry['entry_id']:
                 asi_result = calculate_ambiguity_sensitivity_index(clear_entry, ambiguous_entry)
-                asi_results.append({
-                    'question_id': clear_entry['entry_id'],
-                    'asi_score': asi_result['asi'],
-                    'asi_components': asi_result
-                })
+                # Skip if either response was a refusal (asi_result will be None)
+                if asi_result is not None:
+                    asi_results.append({
+                        'question_id': clear_entry['entry_id'],
+                        'asi_score': asi_result['asi'],
+                        'asi_components': asi_result
+                    })
+                else:
+                    skipped_refusals += 1
+        
+        print(f"ASI calculated for {len(asi_results)} question pairs ({skipped_refusals} pairs skipped due to refusals)")
         
         # Calculate batch ASI statistics
         batch_asi = calculate_batch_asi(asi_results)

@@ -135,6 +135,12 @@ class ConfidenceCalibrator:
         if confidence_range < 0.1:  # Very little variation
             print(f"Warning: Low confidence variation ({confidence_range:.3f}), calibration may be unreliable")
         
+        # DEBUG: Check pre-calibration correlation
+        from scipy.stats import pearsonr
+        if len(valid_raw_confidences) > 2:
+            raw_corr, _ = pearsonr(valid_raw_confidences, valid_accuracies)
+            print(f"DEBUG: Raw confidence-accuracy correlation BEFORE calibration: {raw_corr:.3f}")
+        
         # Use a more sophisticated calibration approach that preserves variation
         
         # 1. First, try isotonic regression

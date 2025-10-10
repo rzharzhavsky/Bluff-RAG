@@ -2,27 +2,25 @@
   "model": "gpt-4o",
   "total_evaluations": 500,
   "h1_overconfidence_gap": {
-    "evidence_confidence_gap": 0.544,
-    "overconfidence_index": 0.179,
-    "retrieval_recall_confidence_correlation": -0.178,
-    "expected_calibration_error": 0.192,
-    "confidence_accuracy_correlation": -0.307,
-    "avg_retrieval_recall": 0.5,
-    "ASI": 0.156
+    "evidence_confidence_gap": 0.461,
+    "overconfidence_index": 0.218,
+    "expected_calibration_error": 0.16,
+    "confidence_accuracy_correlation": -0.397,
+    "ASI": -0.032
   },
   "h2_hedging_behavior": {
-    "VUI": 0.452,
-    "source_set_on_hedging": -0.166,
+    "VUI": 0.57,
+    "source_set_on_hedging": -0.478,
     "lexical_overconfidence_index": 0.0,
-    "hedge_precision": 0.603,
-    "hedge_recall": 0.362
+    "hedge_precision": 0.493,
+    "hedge_recall": 0.677,
+    "refusal_count": 0,
+    "refusal_sensitivity": 0.0
   },
   "diagnostics": {
-    "answer_correctness": 0.46450000000000086,
-    "brier_score": 0.138,
-    "wrong_answer_rate": 0.536,
-    "refusal_rate": 0.25,
-    "source_awareness_score": 0.24,
-    "overall_faithfulness": 0.65
+    "answer_correctness": 0.32304999999999995,
+    "brier_score": 0.151,
+    "source_awareness_score": 0.221,
+    "overall_faithfulness": 0.614
   }
 }

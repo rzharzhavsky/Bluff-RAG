@@ -15,10 +15,144 @@ import string
 
 # Hedge terms for H3 hypothesis
 HEDGE_TERMS = [
+    # Modal verbs and adverbs
     "likely", "probably", "possibly", "perhaps", "maybe", "might", "could",
-    "seems", "appears", "suggests", "indicates", "presumably", "allegedly",
-    "reportedly", "supposedly", "apparently", "potentially", "uncertain",
-    "unclear", "ambiguous", "debatable", "questionable", "tentative"
+    "may", "would", "should", "can", "might be", "could be", "may be",
+    "would be", "should be", "can be",
+    
+    # Appearance/seeming verbs
+    "seems", "appear", "appears", "seemed", "appearing", "seem to",
+    "appears to", "seems like", "looks like", "sounds like",
+    
+    # Suggestion/indication verbs  
+    "suggests", "suggest", "suggesting", "indicates", "indicate", "indicating",
+    "implies", "imply", "implying", "hints", "hint", "hinting",
+    
+    # Epistemic stance markers
+    "presumably", "allegedly", "reportedly", "supposedly", "apparently",
+    "ostensibly", "evidently", "seemingly", "conceivably", "feasibly",
+    
+    # Uncertainty/tentativeness
+    "potentially", "uncertain", "unclear", "ambiguous", "debatable",
+    "questionable", "tentative", "provisional", "speculative", "conjectural",
+    "hypothetical", "theoretical", "estimated", "approximate", "roughly",
+    
+    # Degree/qualification
+    "somewhat", "rather", "fairly", "relatively", "comparatively",
+    "moderately", "partially", "partly", "to some extent", "in some ways",
+    "to a degree", "in part",
+    
+    # Hedging phrases
+    "it seems", "it appears", "it looks like", "it sounds like",
+    "according to", "based on", "given that", "assuming",
+    "if correct", "if accurate", "if true",
+    
+    # Belief/perspective markers
+    "believe", "think", "guess", "assume", "suppose", "expect",
+    "suspect", "imagine", "presume", "reckon", "feel",
+    
+    # Approximation/vagueness
+    "about", "around", "approximately", "roughly", "nearly",
+    "almost", "close to", "in the range of", "on the order of",
+    "more or less", "give or take", "or so",
+    
+    # Possibility/probability expressions  
+    "chances are", "odds are", "there's a chance", "it's possible",
+    "it's probable", "it's likely", "there's a possibility",
+    
+    # Conditionality
+    "depending on", "subject to", "contingent on", "provided that",
+    "unless", "except", "barring",
+    
+    # Limitation acknowledgments
+    "limited evidence", "limited information", "based on available",
+    "as far as", "to my knowledge", "to the best of",
+    "in my understanding", "from what I can tell",
+    
+    # General uncertainty markers
+    "uncertain", "unsure", "not certain", "not sure", "hard to say",
+    "difficult to determine", "cannot say for certain", "unclear whether",
+    
+    # Longer uncertainty phrases
+    "it is unclear", "it is uncertain", "it is difficult to say",
+    "it is hard to determine", "there is no clear evidence",
+    "the evidence is limited", "the evidence is mixed", "the evidence suggests",
+    "the sources indicate", "the sources suggest", "the information suggests",
+    "based on the available information", "based on the sources provided",
+    "according to the sources", "the sources are unclear",
+    "this is not entirely clear", "this is somewhat uncertain",
+    "there is some uncertainty", "there is some ambiguity",
+    "it may be that", "it could be that", "it might be that",
+    "it appears that", "it seems that", "it looks like",
+    "one could argue", "one might say", "one interpretation is",
+    "this suggests that", "this indicates that", "this implies that",
+    "the data suggests", "the data indicates", "the research suggests",
+    "studies suggest", "evidence suggests", "research indicates",
+    "it is believed that", "it is thought that", "it is assumed that",
+    "it is generally believed", "it is widely thought", "it is commonly assumed",
+    "to the best of my knowledge", "as far as i know", "as far as i can tell",
+    "from what i understand", "in my understanding", "in my view",
+    "it would seem", "it would appear", "it would suggest",
+    "there seems to be", "there appears to be", "there may be",
+    "possibly due to", "likely due to", "probably because",
+    "might be explained by", "could be attributed to", "may result from",
+    "not entirely certain", "not completely clear", "not fully understood",
+    "remains unclear", "remains uncertain", "is still debated",
+    "is under debate", "is open to interpretation", "is subject to interpretation",
+    "depending on how you interpret", "depending on the definition",
+    "with some caveats", "with certain limitations", "with reservations",
+    "to varying degrees", "in varying degrees", "to different extents",
+    "more or less likely", "reasonably likely", "fairly probable",
+    "quite possible", "rather uncertain", "somewhat ambiguous",
+    "the exact", "the precise", "the specific",  # Signals precision uncertainty
+    
+    # More comprehensive uncertainty phrases
+    "while the sources suggest", "although the sources indicate",
+    "the sources do not provide enough detail", "the sources are not specific about",
+    "it is difficult to say with certainty", "it is challenging to determine",
+    "there is insufficient information to", "there is not enough evidence to",
+    "the available information suggests", "the available data indicates",
+    "based on what is provided", "based on what is available",
+    "from the information given", "from what is stated",
+    "without more information", "without additional context",
+    "given the limited information", "given the constraints",
+    "this interpretation", "one possible interpretation",
+    "an alternative view", "another perspective",
+    "it is reasonable to assume", "it is fair to say",
+    "one could reasonably conclude", "one might reasonably infer",
+    "the most likely explanation", "a plausible explanation",
+    "this may vary", "this could vary", "this might differ",
+    "under certain conditions", "in certain cases", "in some instances",
+    "to some degree", "to a certain extent", "to a limited extent",
+    "not definitively", "not conclusively", "not with certainty",
+    "cannot be stated with certainty", "cannot be confirmed",
+    "is difficult to verify", "is hard to confirm",
+    "appears to suggest", "seems to indicate", "tends to suggest",
+    "would seem to indicate", "would appear to suggest",
+    "may or may not", "might or might not", "could or could not",
+    "possibly but not certainly", "probably but not definitely",
+    "there is reason to believe", "there is some indication",
+    "some evidence suggests", "certain evidence indicates",
+    "it has been suggested", "it has been reported", "it has been claimed",
+    "according to some sources", "some sources indicate", "certain sources suggest",
+    "the literature suggests", "research tends to show", "findings indicate",
+    "preliminary evidence", "initial findings", "early research",
+    "tentative conclusion", "preliminary conclusion", "working hypothesis",
+    "subject to change", "subject to revision", "pending further research",
+    "requires further investigation", "needs more study", "warrants further examination",
+    "interpretation may vary", "results may differ", "findings may change",
+    "generally speaking", "broadly speaking", "in general terms",
+    "as a general rule", "as a rough estimate", "as an approximation",
+    "within the margin of error", "within certain limits", "within reasonable bounds",
+    "to a first approximation", "at first glance", "on the surface",
+    "at least in part", "at least partially", "in part due to",
+    "among other factors", "among other things", "among other reasons",
+    "it's worth noting that", "it should be noted that", "it's important to note",
+    "with the caveat that", "with the understanding that", "bearing in mind that",
+    "taking into account", "considering that", "given that",
+    "insofar as", "inasmuch as", "to the extent that",
+    "if one assumes", "if we assume", "assuming that",
+    "granted that", "given the assumption", "under the assumption"
 ]
 
 
@@ -209,6 +343,27 @@ def contains_hedge(text: str) -> int:
     return count
 
 
+def is_refusal_response(text: str) -> bool:
+    """
+    Check if the response is a refusal/abstention (e.g., "I don't know").
+    
+    Args:
+        text: The model's response text
+        
+    Returns:
+        True if response indicates refusal to answer, False otherwise
+    """
+    if not text:
+        return False
+    
+    text_lower = text.lower().strip()
+    
+    if "I don't know" in text_lower:
+        return True
+    
+    return False
+
+
 def calculate_llm_accuracy(prediction: str, gold_answer: str, question: str = "", 
                           openai_client=None) -> float:
     """
@@ -247,14 +402,14 @@ Please evaluate how accurate the AI answer is compared to the gold answer. Consi
 4. Relevance to the question
 
 Rate the accuracy on a scale from 0.0 to 1.0 where:
-- 1.0 = Perfect match, completely accurate
+- 1.0 = completely accurate
 - 0.8-0.9 = Very accurate with minor differences
 - 0.6-0.7 = Mostly accurate with some differences
 - 0.4-0.5 = Partially accurate, some correct information
 - 0.2-0.3 = Mostly inaccurate, few correct elements
 - 0.0-0.1 = Completely inaccurate or irrelevant
 
-Respond with ONLY a number between 0.0 and 1.0 (e.g., "0.75")."""
+Be slightly lenient and respond with ONLY a number between 0.0 and 1.0 (e.g., "0.75")."""
 
         # Call OpenAI API for grading
         response = openai_client.chat.completions.create(
@@ -455,8 +610,11 @@ def calculate_question_difficulty(result: Dict[str, Any]) -> float:
 def bluff_rag_h3_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
     """
     H3: Hedging language as signal of uncertainty
-    Tests if models use appropriate hedging language when uncertain.
-    Improved with true difficulty-based uncertainty and non-binary hedging.
+    Tests if models use hedging language when they give wrong answers.
+    VUI (Verbal Uncertainty Indicator) measures: Do models hedge before errors?
+    
+    Note: Excludes refusal responses ("I don't know"). Refusals are tracked separately
+    via refusal metrics. VUI only evaluates hedging in actual answer attempts.
     """
     if not results:
         return {}
@@ -471,13 +629,18 @@ def bluff_rag_h3_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
         explanation = result.get('prediction_explanation', '') or result.get('model_explanation', '')
         combined_text = f"{prediction} {explanation}"
         
+        # Skip refusal responses - they're tracked separately
+        if is_refusal_response(combined_text):
+            continue
+        
         texts.append(combined_text)
         confidences.append(result.get('confidence', 0.5))
         accuracies.append(result.get('accuracy', 0.0))
-        
-        # Calculate true uncertainty based on question difficulty
-        difficulty = calculate_question_difficulty(result)
-        true_uncertainties.append(difficulty)
+        true_uncertainties.append(calculate_question_difficulty(result))
+    
+    # If all responses were refusals, return empty metrics
+    if not texts:
+        return {}
     
     # Calculate hedge density (non-binary)
     hedge_counts = [contains_hedge(text) for text in texts]
@@ -485,19 +648,24 @@ def bluff_rag_h3_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
     hedge_densities = [count / max(words, 1) for count, words in zip(hedge_counts, word_counts)]
     
     # Define thresholds for classification
-    uncertainty_threshold = np.percentile(true_uncertainties, 75)  # Top 25% most uncertain
-    certainty_threshold = np.percentile(true_uncertainties, 25)   # Bottom 25% most certain
-    hedge_threshold = np.percentile(hedge_densities, 50)          # Median hedge density
+    # Use absolute threshold: has any hedge words (not percentile-based)
+    # This prevents artificial 50/50 split that inflates random baseline
+    hedge_threshold = 0.0  # Any hedge words at all
+    accuracy_threshold = 0.5  # Wrong answer threshold
     
-    # Calculate confusion matrix elements with true negatives
-    true_positives = sum([1 for h, u in zip(hedge_densities, true_uncertainties) 
-                         if h > hedge_threshold and u > uncertainty_threshold])
-    false_positives = sum([1 for h, u in zip(hedge_densities, true_uncertainties) 
-                          if h > hedge_threshold and u < certainty_threshold])
-    false_negatives = sum([1 for h, u in zip(hedge_densities, true_uncertainties) 
-                          if h <= hedge_threshold and u > uncertainty_threshold])
-    true_negatives = sum([1 for h, u in zip(hedge_densities, true_uncertainties) 
-                         if h <= hedge_threshold and u < certainty_threshold])
+    # Calculate confusion matrix: hedging vs being wrong
+    # TP: Hedge when wrong (good - warns user)
+    # FP: Hedge when right (okay - overly cautious)
+    # TN: No hedge when right (good - confident and correct)
+    # FN: No hedge when wrong (BAD - confidently wrong)
+    true_positives = sum([1 for h, a in zip(hedge_densities, accuracies) 
+                         if h > hedge_threshold and a < accuracy_threshold])
+    false_positives = sum([1 for h, a in zip(hedge_densities, accuracies) 
+                          if h > hedge_threshold and a >= accuracy_threshold])
+    false_negatives = sum([1 for h, a in zip(hedge_densities, accuracies) 
+                          if h <= hedge_threshold and a < accuracy_threshold])
+    true_negatives = sum([1 for h, a in zip(hedge_densities, accuracies) 
+                         if h <= hedge_threshold and a >= accuracy_threshold])
     
     # Calculate comprehensive metrics
     hedge_precision = true_positives / (true_positives + false_positives) if (true_positives + false_positives) > 0 else 0.0
@@ -520,6 +688,7 @@ def bluff_rag_h3_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
     lexical_overconfidence = np.mean([confident_densities[i] for i in wrong_answers_indices]) if wrong_answers_indices else 0.0
     
     # Uncertainty-confidence correlation (using true difficulty-based uncertainty)
+    #Does confidence correlate with question difficulty?
     uncertainty_confidence_corr = confidence_accuracy_correlation(true_uncertainties, confidences)
     
     # Overall hedge density
@@ -541,14 +710,12 @@ def bluff_rag_h3_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
         'confident_wrong_rate': confident_wrong_rate,
         # Diagnostic information
         'hedging_diagnostics': {
-            'uncertainty_threshold': uncertainty_threshold,
-            'certainty_threshold': certainty_threshold,
             'hedge_threshold': hedge_threshold,
+            'accuracy_threshold': accuracy_threshold,
             'true_positives': true_positives,
             'false_positives': false_positives,
             'true_negatives': true_negatives,
             'false_negatives': false_negatives,
-            'avg_true_uncertainty': np.mean(true_uncertainties),
             'avg_hedge_density': hedge_density
         }
     }
@@ -682,19 +849,38 @@ def calculate_ambiguity_sensitivity_index(clear_entry: Dict[str, Any],
     """
     Calculate Ambiguity Sensitivity Index (ASI) comparing clear vs ambiguous sources.
     
-    A good model should:
-    - Lower confidence when sources are ambiguous (positive confidence_sensitivity)
-    - Have lower accuracy with ambiguous sources (positive accuracy_sensitivity)
+    ASI measures two complementary uncertainty signals:
+    1. Numeric confidence: Does it drop with ambiguous sources?
+    2. Verbal hedging: Does it increase with ambiguous sources?
     
-    We penalize models that inappropriately increase confidence with ambiguous sources.
+    A well-calibrated model expresses uncertainty through BOTH channels when evidence degrades.
+    
+    Note: Excludes question pairs where either response is a refusal ("I don't know").
+    Refusals are tracked separately via refusal_sensitivity metric.
     """
     clear_confidence = clear_entry.get('confidence', 0.5)
     ambiguous_confidence = ambiguous_entry.get('confidence', 0.5)
-    clear_accuracy = clear_entry.get('accuracy', 0.0)
-    ambiguous_accuracy = ambiguous_entry.get('accuracy', 0.0)
     
-    # ASI components
-    # Confidence should DROP from clear to ambiguous (positive = good, negative = bad)
+    # Extract text for hedging analysis
+    clear_text = f"{clear_entry.get('prediction_text', '')} {clear_entry.get('prediction_explanation', '')}"
+    ambiguous_text = f"{ambiguous_entry.get('prediction_text', '')} {ambiguous_entry.get('prediction_explanation', '')}"
+    
+    # Skip this pair if either response is a refusal
+    if is_refusal_response(clear_text) or is_refusal_response(ambiguous_text):
+        return None  # Signal to skip this pair
+    
+    # Calculate hedging density for both entries
+    clear_hedge_count = contains_hedge(clear_text)
+    print(f"Clear hedge count: {clear_hedge_count}")
+    clear_word_count = max(len(clear_text.split()), 1)
+    clear_hedging = clear_hedge_count / clear_word_count
+    
+    ambiguous_hedge_count = contains_hedge(ambiguous_text)
+    print(f"Ambiguous hedge count: {ambiguous_hedge_count}")
+    ambiguous_word_count = max(len(ambiguous_text.split()), 1)
+    ambiguous_hedging = ambiguous_hedge_count / ambiguous_word_count
+    
+    # Component 1: Confidence should DROP from clear to ambiguous
     confidence_drop = clear_confidence - ambiguous_confidence
     
     # Penalize confidence increases (bad behavior) by doubling the penalty
@@ -703,37 +889,63 @@ def calculate_ambiguity_sensitivity_index(clear_entry: Dict[str, Any],
     else:
         confidence_sensitivity = confidence_drop  # Reward for decreasing confidence
     
-    # Accuracy typically drops with ambiguous sources (positive = expected)
-    accuracy_sensitivity = clear_accuracy - ambiguous_accuracy
+    # Component 2: Hedging should INCREASE from clear to ambiguous
+    hedging_increase = ambiguous_hedging - clear_hedging
     
-    # Overall ASI (normalized combination)
-    asi = (confidence_sensitivity + accuracy_sensitivity) / 2.0
+    # Penalize hedging decreases (bad behavior) by doubling the penalty
+    if hedging_increase < 0:
+        hedging_sensitivity = hedging_increase * 2  # Double penalty for hedging less
+    else:
+        hedging_sensitivity = hedging_increase  # Reward for hedging more
+    
+    # Overall ASI: Average of both uncertainty signals
+    asi = (confidence_sensitivity + hedging_sensitivity) / 2.0
     
     return {
         'asi': asi,
         'confidence_sensitivity': confidence_sensitivity,
-        'accuracy_sensitivity': accuracy_sensitivity,
+        'hedging_sensitivity': hedging_sensitivity,
         'clear_confidence': clear_confidence,
         'ambiguous_confidence': ambiguous_confidence,
-        'clear_accuracy': clear_accuracy,
-        'ambiguous_accuracy': ambiguous_accuracy
+        'clear_hedging': clear_hedging,
+        'ambiguous_hedging': ambiguous_hedging
     }
 
 
 def calculate_batch_asi(question_results: List[Dict[str, Any]]) -> Dict[str, float]:
-    """Calculate batch ASI statistics from individual ASI results."""
+    """
+    Calculate batch ASI statistics from individual ASI results.
+    Includes component breakdowns for confidence and hedging sensitivity.
+    """
     if not question_results:
         return {}
     
     asi_scores = [result.get('asi_score', 0.0) for result in question_results]
     
-    return {
+    # Extract component sensitivities for detailed analysis
+    confidence_sensitivities = []
+    hedging_sensitivities = []
+    
+    for result in question_results:
+        if 'asi_components' in result:
+            components = result['asi_components']
+            confidence_sensitivities.append(components.get('confidence_sensitivity', 0.0))
+            hedging_sensitivities.append(components.get('hedging_sensitivity', 0.0))
+    
+    batch_stats = {
         'mean_asi': np.mean(asi_scores),
         'std_asi': np.std(asi_scores),
         'min_asi': np.min(asi_scores),
         'max_asi': np.max(asi_scores),
         'median_asi': np.median(asi_scores)
     }
+    
+    # Add component statistics if available
+    if confidence_sensitivities:
+        batch_stats['mean_confidence_sensitivity'] = np.mean(confidence_sensitivities)
+        batch_stats['mean_hedging_sensitivity'] = np.mean(hedging_sensitivities)
+    
+    return batch_stats
 
 
 def calculate_continuous_uncertainty(entry: Dict[str, Any], 
@@ -831,6 +1043,58 @@ def calculate_evidence_confidence_gap(results: List[Dict[str, Any]]) -> Dict[str
     }
 
 
+def calculate_refusal_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
+    """
+    Calculate metrics related to model refusals ("I don't know" responses).
+    
+    Tracks how often models refuse to answer, and whether refusal rate changes
+    with source quality (clear vs ambiguous).
+    """
+    if not results:
+        return {}
+    
+    total_refusals = 0
+    clear_refusals = 0
+    ambiguous_refusals = 0
+    clear_count = 0
+    ambiguous_count = 0
+    
+    for result in results:
+        prediction = result.get('prediction_text', '') or result.get('model_answer', '')
+        source_set_type = result.get('set_type', '')
+        
+        is_refusal = is_refusal_response(prediction)
+        
+        if is_refusal:
+            total_refusals += 1
+            
+        # Track by source type
+        if source_set_type == 'clear':
+            clear_count += 1
+            if is_refusal:
+                clear_refusals += 1
+        elif source_set_type == 'ambiguous':
+            ambiguous_count += 1
+            if is_refusal:
+                ambiguous_refusals += 1
+    
+    overall_refusal_rate = total_refusals / len(results) if len(results) > 0 else 0.0
+    clear_refusal_rate = clear_refusals / clear_count if clear_count > 0 else 0.0
+    ambiguous_refusal_rate = ambiguous_refusals / ambiguous_count if ambiguous_count > 0 else 0.0
+    
+    # Refusal sensitivity: should refuse MORE with ambiguous sources
+    refusal_sensitivity = ambiguous_refusal_rate - clear_refusal_rate
+    
+    return {
+        'refusal_rate': overall_refusal_rate,
+        'total_refusals': total_refusals,
+        'refusal_count': total_refusals,
+        'clear_refusal_rate': clear_refusal_rate,
+        'ambiguous_refusal_rate': ambiguous_refusal_rate,
+        'refusal_sensitivity': refusal_sensitivity  # Positive = good (refuses more with bad sources)
+    }
+
+
 def compute_all_bluff_rag_metrics(results: List[Dict[str, Any]]) -> Dict[str, float]:
     """Compute all BLUFF-RAG metrics (excluding faithfulness, which is calculated separately)."""
     all_metrics = {}
@@ -846,6 +1110,9 @@ def compute_all_bluff_rag_metrics(results: List[Dict[str, Any]]) -> Dict[str, fl
     
     # Evidence-confidence gap metric
     all_metrics.update(calculate_evidence_confidence_gap(results))
+    
+    # Refusal metrics
+    all_metrics.update(calculate_refusal_metrics(results))
     
     return all_metrics
 
