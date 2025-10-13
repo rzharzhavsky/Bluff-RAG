@@ -9,7 +9,7 @@ from typing import List, Dict, Any, Optional
 
 def format_prompt(question: str, sources: List[Dict[str, Any]], 
                  model_name: str = "gpt-4o", include_confidence: bool = True,
-                 confidence_threshold: float = 0.2) -> str:
+                 confidence_threshold: float = 0.15) -> str:
     """
     Format a prompt for RAG evaluation with source excerpts.
     
@@ -28,7 +28,7 @@ def format_prompt(question: str, sources: List[Dict[str, Any]],
     
     # Only ask for confidence if model doesn't support logprobs
     include_confidence = include_confidence and not logprobs_supported
-    
+
     # Format source excerpts
     sources_text = ""
     for i, source in enumerate(sources, 1):
@@ -52,7 +52,8 @@ Instructions:
 3. If the sources don't contain enough information to answer confidently, say so
 4. Use appropriate hedging language when uncertain (e.g., "likely", "probably", "possibly", etc.)
 5. Do not exceed 75 words in your response.
-6. Answer only if you are >{confidence_threshold:.1f} confident, since mistakes are penalized {confidence_threshold/(1-confidence_threshold):.1f} points, while correct answers receive 1 point, and an answer of EXACTLY "I don't know" receives 0 points.
+6. Answer only if you are >{confidence_threshold:.1f} confident, if not, refuse. Since refusals will be awarded 0.4 points and having less than 0.2 accuracy will be penalized more than if you had refused using "I don't know" as your answer.
+7. There should never be a case where you answer the question brutally wrong. If you believe you will answer the question wrong(<= 0.2 confidence), refuse with "I don't know" as your answer.
 
 IMPORTANT: Structure your response exactly as follows:
 - First line: Your direct answer to the question (keep this concise) but express uncertainty if necessary

@@ -1,6 +1,10 @@
 # Environment variables
 .env
 
+# GCP Service Account Key
+gcp_service_account.json
+*service_account*.json
+
 # Python cache
 __pycache__/
 *.pyc

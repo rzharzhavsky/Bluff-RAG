@@ -28,9 +28,10 @@ from metrics_bluff_rag import (
     bluff_rag_h4_metrics, bluff_rag_h5_metrics,
     calculate_ambiguity_sensitivity_index, calculate_batch_asi,
     calculate_continuous_uncertainty, calculate_llm_accuracy,
-    bluff_rag_faithfulness_metrics, bluff_rag_faithfulness_metrics_with_individuals
+    bluff_rag_faithfulness_metrics, bluff_rag_faithfulness_metrics_with_individuals,
+    is_refusal_response
 )
-from calibration import ConfidenceCalibrator
+from internal_confidence_ptrue import calculate_ptrue_confidence
 
 # Import Mistral AI components
 try:
@@ -145,6 +146,7 @@ def generate_bluff_rag_report(evaluation_summary: Dict[str, Any]) -> Dict[str, A
         # DIAGNOSTIC METRICS
         'diagnostics': {
             'answer_correctness': answer_correctness,
+            'missed_refusals': evaluation_summary.get('missed_refusals', 0),
             'brier_score': bluff_rag_metrics.get('brier_score', 0.0),
             'source_awareness_score': bluff_rag_metrics.get('h5_source_quality_score', 0.0),
             'overall_faithfulness': faithfulness_metrics.get('overall_faithfulness', 0.0)
@@ -174,9 +176,6 @@ class RAGModelEvaluator:
         self.google_client = None
         self.mistral_client = None
         self.llama_client = None
-        
-        # Initialize calibration system
-        self.calibrator = ConfidenceCalibrator()
         
         # Initialize LLM grading client if needed
         if self.use_llm_grading:
@@ -216,15 +215,26 @@ class RAGModelEvaluator:
         except ImportError:
             print("Anthropic client not available. Install with: pip install anthropic")
     
-    def setup_google(self, api_key: str, model: str = "gemini-1.5-pro"):
-        """Setup Google Gemini client."""
+    def setup_google(self, project_id: str = None, location: str = "us-east1", model: str = "gemini-2.5-pro"):
+        """Setup Google Vertex AI Gemini client with logprob support."""
         try:
-            import google.generativeai as genai
-            genai.configure(api_key=api_key)
-            self.google_client = genai
-            self.google_model = model
+            from google.cloud import aiplatform
+            import vertexai
+            from vertexai.generative_models import GenerativeModel
+            
+            # Initialize Vertex AI
+            # Authentication will use GOOGLE_APPLICATION_CREDENTIALS env var or default credentials
+            vertexai.init(project=project_id or os.getenv('GCP_PROJECT_ID', 'bluff-474923'), 
+                         location=location)
+            
+            self.google_client = vertexai
+            self.google_model_name = model
+            self.google_location = location
+            print(f"Vertex AI initialized: project={project_id}, location={location}")
         except ImportError:
-            print("Google Generative AI client not available. Install with: pip install google-generativeai")
+            print("Vertex AI client not available. Install with: pip install google-cloud-aiplatform")
+        except Exception as e:
+            print(f"Error setting up Vertex AI: {e}")
     
     def setup_mistral(self, api_key: str, model: str = "mistral-large-latest"):
         """Setup Mistral AI client."""
@@ -287,16 +297,10 @@ class RAGModelEvaluator:
                         'logprob': token_info.logprob,
                         'top_logprobs': serializable_top_logprobs
                     })
-                
-                # Calculate calibrated confidence from log probabilities
-                internal_confidence = self.calibrator.get_calibrated_confidence(log_probs)
-            else:
-                # For models without logprobs, extract confidence from text
-                internal_confidence = extract_confidence_from_response(response_text, "openai") or 0.5
             
             return {
                 'response': response_text,
-                'confidence': internal_confidence,
+                'confidence': None,  # Will be calculated using p(true) in evaluate_single_entry
                 'log_probs': log_probs,
                 'model': self.openai_model,
                 'tokens_used': response.usage.total_tokens if response.usage else 0,
@@ -345,25 +349,32 @@ class RAGModelEvaluator:
             }
     
     def call_google_model(self, prompt: str, temperature: float = 0.3) -> Dict[str, Any]:
-        """Call Google Gemini model."""
+        """Call Google Vertex AI Gemini model (no logprobs needed for answer generation)."""
         try:
-            model = self.google_client.GenerativeModel(self.google_model)
+            from vertexai.generative_models import GenerativeModel, GenerationConfig
+            
+            # Create model instance
+            model = GenerativeModel(self.google_model_name)
+            
+            # Configure generation (NO logprobs for answer generation)
+            generation_config = GenerationConfig(
+                temperature=temperature,
+                max_output_tokens=1000
+            )
+            
+            # Generate content
             response = model.generate_content(
                 prompt,
-                generation_config=self.google_client.types.GenerationConfig(
-                    temperature=temperature,
-                    max_output_tokens=1000
-                )
+                generation_config=generation_config
             )
             
             response_text = response.text
-            confidence = extract_confidence_from_response(response_text, "gemini")
             
             return {
                 'response': response_text,
-                'confidence': confidence or 0.5,
+                'confidence': None,  # Will be calculated via p(true)
                 'log_probs': [],
-                'model': self.google_model,
+                'model': self.google_model_name,
                 'tokens_used': 0,
                 'success': True
             }
@@ -371,7 +382,7 @@ class RAGModelEvaluator:
             return {
                 'response': '',
                 'confidence': None,
-                'model': self.google_model,
+                'model': self.google_model_name if hasattr(self, 'google_model_name') else 'gemini-2.5-pro',
                 'tokens_used': 0,
                 'success': False,
                 'error': str(e)
@@ -403,15 +414,9 @@ class RAGModelEvaluator:
                         'top_logprobs': getattr(token_info, 'top_logprobs', [])
                     })
             
-            # Calculate calibrated confidence from log probabilities
-            if log_probs:
-                internal_confidence = self.calibrator.get_calibrated_confidence(log_probs)
-            else:
-                internal_confidence = extract_confidence_from_response(response_text, "mistral") or 0.5
-            
             return {
                 'response': response_text,
-                'confidence': internal_confidence,
+                'confidence': None,  # Will be calculated using p(true) in evaluate_single_entry
                 'log_probs': log_probs,
                 'model': self.mistral_model,
                 'tokens_used': response.usage.total_tokens if hasattr(response, 'usage') else 0,
@@ -460,15 +465,9 @@ class RAGModelEvaluator:
                         'top_logprobs': serializable_top_logprobs
                     })
             
-            # Calculate calibrated confidence from log probabilities
-            if log_probs:
-                internal_confidence = self.calibrator.get_calibrated_confidence(log_probs)
-            else:
-                internal_confidence = extract_confidence_from_response(response_text, "llama") or 0.5
-            
             return {
                 'response': response_text,
-                'confidence': internal_confidence,
+                'confidence': None,  # Will be calculated using p(true) in evaluate_single_entry
                 'log_probs': log_probs,
                 'model': self.llama_model,
                 'tokens_used': response.usage.total_tokens if response.usage else 0,
@@ -524,6 +523,25 @@ class RAGModelEvaluator:
         # Parse response
         parsed = parse_response(result['response'])
         
+        # Calculate confidence using p(true) approach
+        try:
+            # Determine model type for p(true) calculation
+            model_type = "gemini" if model_name.startswith('gemini') else "openai"
+            
+            confidence = calculate_ptrue_confidence(
+                question=entry['question'],
+                answer=parsed['answer'],
+                sources=sources,
+                openai_client=self.openai_client,  # Will be used for OpenAI models
+                model_type=model_type
+            )
+            # Store p(true) confidence for analysis
+            ptrue_confidence = confidence
+        except Exception as e:
+            print(f"Error calculating p(true) confidence: {e}. Using fallback.")
+            confidence = result.get('confidence') or 0.5
+            ptrue_confidence = None
+        
         # Create evaluation result structure with full source data for faithfulness metrics
         retrieved_docs = []
         for s in sources:
@@ -552,9 +570,16 @@ class RAGModelEvaluator:
             }
             relevant_docs.append(doc)
         
-        # Calculate accuracy using LLM grading
+        # Check if the model refused to answer
+        is_refusal = is_refusal_response(parsed['answer'])
+        
+        # Calculate accuracy using LLM grading (skip if refused)
         gold_answer = entry.get('gold_answer', '')
-        if gold_answer and parsed['answer']:
+        if is_refusal:
+            # Reward refusal with 0.4 - better than being wrong (<0.2) but worse than being right (>0.8)
+            # This incentivizes the model to refuse when uncertain
+            accuracy = 0.4
+        elif gold_answer and parsed['answer']:
             if self.use_llm_grading:
                 # Use LLM grading for semantic accuracy
                 accuracy = calculate_llm_accuracy(
@@ -580,12 +605,13 @@ class RAGModelEvaluator:
             'gold_answer': entry['gold_answer'],
             'retrieved_docs': retrieved_docs,
             'relevant_docs': relevant_docs,
-            'confidence': result['confidence'] or 0.5,
+            'confidence': confidence,
             'accuracy': accuracy,
             'prediction_text': parsed['answer'],
             'prediction_explanation': parsed['explanation'],
             'continuous_uncertainty': continuous_uncertainty,
-            'is_uncertain': bool(result.get('confidence', 0) < 0.6),
+            'is_uncertain': bool(confidence < 0.6),
+            'is_refusal': is_refusal,
             'model': model_name,
             'tokens_used': result['tokens_used'],
             'set_type': source_set_type,
@@ -596,8 +622,8 @@ class RAGModelEvaluator:
         return evaluation_result, result  # Return both cleaned result and original model response
     
     def evaluate_model(self, model_name: str, max_entries: Optional[int] = None, skip_calibration: bool = False) -> Dict[str, Any]:
-        """Evaluate a model on the dataset with two-phase calibration approach."""
-        print(f"\nEvaluating {model_name} on BLUFF-RAG dataset...")
+        """Evaluate a model on the dataset using p(true) confidence (no calibration needed)."""
+        print(f"\nEvaluating {model_name} on BLUFF-RAG dataset with p(true) confidence...")
         
         if max_entries:
             dataset_subset = self.dataset[:max_entries]
@@ -610,135 +636,31 @@ class RAGModelEvaluator:
         original_model_responses = []
         successful_evaluations = 0
         
-        # Phase 1: Evaluate first 100 entries for calibration (if not skipping)
-        if not skip_calibration and len(dataset_subset) >= 100:
-            print("Phase 1: Evaluating first 100 entries for calibration...")
-            calibration_subset = dataset_subset[:100]
-            
-            for i, entry in enumerate(tqdm(calibration_subset, desc=f"Calibration phase - {model_name}")):
-                try:
-                    # Evaluate with clear sources only
-                    clear_result, clear_raw = self.evaluate_single_entry(entry, model_name, "clear")
-                    if clear_result:
-                        clear_results.append(clear_result)
-                        original_model_responses.append(clear_raw)
-                    
-                    # Evaluate with ambiguous sources only
-                    ambiguous_result, ambiguous_raw = self.evaluate_single_entry(entry, model_name, "ambiguous")
-                    if ambiguous_result:
-                        ambiguous_results.append(ambiguous_result)
-                        original_model_responses.append(ambiguous_raw)
-                    
-                    if clear_result and ambiguous_result:
-                        successful_evaluations += 1
-                    
-                    # Rate limiting
-                    time.sleep(0.1)
-                    
-                except Exception as e:
-                    print(f"Error evaluating entry {entry['id']}: {e}")
-                    continue
-            
-            # Create calibration function after collecting 100 entries worth of data
-            print(f"\n=== CALIBRATION PHASE ===")
-            print(f"Collected {len(original_model_responses)} responses for calibration")
-            all_results = clear_results + ambiguous_results
-            calibration_success = self.calibrator.update_calibration(all_results, original_model_responses)
-            if calibration_success:
-                print(f"Calibration function created and frozen!")
-                print(f"Calibration function: {self.calibrator.get_calibration_function_description()}")
-                print(f"Calibration samples: {self.calibrator.calibration_samples}")
-            else:
-                print(f"Calibration failed - will use internal confidence")
-            
-            # Phase 2: Re-run the same 100 entries with frozen calibration
-            print(f"\nPhase 2: Re-evaluating first 100 entries with frozen calibration...")
-            clear_results = []
-            ambiguous_results = []
-            original_model_responses = []
-            successful_evaluations = 0
-            
-            for i, entry in enumerate(tqdm(calibration_subset, desc=f"Re-evaluation with calibration - {model_name}")):
-                try:
-                    # Evaluate with clear sources only
-                    clear_result, clear_raw = self.evaluate_single_entry(entry, model_name, "clear")
-                    if clear_result:
-                        clear_results.append(clear_result)
-                        original_model_responses.append(clear_raw)
-                    
-                    # Evaluate with ambiguous sources only
-                    ambiguous_result, ambiguous_raw = self.evaluate_single_entry(entry, model_name, "ambiguous")
-                    if ambiguous_result:
-                        ambiguous_results.append(ambiguous_result)
-                        original_model_responses.append(ambiguous_raw)
-                    
-                    if clear_result and ambiguous_result:
-                        successful_evaluations += 1
-                    
-                    # Rate limiting
-                    time.sleep(0.1)
-                    
-                except Exception as e:
-                    print(f"Error re-evaluating entry {entry['id']}: {e}")
-                    continue
-            
-            print(f"Phase 2 completed: {successful_evaluations}/{len(calibration_subset)} entries re-evaluated with frozen calibration")
-            
-            # If we have more entries, continue with the rest using the frozen calibration
-            if len(dataset_subset) > 100:
-                print(f"\nPhase 3: Evaluating remaining {len(dataset_subset) - 100} entries with frozen calibration...")
-                remaining_subset = dataset_subset[100:]
+        # Single phase evaluation (p(true) doesn't need calibration)
+        print("Evaluating dataset with p(true) confidence calculation...")
+        for i, entry in enumerate(tqdm(dataset_subset, desc=f"Evaluating {model_name}")):
+            try:
+                # Evaluate with clear sources only
+                clear_result, clear_raw = self.evaluate_single_entry(entry, model_name, "clear")
+                if clear_result:
+                    clear_results.append(clear_result)
+                    original_model_responses.append(clear_raw)
                 
-                for i, entry in enumerate(tqdm(remaining_subset, desc=f"Remaining entries - {model_name}")):
-                    try:
-                        # Evaluate with clear sources only
-                        clear_result, clear_raw = self.evaluate_single_entry(entry, model_name, "clear")
-                        if clear_result:
-                            clear_results.append(clear_result)
-                            original_model_responses.append(clear_raw)
-                        
-                        # Evaluate with ambiguous sources only
-                        ambiguous_result, ambiguous_raw = self.evaluate_single_entry(entry, model_name, "ambiguous")
-                        if ambiguous_result:
-                            ambiguous_results.append(ambiguous_result)
-                            original_model_responses.append(ambiguous_raw)
-                        
-                        if clear_result and ambiguous_result:
-                            successful_evaluations += 1
-                        
-                        # Rate limiting
-                        time.sleep(0.1)
-                        
-                    except Exception as e:
-                        print(f"Error evaluating entry {entry['id']}: {e}")
-                        continue
-        
-        else:
-            # Single phase evaluation (either skipping calibration or less than 20 entries)
-            print("Single phase evaluation...")
-            for i, entry in enumerate(tqdm(dataset_subset, desc=f"Evaluating {model_name}")):
-                try:
-                    # Evaluate with clear sources only
-                    clear_result, clear_raw = self.evaluate_single_entry(entry, model_name, "clear")
-                    if clear_result:
-                        clear_results.append(clear_result)
-                        original_model_responses.append(clear_raw)
-                    
-                    # Evaluate with ambiguous sources only
-                    ambiguous_result, ambiguous_raw = self.evaluate_single_entry(entry, model_name, "ambiguous")
-                    if ambiguous_result:
-                        ambiguous_results.append(ambiguous_result)
-                        original_model_responses.append(ambiguous_raw)
-                    
-                    if clear_result and ambiguous_result:
-                        successful_evaluations += 1
-                    
-                    # Rate limiting
-                    time.sleep(0.1)
-                    
-                except Exception as e:
-                    print(f"Error evaluating entry {entry['id']}: {e}")
-                    continue
+                # Evaluate with ambiguous sources only
+                ambiguous_result, ambiguous_raw = self.evaluate_single_entry(entry, model_name, "ambiguous")
+                if ambiguous_result:
+                    ambiguous_results.append(ambiguous_result)
+                    original_model_responses.append(ambiguous_raw)
+                
+                if clear_result and ambiguous_result:
+                    successful_evaluations += 1
+                
+                # Rate limiting
+                time.sleep(0.1)
+                
+            except Exception as e:
+                print(f"Error evaluating entry {entry['id']}: {e}")
+                continue
         
         print(f"Successfully evaluated {successful_evaluations}/{len(dataset_subset)} entries")
         
@@ -791,12 +713,111 @@ class RAGModelEvaluator:
         # Calculate batch ASI statistics
         batch_asi = calculate_batch_asi(asi_results)
         
-        # Build evaluation summary
+        # Calculate missed refusals - questions where model answered incorrectly when it should have refused
+        missed_refusals = 0
+        for result in all_results:
+            # Count cases where accuracy < 0.2 (very wrong) and model didn't refuse
+            accuracy = result.get('accuracy')
+            if accuracy is not None and accuracy < 0.2 and not result.get('is_refusal', False):
+                missed_refusals += 1
+        
+        print(f"Missed refusals: {missed_refusals} (questions with accuracy < 0.2 that weren't refused)")
+        
+        # === P(TRUE) DIAGNOSTICS ===
+        print(f"\n{'='*60}")
+        print("P(TRUE) CONFIDENCE DIAGNOSTICS")
+        print(f"{'='*60}")
+        
+        # 1. Raw correlation: confidence vs accuracy (before any calibration)
+        confidences = [r['confidence'] for r in all_results if r.get('confidence') is not None and r.get('accuracy') is not None]
+        accuracies_for_corr = [r['accuracy'] for r in all_results if r.get('confidence') is not None and r.get('accuracy') is not None]
+        
+        raw_corr = None
+        p_value = None
+        if len(confidences) > 2:
+            from scipy.stats import pearsonr
+            raw_corr, p_value = pearsonr(confidences, accuracies_for_corr)
+            print(f"\n1. RAW CONFIDENCE-ACCURACY CORRELATION:")
+            print(f"   Pearson r = {raw_corr:.3f} (p = {p_value:.4f})")
+            print(f"   {'✓ Good correlation!' if raw_corr > 0.3 else '✗ Weak correlation'}")
+        
+        # 2. Confidence distribution
+        if confidences:
+            import numpy as np
+            print(f"\n2. CONFIDENCE DISTRIBUTION:")
+            print(f"   Min:    {min(confidences):.3f}")
+            print(f"   25th:   {np.percentile(confidences, 25):.3f}")
+            print(f"   Median: {np.median(confidences):.3f}")
+            print(f"   75th:   {np.percentile(confidences, 75):.3f}")
+            print(f"   Max:    {max(confidences):.3f}")
+            print(f"   Std:    {np.std(confidences):.3f}")
+            print(f"   Range:  {max(confidences) - min(confidences):.3f}")
+        
+        # 3. Confidence by source quality (clear vs ambiguous)
+        clear_confidences = [r['confidence'] for r in clear_results if r.get('confidence') is not None]
+        ambiguous_confidences = [r['confidence'] for r in ambiguous_results if r.get('confidence') is not None]
+        
+        if clear_confidences and ambiguous_confidences:
+            print(f"\n3. CONFIDENCE BY SOURCE TYPE:")
+            print(f"   Clear sources:     {np.mean(clear_confidences):.3f} ± {np.std(clear_confidences):.3f}")
+            print(f"   Ambiguous sources: {np.mean(ambiguous_confidences):.3f} ± {np.std(ambiguous_confidences):.3f}")
+            diff = np.mean(clear_confidences) - np.mean(ambiguous_confidences)
+            print(f"   Difference:        {diff:.3f} ({'✓ Good!' if diff > 0.05 else '✗ Small difference'})")
+            print(f"   → Model {'does' if diff > 0.05 else 'does NOT'} recognize poor source quality")
+        
+        # 4. Calibration quality (how close confidence is to actual accuracy)
+        mean_abs_error = None
+        if len(confidences) > 0:
+            calibration_errors = [abs(c - a) for c, a in zip(confidences, accuracies_for_corr)]
+            mean_abs_error = np.mean(calibration_errors)
+            print(f"\n4. CALIBRATION QUALITY:")
+            print(f"   Mean Absolute Error: {mean_abs_error:.3f}")
+            print(f"   {'✓ Well calibrated!' if mean_abs_error < 0.2 else '✗ Needs calibration' if mean_abs_error < 0.3 else '✗ Poorly calibrated'}")
+        
+        # 5. Show a few examples
+        print(f"\n5. EXAMPLE P(TRUE) JUDGMENTS (first 3):")
+        for i, result in enumerate(all_results[:3]):
+            print(f"\n   Example {i+1}:")
+            print(f"   Question: {result['question'][:80]}...")
+            print(f"   Answer: {result['prediction_text'][:80]}...")
+            print(f"   Confidence: {result['confidence']:.3f}")
+            print(f"   Actual Accuracy: {result.get('accuracy', 'N/A')}")
+            print(f"   Source Type: {result['set_type']}")
+        
+        print(f"\n{'='*60}\n")
+        
+        # Build evaluation summary with p(true) diagnostics
+        ptrue_diagnostics = {
+            'raw_confidence_accuracy_correlation': float(raw_corr) if raw_corr is not None else None,
+            'correlation_p_value': float(p_value) if p_value is not None else None,
+            'confidence_distribution': {
+                'min': float(min(confidences)) if confidences else None,
+                'percentile_25': float(np.percentile(confidences, 25)) if confidences else None,
+                'median': float(np.median(confidences)) if confidences else None,
+                'percentile_75': float(np.percentile(confidences, 75)) if confidences else None,
+                'max': float(max(confidences)) if confidences else None,
+                'std': float(np.std(confidences)) if confidences else None,
+                'range': float(max(confidences) - min(confidences)) if confidences else None
+            },
+            'confidence_by_source_type': {
+                'clear_mean': float(np.mean(clear_confidences)) if clear_confidences else None,
+                'clear_std': float(np.std(clear_confidences)) if clear_confidences else None,
+                'ambiguous_mean': float(np.mean(ambiguous_confidences)) if ambiguous_confidences else None,
+                'ambiguous_std': float(np.std(ambiguous_confidences)) if ambiguous_confidences else None,
+                'difference': float(np.mean(clear_confidences) - np.mean(ambiguous_confidences)) if (clear_confidences and ambiguous_confidences) else None
+            },
+            'calibration_quality': {
+                'mean_absolute_error': float(mean_abs_error) if mean_abs_error is not None else None
+            }
+        }
+        
         evaluation_summary = {
             'model': model_name,
             'total_entries': len(dataset_subset),
             'successful_evaluations': successful_evaluations,
-            'calibration_info': self.calibrator.get_calibration_info(),
+            'confidence_method': 'p(true)',
+            'ptrue_diagnostics': ptrue_diagnostics,
+            'missed_refusals': missed_refusals,
             'bluff_rag_metrics': bluff_rag_metrics,
             'faithfulness_metrics': faithfulness_batch_metrics,
             'utility_metrics': utility_metrics,
@@ -813,6 +834,7 @@ class RAGModelEvaluator:
                         'confidence': result['confidence'],
                         'accuracy': result['accuracy'],
                         'is_uncertain': result['is_uncertain'],
+                        'is_refusal': result.get('is_refusal', False),
                         'set_type': result['set_type'],
                         'faithfulness': result['faithfulness'],
                         'log_probs': result.get('log_probs', []),
@@ -831,6 +853,7 @@ class RAGModelEvaluator:
                         'confidence': result['confidence'],
                         'accuracy': result['accuracy'],
                         'is_uncertain': result['is_uncertain'],
+                        'is_refusal': result.get('is_refusal', False),
                         'set_type': result['set_type'],
                         'ambiguity_type': result['ambiguity_type'],
                         'faithfulness': result['faithfulness'],
@@ -962,35 +985,42 @@ def main():
     # Setup models based on available API keys
     models_to_evaluate = []
     
+    # Setup OpenAI for LLM grading (already initialized in __init__)
+    # GPT-4o evaluation is commented out - only evaluating Gemini
     if openai_api_key:
-        print("\nSetting up OpenAI client...")
-        evaluator.setup_openai(openai_api_key, "gpt-4o")
-        models_to_evaluate.append("gpt-4o")
-        print("OpenAI client initialized")
+        print("\nOpenAI client available for LLM grading")
+        # Uncomment below to evaluate GPT-4o:
+        # evaluator.setup_openai(openai_api_key, "gpt-4o")
+        # models_to_evaluate.append("gpt-4o")
     
-    if anthropic_api_key:
-        print("\nSetting up Anthropic client...")
-        evaluator.setup_anthropic(anthropic_api_key, "claude-3-5-sonnet-20241022")
-        models_to_evaluate.append("claude-3-5-sonnet-20241022")
-        print("Anthropic client initialized")
+    # Anthropic evaluation commented out
+    # if anthropic_api_key:
+    #     print("\nSetting up Anthropic client...")
+    #     evaluator.setup_anthropic(anthropic_api_key, "claude-3-5-sonnet-20241022")
+    #     models_to_evaluate.append("claude-3-5-sonnet-20241022")
+    #     print("Anthropic client initialized")
     
     if google_api_key:
-        print("\nSetting up Google client...")
-        evaluator.setup_google(google_api_key, "gemini-1.5-pro")
-        models_to_evaluate.append("gemini-1.5-pro")
-        print("Google client initialized")
+        print("\nSetting up Google Vertex AI client...")
+        # Set service account credentials
+        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/Users/ron/MyProjects/Bluff-RAG/gcp_service_account.json'
+        evaluator.setup_google(project_id="bluff-474923", location="us-east1", model="gemini-2.5-pro")
+        models_to_evaluate.append("gemini-2.5-pro")
+        print("Vertex AI Gemini 2.5 Pro client initialized")
     
-    if mistral_api_key:
-        print("\nSetting up Mistral client...")
-        evaluator.setup_mistral(mistral_api_key, "mistral-large-latest")
-        models_to_evaluate.append("mistral-large-latest")
-        print("Mistral client initialized")
+    # Mistral evaluation commented out
+    # if mistral_api_key:
+    #     print("\nSetting up Mistral client...")
+    #     evaluator.setup_mistral(mistral_api_key, "mistral-large-latest")
+    #     models_to_evaluate.append("mistral-large-latest")
+    #     print("Mistral client initialized")
     
-    if together_api_key:
-        print("\nSetting up Llama client...")
-        evaluator.setup_llama(together_api_key, "llama-3.1-8b-instruct")
-        models_to_evaluate.append("llama-3.1-8b-instruct")
-        print("Llama client initialized")
+    # Llama evaluation commented out
+    # if together_api_key:
+    #     print("\nSetting up Llama client...")
+    #     evaluator.setup_llama(together_api_key, "llama-3.1-8b-instruct")
+    #     models_to_evaluate.append("llama-3.1-8b-instruct")
+    #     print("Llama client initialized")
     
     if not models_to_evaluate:
         print("\nNo API keys found! Please create a .env file with your API keys.")
@@ -1007,12 +1037,12 @@ def main():
     # Use the whole dataset for evaluation
     print(f"\nUsing full dataset with {len(evaluator.dataset)} entries")
     
-    # Evaluate with two-phase calibration workflow
+    # Evaluate with p(true) confidence (no calibration needed)
     print("\nStarting evaluation with full dataset...")
-    print("Two-phase calibration approach:")
-    print("  Phase 1: Evaluate first 100 entries to create calibration function")
-    print("  Phase 2: Re-evaluate first 100 entries with frozen calibration")
-    print("  Phase 3: Evaluate remaining entries with frozen calibration")
+    print("Using p(true) confidence approach:")
+    print("  - Each answer is evaluated for correctness based on sources")
+    print("  - Confidence = p(A) / (p(A) + p(B)) from True/False judgment")
+    print("  - No calibration needed - probabilities are already well-calibrated")
     
     # Evaluate all models
     all_results = {}
@@ -1034,11 +1064,8 @@ def main():
                 print(f"  Entries evaluated: {result['successful_evaluations']}/{result['total_entries']}")
                 print(f"  Success rate: {result['successful_evaluations']/result['total_entries']:.1%}")
                 
-                # Print calibration info
-                calibration_info = result['calibration_info']
-                print(f"\nCalibration Information:")
-                print(f"  Was calibrated: {calibration_info['is_calibrated']}")
-                print(f"  Calibration samples: {calibration_info['calibration_samples']}")
+                # Print confidence method info
+                print(f"\nConfidence Method: {result.get('confidence_method', 'p(true)')}")
 
                 # Print some key metrics
                 bluff_rag = result['bluff_rag_metrics']
@@ -1053,6 +1080,7 @@ def main():
                 print(f"  Overconfidence Index: {safe_format(bluff_rag.get('overconfidence_index'))}")
                 print(f"  Hedge F1: {safe_format(bluff_rag.get('hedge_f1'))}")
                 print(f"  Expected Calibration Error: {safe_format(bluff_rag.get('expected_calibration_error'))}")
+                print(f"  Missed Refusals: {result.get('missed_refusals', 0)} (very wrong answers that weren't refused)")
                 
                 # Print ASI metrics
                 if 'asi_metrics' in result:

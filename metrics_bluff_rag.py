@@ -358,7 +358,7 @@ def is_refusal_response(text: str) -> bool:
     
     text_lower = text.lower().strip()
     
-    if "I don't know" in text_lower:
+    if "i don't know" in text_lower or "i don't know." in text_lower or "i don't know?" in text_lower or "i don't know!" in text_lower:
         return True
     
     return False
