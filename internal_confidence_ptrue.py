@@ -8,7 +8,7 @@ from typing import List, Dict, Any
 
 
 def calculate_ptrue_confidence(question: str, answer: str, sources: List[Dict[str, Any]], 
-                                openai_client, model_type: str = "openai") -> float:
+                               openai_client, model_type: str = "openai", model_name: str = None) -> float:
     """
     Calculate confidence using p(true) approach.
     
@@ -25,8 +25,9 @@ def calculate_ptrue_confidence(question: str, answer: str, sources: List[Dict[st
     Returns:
         Confidence score between 0 and 1 (no calibration needed)
     """
-    if not openai_client:
-        raise ValueError("Model client is required")
+    # Only check for openai_client if using OpenAI model
+    if model_type == "openai" and not openai_client:
+        raise ValueError("OpenAI client is required for OpenAI models")
     
     # Format sources block
     sources_text = ""
@@ -56,23 +57,33 @@ The correct choice is:"""
     try:
         # Handle different model types
         if model_type == "gemini":
-            # Use Vertex AI Gemini
+            # Use Vertex AI Gemini - use the model name passed in
             from vertexai.generative_models import GenerativeModel, GenerationConfig
             
-            model = GenerativeModel("gemini-2.5-pro")
+            # Extract model name from the model_name parameter
+            gemini_model = model_name if model_name else "gemini-2.5-pro"
+            model = GenerativeModel(gemini_model)
             full_prompt = f"{system_prompt}\n\n{user_prompt}"
             
             generation_config = GenerationConfig(
                 temperature=0.0,
-                max_output_tokens=1,
+                max_output_tokens=150,  # Increased to handle thinking mode (49 tokens) + final answer
                 response_logprobs=True,
-                logprobs=5
+                logprobs=5,
             )
             
             response = model.generate_content(
                 full_prompt,
                 generation_config=generation_config
             )
+            
+            # Filter out thinking parts and get final answer
+            cand = response.candidates[0]
+            parts = cand.content.parts
+            # Keep only the final text parts (ignore reasoning parts)
+            final_texts = [p.text for p in parts if hasattr(p, "text") and not getattr(p, "inline_data", None)]
+            answer = final_texts[-1] if final_texts else cand.text
+            print("Gemini final answer:", answer)
             
             # Extract logprobs from Vertex AI response
             prob_a = None
@@ -83,17 +94,24 @@ The correct choice is:"""
                 if hasattr(candidate, 'logprobs_result') and candidate.logprobs_result:
                     logprobs_result = candidate.logprobs_result
                     
-                    # Check top candidates for first token
+                    # Search through ALL output tokens (Gemini 2.5 has thinking, so A/B might not be first token)
                     if hasattr(logprobs_result, 'top_candidates') and logprobs_result.top_candidates:
-                        for token_candidate in logprobs_result.top_candidates[0].candidates:
-                            token = token_candidate.token.strip().upper()
-                            logprob = token_candidate.log_probability
-                            prob = np.exp(logprob)
-                            
-                            if token == "A":
-                                prob_a = prob
-                            elif token == "B":
-                                prob_b = prob
+                        for token_position in logprobs_result.top_candidates:
+                            for token_candidate in token_position.candidates:
+                                token = token_candidate.token.strip().upper()
+                                logprob = token_candidate.log_probability
+                                prob = np.exp(logprob)
+                                
+                                if token == "A" and prob_a is None:  # Take first occurrence
+                                    prob_a = prob
+                                elif token == "B" and prob_b is None:
+                                    prob_b = prob
+                                
+                                # Stop if we found both
+                                if prob_a is not None and prob_b is not None:
+                                    break
+                            if prob_a is not None and prob_b is not None:
+                                break
             
             # Calculate confidence
             if prob_a is not None and prob_b is not None:
@@ -105,16 +123,30 @@ The correct choice is:"""
                 confidence = 1.0 - prob_b
                 print(f"Only B found (Gemini), confidence: {confidence}")
             else:
-                # Fallback
-                actual_text = response.text.strip().upper()
-                confidence = 0.9 if actual_text.startswith("A") else 0.1 if actual_text.startswith("B") else 0.5
+                # Fallback: search the filtered answer text for A or B
+                actual_text = answer.strip().upper()
+                
+                # Look for standalone A or B (handling thinking mode output)
+                if "\n(A)" in actual_text or actual_text.endswith("A") or "\nA\n" in actual_text or actual_text.endswith("(A)"):
+                    confidence = 0.9
+                elif "\n(B)" in actual_text or actual_text.endswith("B") or "\nB\n" in actual_text or actual_text.endswith("(B)"):
+                    confidence = 0.1
+                elif actual_text.startswith("A"):
+                    confidence = 0.9
+                elif actual_text.startswith("B"):
+                    confidence = 0.1
+                else:
+                    print(f"Warning: Could not find A or B in Gemini filtered answer: {actual_text[:100]}")
+                    confidence = 0.5
             
             return np.clip(confidence, 0.01, 0.99)
             
         else:
-            # Use OpenAI (original code)
+            # Use OpenAI (original code) - determine model
+            ptrue_model = model_name if model_name else "gpt-4o"
+            
             response = openai_client.chat.completions.create(
-                model="gpt-4o",
+                model=ptrue_model,
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}

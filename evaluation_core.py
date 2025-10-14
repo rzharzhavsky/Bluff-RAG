@@ -161,10 +161,12 @@ class RAGModelEvaluator:
     
     def __init__(self, dataset_path: str = "bluffrag_dataset.json", 
                  output_dir: str = "evaluation_results", 
-                 use_llm_grading: bool = True):
+                 use_llm_grading: bool = True,
+                 skip_llm_grading: bool = False):
         self.dataset_path = dataset_path
         self.output_dir = output_dir
         self.use_llm_grading = use_llm_grading
+        self.skip_llm_grading = skip_llm_grading  # For batch API mode
         self.dataset = self._load_dataset()
         
         # Create output directory
@@ -255,7 +257,7 @@ class RAGModelEvaluator:
         except ImportError:
             print("OpenAI client not available for Llama. Install with: pip install openai")
     
-    def call_openai_model(self, prompt: str, temperature: float = 0.0) -> Dict[str, Any]:
+    def call_openai_model(self, prompt: str, temperature: float = 0.3) -> Dict[str, Any]:
         """Call OpenAI model with log probabilities for internal confidence calculation."""
         try:
             # Check if model supports log probabilities
@@ -388,7 +390,7 @@ class RAGModelEvaluator:
                 'error': str(e)
             }
     
-    def call_mistral_model(self, prompt: str, temperature: float = 0.0) -> Dict[str, Any]:
+    def call_mistral_model(self, prompt: str, temperature: float = 0.3) -> Dict[str, Any]:
         """Call Mistral AI model with log probabilities."""
         try:
             messages = [ChatMessage(role="user", content=prompt)]
@@ -433,14 +435,14 @@ class RAGModelEvaluator:
                 'error': str(e)
             }
     
-    def call_llama_model(self, prompt: str, temperature: float = 0.0) -> Dict[str, Any]:
+    def call_llama_model(self, prompt: str, temperature: float = 0.3) -> Dict[str, Any]:
         """Call Llama model with log probabilities (via Together AI or similar)."""
         try:
             response = self.llama_client.chat.completions.create(
                 model=self.llama_model,
                 messages=[{"role": "user", "content": prompt}],
                 temperature=temperature,
-                max_tokens=1000,
+                max_tokens=500,
                 logprobs=True,
                 top_logprobs=5
             )
@@ -525,15 +527,28 @@ class RAGModelEvaluator:
         
         # Calculate confidence using p(true) approach
         try:
-            # Determine model type for p(true) calculation
-            model_type = "gemini" if model_name.startswith('gemini') else "openai"
+            # Determine model type and client for p(true) calculation
+            # CRITICAL: Use the SAME model that generated the answer for p(true) confidence
+            if model_name.startswith('gemini'):
+                model_type = "gemini"
+                ptrue_client = self.openai_client  # Gemini p(true) uses Google client (handled in internal_confidence_ptrue.py)
+            elif model_name.startswith('llama'):
+                model_type = "openai"  # Llama uses OpenAI-compatible API
+                ptrue_client = self.llama_client  # Use SAME Llama client for p(true)
+            elif model_name.startswith('gpt'):
+                model_type = "openai"
+                ptrue_client = self.openai_client  # Use SAME OpenAI client for p(true)
+            else:
+                model_type = "openai"
+                ptrue_client = self.openai_client
             
             confidence = calculate_ptrue_confidence(
                 question=entry['question'],
                 answer=parsed['answer'],
                 sources=sources,
-                openai_client=self.openai_client,  # Will be used for OpenAI models
-                model_type=model_type
+                openai_client=ptrue_client,
+                model_type=model_type,
+                model_name=model_name
             )
             # Store p(true) confidence for analysis
             ptrue_confidence = confidence
@@ -573,12 +588,16 @@ class RAGModelEvaluator:
         # Check if the model refused to answer
         is_refusal = is_refusal_response(parsed['answer'])
         
-        # Calculate accuracy using LLM grading (skip if refused)
+        # Calculate accuracy using LLM grading (skip if refused OR if skip_llm_grading mode)
+        
         gold_answer = entry.get('gold_answer', '')
         if is_refusal:
             # Reward refusal with 0.4 - better than being wrong (<0.2) but worse than being right (>0.8)
             # This incentivizes the model to refuse when uncertain
             accuracy = 0.4
+        elif self.skip_llm_grading:
+            # Batch mode: save None for later batch grading
+            accuracy = None
         elif gold_answer and parsed['answer']:
             if self.use_llm_grading:
                 # Use LLM grading for semantic accuracy
@@ -655,8 +674,8 @@ class RAGModelEvaluator:
                 if clear_result and ambiguous_result:
                     successful_evaluations += 1
                 
-                # Rate limiting
-                time.sleep(0.1)
+                # Rate limiting - increased delay to avoid 429 errors
+                time.sleep(2.0)
                 
             except Exception as e:
                 print(f"Error evaluating entry {entry['id']}: {e}")
@@ -670,6 +689,69 @@ class RAGModelEvaluator:
         
         # Combine results for standard metrics calculation
         all_results = clear_results + ambiguous_results
+        
+        # Check if we need to skip metric calculation (batch mode with no accuracies)
+        has_accuracies = any(r.get('accuracy') is not None for r in all_results if not r.get('is_refusal', False))
+        
+        if not has_accuracies and self.skip_llm_grading:
+            print("\n⚠️  BATCH MODE: Metrics will be calculated after batch grading completes")
+            print("   Saving raw results for now...")
+            
+            # Return minimal summary without metrics
+            evaluation_summary = {
+                'model': model_name,
+                'total_entries': len(dataset_subset),
+                'successful_evaluations': successful_evaluations,
+                'confidence_method': 'p(true)',
+                'batch_mode': True,
+                'metrics_pending': 'Run merge_batch_results.py after batch completes',
+                'summary_results': {
+                    'clear_results': [
+                        {
+                            'entry_id': result['entry_id'],
+                            'question': result['question'][:100] + '...' if len(result['question']) > 100 else result['question'],
+                            'model_answer': result['prediction_text'],
+                            'model_explanation': result['prediction_explanation'][:150] + '...' if len(result['prediction_explanation']) > 150 else result['prediction_explanation'],
+                            'gold_answer': result['gold_answer'],
+                            'confidence': result['confidence'],
+                            'accuracy': result['accuracy'],
+                            'is_uncertain': result['is_uncertain'],
+                            'is_refusal': result.get('is_refusal', False),
+                            'set_type': result['set_type'],
+                            'retrieved_docs': result.get('retrieved_docs', []),
+                            'relevant_docs': result.get('relevant_docs', [])
+                        }
+                        for result in clear_results
+                    ],
+                    'ambiguous_results': [
+                        {
+                            'entry_id': result['entry_id'],
+                            'question': result['question'][:100] + '...' if len(result['question']) > 100 else result['question'],
+                            'model_answer': result['prediction_text'],
+                            'model_explanation': result['prediction_explanation'][:150] + '...' if len(result['prediction_explanation']) > 150 else result['prediction_explanation'],
+                            'gold_answer': result['gold_answer'],
+                            'confidence': result['confidence'],
+                            'accuracy': result['accuracy'],
+                            'is_uncertain': result['is_uncertain'],
+                            'is_refusal': result.get('is_refusal', False),
+                            'set_type': result['set_type'],
+                            'ambiguity_type': result['ambiguity_type'],
+                            'retrieved_docs': result.get('retrieved_docs', []),
+                            'relevant_docs': result.get('relevant_docs', [])
+                        }
+                        for result in ambiguous_results
+                    ]
+                }
+            }
+            
+            # Save and return early
+            output_file = os.path.join(self.output_dir, f"{model_name}_evaluation.json")
+            with open(output_file, 'w', encoding='utf-8') as f:
+                json.dump(evaluation_summary, f, indent=2)
+            print(f"Raw results saved to {output_file}")
+            print(f"Metrics will be calculated after batch grading completes.")
+            
+            return evaluation_summary
         
         # Compute all metrics
         print("Computing BLUFF-RAG metrics...")
@@ -953,8 +1035,13 @@ def main():
     print("BLUFF-RAG Model Evaluation")
     print("=" * 50)
     
+    # Check for batch mode
+    skip_grading = os.getenv("SKIP_LLM_GRADING", "false").lower() == "true"
+    if skip_grading:
+        print("\n⚠️  BATCH MODE: Skipping LLM grading (will use batch API later)")
+    
     # Initialize evaluator
-    evaluator = RAGModelEvaluator(use_llm_grading=True)
+    evaluator = RAGModelEvaluator(use_llm_grading=not skip_grading, skip_llm_grading=skip_grading)
     
     # Try to get all API keys
     print("Loading API keys from environment variables...")
@@ -1000,13 +1087,14 @@ def main():
     #     models_to_evaluate.append("claude-3-5-sonnet-20241022")
     #     print("Anthropic client initialized")
     
-    if google_api_key:
-        print("\nSetting up Google Vertex AI client...")
-        # Set service account credentials
-        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/Users/ron/MyProjects/Bluff-RAG/gcp_service_account.json'
-        evaluator.setup_google(project_id="bluff-474923", location="us-east1", model="gemini-2.5-pro")
-        models_to_evaluate.append("gemini-2.5-pro")
-        print("Vertex AI Gemini 2.5 Pro client initialized")
+    # Google evaluation commented out
+    # if google_api_key:
+    #     print("\nSetting up Google Vertex AI client...")
+    #     # Set service account credentials
+    #     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/Users/ron/MyProjects/Bluff-RAG/gcp_service_account.json'
+    #     evaluator.setup_google(project_id="bluff-474923", location="us-east1", model="gemini-2.5-pro")
+    #     models_to_evaluate.append("gemini-2.5-pro")
+    #     print("Vertex AI Gemini 2.5 Pro client initialized")
     
     # Mistral evaluation commented out
     # if mistral_api_key:
@@ -1015,12 +1103,11 @@ def main():
     #     models_to_evaluate.append("mistral-large-latest")
     #     print("Mistral client initialized")
     
-    # Llama evaluation commented out
-    # if together_api_key:
-    #     print("\nSetting up Llama client...")
-    #     evaluator.setup_llama(together_api_key, "llama-3.1-8b-instruct")
-    #     models_to_evaluate.append("llama-3.1-8b-instruct")
-    #     print("Llama client initialized")
+    if together_api_key:
+        print("\nSetting up Llama 4 Scout client...")
+        evaluator.setup_llama(together_api_key, "meta-llama/Llama-4-Scout-17B-16E-Instruct")
+        models_to_evaluate.append("meta-llama/Llama-4-Scout-17B-16E-Instruct")
+        print("Llama 4 Scout client initialized")
     
     if not models_to_evaluate:
         print("\nNo API keys found! Please create a .env file with your API keys.")
