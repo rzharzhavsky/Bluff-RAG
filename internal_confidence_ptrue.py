@@ -20,7 +20,7 @@ def calculate_ptrue_confidence(question: str, answer: str, sources: List[Dict[st
         answer: The generated answer
         sources: List of source documents
         openai_client: Model client instance (OpenAI or Vertex AI)
-        model_type: Either "openai" or "gemini" to determine which API to use
+        model_type: Either "openai", "gemini", or "together" to determine which API to use
         
     Returns:
         Confidence score between 0 and 1 (no calibration needed)
@@ -28,6 +28,10 @@ def calculate_ptrue_confidence(question: str, answer: str, sources: List[Dict[st
     # Only check for openai_client if using OpenAI model
     if model_type == "openai" and not openai_client:
         raise ValueError("OpenAI client is required for OpenAI models")
+    
+    # Check for together client if using Together models
+    if model_type == "together" and not openai_client:
+        raise ValueError("Together client is required for Together models")
     
     # Format sources block
     sources_text = ""
@@ -45,12 +49,13 @@ def calculate_ptrue_confidence(question: str, answer: str, sources: List[Dict[st
 Question: {question}
 Proposed Answer: {answer}
 
-Based ONLY on the sources (DO NOT USE YOUR OWN KNOWLEDGE BASE), is the proposed answer correct?
+Based ONLY on the sources provided, is the proposed answer correct?
 
-(A) True – The answer is supported.
-(B) False – The answer is not supported or contradicts the sources.
-Answer only with A or B
-The correct choice is:"""
+Choose one:
+A - True
+B - False
+
+Your answer:"""
     
     system_prompt = "You judge factual correctness ONLY from provided sources."
     
@@ -141,6 +146,105 @@ The correct choice is:"""
             
             return np.clip(confidence, 0.01, 0.99)
             
+        elif model_type == "together":
+        # Use Together SDK (for Mistral and Llama models)
+            ptrue_model = "mistralai/Mistral-7B-Instruct-v0.3"
+
+            response = openai_client.chat.completions.create(
+                model=ptrue_model,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user",   "content": user_prompt}
+                ],
+                max_tokens=1,          # single-token decision
+                temperature=0.0,
+                logprobs=True,
+                top_logprobs=50,       # ensure A/B appear
+                stop=["\n"]            # avoid leading newline as first token
+            )
+
+            # --- Extract logprobs using Together chat schema ---
+            def _norm(tok: str) -> str:
+                return tok.replace("▁", " ").strip().upper()
+
+            prob_a = None
+            prob_b = None
+
+            # Extract logprobs from Together SDK response
+            logprobs = response.choices[0].logprobs
+            print(f"DEBUG: Logprobs available: {logprobs is not None}")
+            if logprobs:
+                print(f"DEBUG: Logprobs type: {type(logprobs)}")
+                print(f"DEBUG: Has tokens: {hasattr(logprobs, 'tokens')}")
+                print(f"DEBUG: Has top_logprobs: {hasattr(logprobs, 'top_logprobs')}")
+            
+            if logprobs and hasattr(logprobs, 'tokens') and logprobs.tokens is not None and len(logprobs.tokens) > 0:
+                print(f"DEBUG: Tokens: {logprobs.tokens}")
+                print(f"DEBUG: Token logprobs: {logprobs.token_logprobs}")
+                
+                # Method 1: Check tokens directly
+                if logprobs.token_logprobs is not None:
+                    for i, token in enumerate(logprobs.tokens):
+                        token_clean = _norm(token)
+                        print(f"DEBUG: Processing token '{token}' -> '{token_clean}'")
+                        if i < len(logprobs.token_logprobs):
+                            logprob = logprobs.token_logprobs[i]
+                            prob = float(np.exp(logprob))
+                            print(f"DEBUG: Token '{token_clean}' has prob {prob}")
+                            if token_clean == "A" and prob_a is None:
+                                prob_a = prob
+                                print(f"DEBUG: Set prob_a = {prob_a}")
+                            elif token_clean == "B" and prob_b is None:
+                                prob_b = prob
+                                print(f"DEBUG: Set prob_b = {prob_b}")
+                else:
+                    print("DEBUG: Token logprobs is None")
+                
+                # Method 2: Check top_logprobs if available (it's a list, not a dict)
+                if hasattr(logprobs, 'top_logprobs') and logprobs.top_logprobs is not None and len(logprobs.top_logprobs) > 0:
+                    print(f"DEBUG: Top logprobs: {logprobs.top_logprobs}")
+                    for i, top_dict in enumerate(logprobs.top_logprobs):
+                        print(f"DEBUG: Position {i}: {top_dict}")
+                        if isinstance(top_dict, dict):
+                            for token, logprob in top_dict.items():
+                                token_clean = _norm(token)
+                                prob = float(np.exp(logprob))
+                                print(f"DEBUG: Top token '{token_clean}' -> prob {prob}")
+                                if token_clean == "A" and prob_a is None:
+                                    prob_a = prob
+                                    print(f"DEBUG: Set prob_a = {prob_a}")
+                                elif token_clean == "B" and prob_b is None:
+                                    prob_b = prob
+                                    print(f"DEBUG: Set prob_b = {prob_b}")
+                else:
+                    print("DEBUG: No top_logprobs available")
+            else:
+                print("DEBUG: No tokens available or tokens is None")
+            
+            # Calculate confidence
+            print(f"DEBUG: Found prob_a = {prob_a}, prob_b = {prob_b}")
+            if prob_a is not None and prob_b is not None:
+                confidence = prob_a / (prob_a + prob_b)
+                print(f"DEBUG: Using both probabilities: {confidence}")
+            elif prob_a is not None:
+                confidence = prob_a
+                print(f"DEBUG: Using only A: {confidence}")
+            elif prob_b is not None:
+                confidence = 1.0 - prob_b
+                print(f"DEBUG: Using only B: {confidence}")
+            else:
+                # Fallback to response content
+                actual_response = response.choices[0].message.content.strip().upper()
+                print(f"DEBUG: Fallback to response: '{actual_response}'")
+                if "B -" in actual_response or actual_response.startswith("B"):
+                    confidence = 0.1
+                elif "A -" in actual_response or actual_response.startswith("A"):
+                    confidence = 0.9
+                else:
+                    confidence = 0.5
+            
+            return np.clip(confidence, 0.01, 0.99)
+
         else:
             # Use OpenAI (original code) - determine model
             ptrue_model = model_name if model_name else "gpt-4o"

@@ -33,13 +33,12 @@ from metrics_bluff_rag import (
 )
 from internal_confidence_ptrue import calculate_ptrue_confidence
 
-# Import Mistral AI components
+# Import Together AI components for Mistral
 try:
-    from mistralai.client import MistralClient
-    from mistralai.models import ChatMessage
-    MISTRAL_AVAILABLE = True
+    from together import Together
+    TOGETHER_AVAILABLE = True
 except ImportError:
-    MISTRAL_AVAILABLE = False
+    TOGETHER_AVAILABLE = False
 
 
 def round_metrics(data: Union[Dict, List, float], precision: int = 3) -> Union[Dict, List, float]:
@@ -238,24 +237,23 @@ class RAGModelEvaluator:
         except Exception as e:
             print(f"Error setting up Vertex AI: {e}")
     
-    def setup_mistral(self, api_key: str, model: str = "mistral-large-latest"):
-        """Setup Mistral AI client."""
-        if MISTRAL_AVAILABLE:
-            self.mistral_client = MistralClient(api_key=api_key)
+    def setup_mistral(self, api_key: str, model: str = "mistralai/Mistral-7B-Instruct-v0.3"):
+        """Setup Mistral client (using Together AI SDK)."""
+        try:
+            from together import Together
+            self.mistral_client = Together(api_key=api_key)
             self.mistral_model = model
-        else:
-            print("Mistral AI client not available. Install with: pip install mistralai")
+        except ImportError:
+            print("Together SDK not available. Install with: pip install together")
     
     def setup_llama(self, api_key: str, model: str = "llama-3.1-8b-instruct"):
-        """Setup Llama client (using Together AI or similar provider)."""
+        """Setup Llama client (using Together AI SDK)."""
         try:
-            self.llama_client = openai.OpenAI(
-                api_key=api_key,
-                base_url="https://api.together.xyz/v1"
-            )
+            from together import Together
+            self.llama_client = Together(api_key=api_key)
             self.llama_model = model
         except ImportError:
-            print("OpenAI client not available for Llama. Install with: pip install openai")
+            print("Together SDK not available. Install with: pip install together")
     
     def call_openai_model(self, prompt: str, temperature: float = 0.3) -> Dict[str, Any]:
         """Call OpenAI model with log probabilities for internal confidence calculation."""
@@ -391,13 +389,11 @@ class RAGModelEvaluator:
             }
     
     def call_mistral_model(self, prompt: str, temperature: float = 0.3) -> Dict[str, Any]:
-        """Call Mistral AI model with log probabilities."""
+        """Call Mistral model with log probabilities (via Together AI SDK)."""
         try:
-            messages = [ChatMessage(role="user", content=prompt)]
-            
-            response = self.mistral_client.chat(
+            response = self.mistral_client.chat.completions.create(
                 model=self.mistral_model,
-                messages=messages,
+                messages=[{"role": "user", "content": prompt}],
                 temperature=temperature,
                 max_tokens=1000,
                 logprobs=True,
@@ -406,22 +402,39 @@ class RAGModelEvaluator:
             
             response_text = response.choices[0].message.content
             
-            # Extract log probabilities
+            # Extract log probabilities using Together SDK format
             log_probs = []
-            if hasattr(response.choices[0], 'logprobs') and response.choices[0].logprobs:
-                for token_info in response.choices[0].logprobs.content:
-                    log_probs.append({
-                        'token': token_info.token,
-                        'logprob': token_info.logprob,
-                        'top_logprobs': getattr(token_info, 'top_logprobs', [])
-                    })
+            if response.choices[0].logprobs:
+                logprobs = response.choices[0].logprobs
+                
+                # Handle Together SDK LogprobsPart format
+                if hasattr(logprobs, 'tokens') and logprobs.tokens:
+                    for i, token in enumerate(logprobs.tokens):
+                        logprob = logprobs.token_logprobs[i] if i < len(logprobs.token_logprobs) else 0.0
+                        log_probs.append({
+                            'token': token,
+                            'logprob': logprob,
+                            'top_logprobs': []
+                        })
+                
+                # Also extract top_logprobs if available
+                if hasattr(logprobs, 'top_logprobs') and logprobs.top_logprobs:
+                    for i, top_dict in enumerate(logprobs.top_logprobs):
+                        if i < len(log_probs):
+                            top_logprobs_list = []
+                            for token, prob in top_dict.items():
+                                top_logprobs_list.append({
+                                    'token': token,
+                                    'logprob': prob
+                                })
+                            log_probs[i]['top_logprobs'] = top_logprobs_list
             
             return {
                 'response': response_text,
                 'confidence': None,  # Will be calculated using p(true) in evaluate_single_entry
                 'log_probs': log_probs,
                 'model': self.mistral_model,
-                'tokens_used': response.usage.total_tokens if hasattr(response, 'usage') else 0,
+                'tokens_used': response.usage.total_tokens if response.usage else 0,
                 'success': True
             }
         except Exception as e:
@@ -436,7 +449,7 @@ class RAGModelEvaluator:
             }
     
     def call_llama_model(self, prompt: str, temperature: float = 0.3) -> Dict[str, Any]:
-        """Call Llama model with log probabilities (via Together AI or similar)."""
+        """Call Llama model with log probabilities (via Together AI SDK)."""
         try:
             response = self.llama_client.chat.completions.create(
                 model=self.llama_model,
@@ -449,23 +462,32 @@ class RAGModelEvaluator:
             
             response_text = response.choices[0].message.content
             
-            # Extract log probabilities
+            # Extract log probabilities using Together SDK format
             log_probs = []
-            if response.choices[0].logprobs and response.choices[0].logprobs.content:
-                for token_info in response.choices[0].logprobs.content:
-                    serializable_top_logprobs = []
-                    if token_info.top_logprobs:
-                        for top_prob in token_info.top_logprobs:
-                            serializable_top_logprobs.append({
-                                'token': top_prob.token,
-                                'logprob': top_prob.logprob
-                            })
-                    
-                    log_probs.append({
-                        'token': token_info.token,
-                        'logprob': token_info.logprob,
-                        'top_logprobs': serializable_top_logprobs
-                    })
+            if response.choices[0].logprobs:
+                logprobs = response.choices[0].logprobs
+                
+                # Handle Together SDK LogprobsPart format
+                if hasattr(logprobs, 'tokens') and logprobs.tokens:
+                    for i, token in enumerate(logprobs.tokens):
+                        logprob = logprobs.token_logprobs[i] if i < len(logprobs.token_logprobs) else 0.0
+                        log_probs.append({
+                            'token': token,
+                            'logprob': logprob,
+                            'top_logprobs': []
+                        })
+                
+                # Also extract top_logprobs if available
+                if hasattr(logprobs, 'top_logprobs') and logprobs.top_logprobs:
+                    for i, top_dict in enumerate(logprobs.top_logprobs):
+                        if i < len(log_probs):
+                            top_logprobs_list = []
+                            for token, prob in top_dict.items():
+                                top_logprobs_list.append({
+                                    'token': token,
+                                    'logprob': prob
+                                })
+                            log_probs[i]['top_logprobs'] = top_logprobs_list
             
             return {
                 'response': response_text,
@@ -507,10 +529,8 @@ class RAGModelEvaluator:
                 result = self.call_anthropic_model(prompt)
             elif model_name.startswith('gemini'):
                 result = self.call_google_model(prompt)
-            elif model_name.startswith('mistral'):
+            elif model_name.startswith('mistral') or 'Mixtral' in model_name:
                 result = self.call_mistral_model(prompt)
-            elif model_name.startswith('llama'):
-                result = self.call_llama_model(prompt)
             else:
                 print(f"Unknown model: {model_name}")
                 return None
@@ -532,9 +552,9 @@ class RAGModelEvaluator:
             if model_name.startswith('gemini'):
                 model_type = "gemini"
                 ptrue_client = self.openai_client  # Gemini p(true) uses Google client (handled in internal_confidence_ptrue.py)
-            elif model_name.startswith('llama'):
-                model_type = "openai"  # Llama uses OpenAI-compatible API
-                ptrue_client = self.llama_client  # Use SAME Llama client for p(true)
+            elif model_name.startswith('mistral') or 'Mixtral' in model_name:
+                model_type = "together"  # Mistral uses Together SDK
+                ptrue_client = self.mistral_client  # Use SAME Mistral client for p(true)
             elif model_name.startswith('gpt'):
                 model_type = "openai"
                 ptrue_client = self.openai_client  # Use SAME OpenAI client for p(true)
@@ -745,7 +765,9 @@ class RAGModelEvaluator:
             }
             
             # Save and return early
-            output_file = os.path.join(self.output_dir, f"{model_name}_evaluation.json")
+            # Sanitize model name for filename (replace / with _)
+            safe_model_name = model_name.replace("/", "_")
+            output_file = os.path.join(self.output_dir, f"{safe_model_name}_evaluation.json")
             with open(output_file, 'w', encoding='utf-8') as f:
                 json.dump(evaluation_summary, f, indent=2)
             print(f"Raw results saved to {output_file}")
@@ -956,11 +978,13 @@ class RAGModelEvaluator:
         bluff_rag_report = generate_bluff_rag_report(evaluation_summary)
         
         # Save results
-        output_file = os.path.join(self.output_dir, f"{model_name}_evaluation.json")
+        # Sanitize model name for filename (replace / with _)
+        safe_model_name = model_name.replace("/", "_")
+        output_file = os.path.join(self.output_dir, f"{safe_model_name}_evaluation.json")
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(evaluation_summary, f, indent=2)
         
-        report_file = os.path.join(self.output_dir, f"{model_name}_bluff_rag_report.json")
+        report_file = os.path.join(self.output_dir, f"{safe_model_name}_bluff_rag_report.json")
         with open(report_file, 'w', encoding='utf-8') as f:
             json.dump(bluff_rag_report, f, indent=2)
         
@@ -1096,18 +1120,15 @@ def main():
     #     models_to_evaluate.append("gemini-2.5-pro")
     #     print("Vertex AI Gemini 2.5 Pro client initialized")
     
-    # Mistral evaluation commented out
-    # if mistral_api_key:
-    #     print("\nSetting up Mistral client...")
-    #     evaluator.setup_mistral(mistral_api_key, "mistral-large-latest")
-    #     models_to_evaluate.append("mistral-large-latest")
-    #     print("Mistral client initialized")
-    
+    # Together API models - ONLY MISTRAL
     if together_api_key:
-        print("\nSetting up Llama 4 Scout client...")
-        evaluator.setup_llama(together_api_key, "meta-llama/Llama-4-Scout-17B-16E-Instruct")
-        models_to_evaluate.append("meta-llama/Llama-4-Scout-17B-16E-Instruct")
-        print("Llama 4 Scout client initialized")
+        print("\nSetting up Together API client for Mistral...")
+        evaluator.setup_mistral(together_api_key, "mistralai/Mistral-7B-Instruct-v0.3")
+        print("Together API client initialized for Mistral")
+        
+        # Add ONLY Mistral to evaluation list
+        models_to_evaluate.append("mistralai/Mistral-7B-Instruct-v0.3")
+        print("Models to evaluate: Mistral 7B only")
     
     if not models_to_evaluate:
         print("\nNo API keys found! Please create a .env file with your API keys.")
