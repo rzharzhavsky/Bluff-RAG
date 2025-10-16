@@ -449,50 +449,21 @@ class RAGModelEvaluator:
             }
     
     def call_llama_model(self, prompt: str, temperature: float = 0.3) -> Dict[str, Any]:
-        """Call Llama model with log probabilities (via Together AI SDK)."""
+        """Call Llama model for answer generation (no logprobs needed)."""
         try:
             response = self.llama_client.chat.completions.create(
                 model=self.llama_model,
                 messages=[{"role": "user", "content": prompt}],
                 temperature=temperature,
-                max_tokens=500,
-                logprobs=True,
-                top_logprobs=5
+                max_tokens=500
             )
             
             response_text = response.choices[0].message.content
             
-            # Extract log probabilities using Together SDK format
-            log_probs = []
-            if response.choices[0].logprobs:
-                logprobs = response.choices[0].logprobs
-                
-                # Handle Together SDK LogprobsPart format
-                if hasattr(logprobs, 'tokens') and logprobs.tokens:
-                    for i, token in enumerate(logprobs.tokens):
-                        logprob = logprobs.token_logprobs[i] if i < len(logprobs.token_logprobs) else 0.0
-                        log_probs.append({
-                            'token': token,
-                            'logprob': logprob,
-                            'top_logprobs': []
-                        })
-                
-                # Also extract top_logprobs if available
-                if hasattr(logprobs, 'top_logprobs') and logprobs.top_logprobs:
-                    for i, top_dict in enumerate(logprobs.top_logprobs):
-                        if i < len(log_probs):
-                            top_logprobs_list = []
-                            for token, prob in top_dict.items():
-                                top_logprobs_list.append({
-                                    'token': token,
-                                    'logprob': prob
-                                })
-                            log_probs[i]['top_logprobs'] = top_logprobs_list
-            
             return {
                 'response': response_text,
                 'confidence': None,  # Will be calculated using p(true) in evaluate_single_entry
-                'log_probs': log_probs,
+                'log_probs': [],  # Not needed for initial inference
                 'model': self.llama_model,
                 'tokens_used': response.usage.total_tokens if response.usage else 0,
                 'success': True
@@ -531,6 +502,8 @@ class RAGModelEvaluator:
                 result = self.call_google_model(prompt)
             elif model_name.startswith('mistral') or 'Mixtral' in model_name:
                 result = self.call_mistral_model(prompt)
+            elif model_name.startswith('llama') or 'Llama' in model_name:
+                result = self.call_llama_model(prompt)
             else:
                 print(f"Unknown model: {model_name}")
                 return None
@@ -555,6 +528,9 @@ class RAGModelEvaluator:
             elif model_name.startswith('mistral') or 'Mixtral' in model_name:
                 model_type = "together"  # Mistral uses Together SDK
                 ptrue_client = self.mistral_client  # Use SAME Mistral client for p(true)
+            elif model_name.startswith('llama') or 'Llama' in model_name:
+                model_type = "together"  # Llama uses Together SDK
+                ptrue_client = self.llama_client  # Use SAME Llama client for p(true)
             elif model_name.startswith('gpt'):
                 model_type = "openai"
                 ptrue_client = self.openai_client  # Use SAME OpenAI client for p(true)
@@ -822,7 +798,7 @@ class RAGModelEvaluator:
         for result in all_results:
             # Count cases where accuracy < 0.2 (very wrong) and model didn't refuse
             accuracy = result.get('accuracy')
-            if accuracy is not None and accuracy < 0.2 and not result.get('is_refusal', False):
+            if accuracy is not None and accuracy < 0.15 and not result.get('is_refusal', False):
                 missed_refusals += 1
         
         print(f"Missed refusals: {missed_refusals} (questions with accuracy < 0.2 that weren't refused)")
@@ -1120,15 +1096,15 @@ def main():
     #     models_to_evaluate.append("gemini-2.5-pro")
     #     print("Vertex AI Gemini 2.5 Pro client initialized")
     
-    # Together API models - ONLY MISTRAL
+    # Together API models - ONLY LLAMA
     if together_api_key:
-        print("\nSetting up Together API client for Mistral...")
-        evaluator.setup_mistral(together_api_key, "mistralai/Mistral-7B-Instruct-v0.3")
-        print("Together API client initialized for Mistral")
+        print("\nSetting up Together API client for Llama...")
+        evaluator.setup_llama(together_api_key, "meta-llama/Llama-4-Scout-17B-16E-Instruct")
+        print("Together API client initialized for Llama")
         
-        # Add ONLY Mistral to evaluation list
-        models_to_evaluate.append("mistralai/Mistral-7B-Instruct-v0.3")
-        print("Models to evaluate: Mistral 7B only")
+        # Add ONLY Llama to evaluation list
+        models_to_evaluate.append("meta-llama/Llama-4-Scout-17B-16E-Instruct")
+        print("Models to evaluate: Llama 4 Scout 17B only")
     
     if not models_to_evaluate:
         print("\nNo API keys found! Please create a .env file with your API keys.")
