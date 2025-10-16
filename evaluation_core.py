@@ -1099,12 +1099,12 @@ def main():
     # Together API models - ONLY LLAMA
     if together_api_key:
         print("\nSetting up Together API client for Llama...")
-        evaluator.setup_llama(together_api_key, "meta-llama/Llama-4-Scout-17B-16E-Instruct")
+        evaluator.setup_llama(together_api_key, "meta-llama/Llama-3.3-70B-Instruct-Turbo")
         print("Together API client initialized for Llama")
         
         # Add ONLY Llama to evaluation list
-        models_to_evaluate.append("meta-llama/Llama-4-Scout-17B-16E-Instruct")
-        print("Models to evaluate: Llama 4 Scout 17B only")
+        models_to_evaluate.append("meta-llama/Llama-3.3-70B-Instruct-Turbo")
+        print("Models to evaluate: Llama 3.3 70B Instruct Turbo only")
     
     if not models_to_evaluate:
         print("\nNo API keys found! Please create a .env file with your API keys.")

@@ -150,7 +150,7 @@ Answer:"""
             # Use Together SDK (for Mistral and Llama models)
             # Since Together SDK doesn't provide full probability distributions,
             # we'll use multiple sampling to estimate confidence
-            ptrue_model = model_name if model_name else "meta-llama/Llama-4-Scout-17B-16E-Instruct"
+            ptrue_model = "meta-llama/Llama-3.3-70B-Instruct-Turbo"
 
             # Sample multiple times to estimate probability distribution
             num_samples = 5
