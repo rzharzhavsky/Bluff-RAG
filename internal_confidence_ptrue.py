@@ -147,17 +147,11 @@ Answer:"""
             return np.clip(confidence, 0.01, 0.99)
             
         elif model_type == "together":
-            # Use Together SDK (for Mistral and Llama models)
-            # Since Together SDK doesn't provide full probability distributions,
-            # we'll use multiple sampling to estimate confidence
-            ptrue_model = "meta-llama/Llama-3.3-70B-Instruct-Turbo"
-
-            # Sample multiple times to estimate probability distribution
-            num_samples = 5
-            a_count = 0
-            b_count = 0
+            # Use Together SDK (for Mistral, Llama, DeepSeek, and Qwen models)
+            ptrue_model = "Qwen/Qwen2.5-72B-Instruct-Turbo"
             
-            for _ in range(num_samples):
+            # For Qwen models, try to use logprobs if available
+            try:
                 response = openai_client.chat.completions.create(
                     model=ptrue_model,
                     messages=[
@@ -165,30 +159,74 @@ Answer:"""
                         {"role": "user",   "content": user_prompt}
                     ],
                     max_tokens=1,
-                    temperature=1,  # Higher temperature for more variation
-                    stop=["\n", " ", ".", ":", "!", "?", "To", "The", "This", "That"]
+                    temperature=0,  # Low temperature for consistent logprobs
+                    logprobs=True,
+                    top_logprobs=10
                 )
                 
                 answer = response.choices[0].message.content.strip().upper()
-                if answer == "A":
-                    a_count += 1
-                elif answer == "B":
-                    b_count += 1
-            
-            # Calculate confidence based on sampling
-            total_samples = a_count + b_count
-            if total_samples > 0:
-                confidence = a_count / total_samples
-                print(f"DEBUG: Sampled {num_samples} times: A={a_count}, B={b_count}, confidence={confidence}")
-            else:
-                confidence = 0.5  # Default if no valid responses
-                print("DEBUG: No valid A/B responses in sampling")
+                
+                # Try to extract confidence from logprobs
+                if hasattr(response.choices[0], 'logprobs') and response.choices[0].logprobs:
+                    logprobs = response.choices[0].logprobs
+                    if hasattr(logprobs, 'tokens') and hasattr(logprobs, 'token_logprobs'):
+                        tokens = logprobs.tokens
+                        token_logprobs = logprobs.token_logprobs
+                        
+                        if len(tokens) > 0 and len(token_logprobs) > 0:
+                            # Get the logprob of the first token (the answer)
+                            first_token_logprob = token_logprobs[0]
+                            confidence = 2 ** first_token_logprob
+                            print(f"DEBUG: Qwen logprob confidence: {confidence:.4f} for token '{tokens[0]}'")
+                        else:
+                            # Fallback to sampling
+                            confidence = 0.5 if answer == "A" else 0.5
+                    else:
+                        # Fallback to sampling
+                        confidence = 0.5 if answer == "A" else 0.5
+                else:
+                    # Fallback to sampling
+                    confidence = 0.5 if answer == "A" else 0.5
+                    
+            except Exception as e:
+                print(f"DEBUG: Qwen logprobs failed, falling back to sampling: {e}")
+                # Fallback to sampling method
+                num_samples = 5
+                a_count = 0
+                b_count = 0
+                
+                for _ in range(num_samples):
+                    response = openai_client.chat.completions.create(
+                        model=ptrue_model,
+                        messages=[
+                            {"role": "system", "content": system_prompt},
+                            {"role": "user",   "content": user_prompt}
+                        ],
+                        max_tokens=1,
+                        temperature=1,  # Higher temperature for more variation
+                        stop=["\n", " ", ".", ":", "!", "?", "To", "The", "This", "That"]
+                    )
+                    
+                    answer = response.choices[0].message.content.strip().upper()
+                    if answer == "A":
+                        a_count += 1
+                    elif answer == "B":
+                        b_count += 1
+                
+                # Calculate confidence based on sampling
+                total_samples = a_count + b_count
+                if total_samples > 0:
+                    confidence = a_count / total_samples
+                    print(f"DEBUG: Sampled {num_samples} times: A={a_count}, B={b_count}, confidence={confidence}")
+                else:
+                    confidence = 0.5  # Default if no valid responses
+                    print("DEBUG: No valid A/B responses in sampling")
 
             return np.clip(confidence, 0.01, 0.99)
 
         else:
             # Use OpenAI (original code) - determine model
-            ptrue_model = model_name if model_name else "gpt-4o"
+            ptrue_model ="gpt-3.5-turbo"
             
             response = openai_client.chat.completions.create(
                 model=ptrue_model,

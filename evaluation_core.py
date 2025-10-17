@@ -504,6 +504,10 @@ class RAGModelEvaluator:
                 result = self.call_mistral_model(prompt)
             elif model_name.startswith('llama') or 'Llama' in model_name:
                 result = self.call_llama_model(prompt)
+            elif model_name.startswith('deepseek'):
+                result = self.call_llama_model(prompt)  # DeepSeek uses the same client as Llama
+            elif model_name.startswith('Qwen'):
+                result = self.call_llama_model(prompt)  # Qwen uses the same client as Llama
             else:
                 print(f"Unknown model: {model_name}")
                 return None
@@ -534,6 +538,12 @@ class RAGModelEvaluator:
             elif model_name.startswith('gpt'):
                 model_type = "openai"
                 ptrue_client = self.openai_client  # Use SAME OpenAI client for p(true)
+            elif model_name.startswith('deepseek'):
+                model_type = "together"  # DeepSeek uses Together SDK
+                ptrue_client = self.llama_client  # Use SAME DeepSeek client for p(true)
+            elif model_name.startswith('Qwen'):
+                model_type = "together"  # Qwen uses Together SDK
+                ptrue_client = self.llama_client  # Use SAME Qwen client for p(true)
             else:
                 model_type = "openai"
                 ptrue_client = self.openai_client
@@ -1072,13 +1082,12 @@ def main():
     # Setup models based on available API keys
     models_to_evaluate = []
     
-    # Setup OpenAI for LLM grading (already initialized in __init__)
-    # GPT-4o evaluation is commented out - only evaluating Gemini
-    if openai_api_key:
-        print("\nOpenAI client available for LLM grading")
-        # Uncomment below to evaluate GPT-4o:
-        # evaluator.setup_openai(openai_api_key, "gpt-4o")
-        # models_to_evaluate.append("gpt-4o")
+    # Setup OpenAI for evaluation - COMMENTED OUT (evaluating DeepSeek-V3.1 instead)
+    # if openai_api_key:
+    #     print("\nSetting up OpenAI client for GPT-3.5 Turbo...")
+    #     evaluator.setup_openai(openai_api_key, "gpt-3.5-turbo")
+    #     models_to_evaluate.append("gpt-3.5-turbo")
+    #     print("OpenAI GPT-3.5 Turbo client initialized")
     
     # Anthropic evaluation commented out
     # if anthropic_api_key:
@@ -1096,15 +1105,15 @@ def main():
     #     models_to_evaluate.append("gemini-2.5-pro")
     #     print("Vertex AI Gemini 2.5 Pro client initialized")
     
-    # Together API models - ONLY LLAMA
+    # Together API models - Qwen2.5-72B-Instruct-Turbo
     if together_api_key:
-        print("\nSetting up Together API client for Llama...")
-        evaluator.setup_llama(together_api_key, "meta-llama/Llama-3.3-70B-Instruct-Turbo")
-        print("Together API client initialized for Llama")
+        print("\nSetting up Together API client for Qwen2.5-72B-Instruct-Turbo...")
+        evaluator.setup_llama(together_api_key, "Qwen/Qwen2.5-72B-Instruct-Turbo")
+        print("Together API client initialized for Qwen2.5-72B-Instruct-Turbo")
         
-        # Add ONLY Llama to evaluation list
-        models_to_evaluate.append("meta-llama/Llama-3.3-70B-Instruct-Turbo")
-        print("Models to evaluate: Llama 3.3 70B Instruct Turbo only")
+        # Add Qwen2.5-72B-Instruct-Turbo to evaluation list
+        models_to_evaluate.append("Qwen/Qwen2.5-72B-Instruct-Turbo")
+        print("Models to evaluate: Qwen2.5-72B-Instruct-Turbo only")
     
     if not models_to_evaluate:
         print("\nNo API keys found! Please create a .env file with your API keys.")
