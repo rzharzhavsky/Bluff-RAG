@@ -1,0 +1,27 @@
+{
+  "model": "meta-llama/Llama-4-Scout-17B-16E-Instruct",
+  "total_evaluations": 500,
+  "h1_overconfidence_gap": {
+    "evidence_confidence_gap": 0.79284,
+    "overconfidence_index": 0.0,
+    "expected_calibration_error": 0.3648000000000002,
+    "confidence_accuracy_correlation": 0.07116954054074351,
+    "ASI": 0.06721
+  },
+  "h2_hedging_behavior": {
+    "VUI": 0.11868131868131868,
+    "source_set_on_hedging": 0.0,
+    "lexical_overconfidence_index": 0.0,
+    "hedge_precision": 0.06338028169014084,
+    "hedge_recall": 0.9310344827586207,
+    "refusal_count": 19,
+    "refusal_sensitivity": -0.038
+  },
+  "diagnostics": {
+    "answer_correctness": 0.6834,
+    "missed_refusals": 0,
+    "brier_score": 0.183642,
+    "source_awareness_score": 0.21911073088666788,
+    "overall_faithfulness": 0.7487184449218918
+  }
+}
