@@ -1,0 +1,27 @@
+{
+  "model": "gpt-4o",
+  "total_evaluations": 359,
+  "h1_overconfidence_gap": {
+    "evidence_confidence_gap": 0.48,
+    "overconfidence_index": 0.0,
+    "expected_calibration_error": 0.318,
+    "confidence_accuracy_correlation": 0.832,
+    "ASI": -0.024
+  },
+  "h2_hedging_behavior": {
+    "VUI": 0.057,
+    "source_set_on_hedging": -0.318,
+    "lexical_overconfidence_index": 0.0,
+    "hedge_precision": 0.029,
+    "hedge_recall": 1.0,
+    "refusal_count": 380,
+    "refusal_sensitivity": 0.206
+  },
+  "diagnostics": {
+    "answer_correctness": 0.5541323119777113,
+    "missed_refusals": 0,
+    "brier_score": 0.117,
+    "source_awareness_score": 0.286,
+    "overall_faithfulness": 0.647
+  }
+}

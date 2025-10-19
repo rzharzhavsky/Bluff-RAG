@@ -1,0 +1,16 @@
+{
+  "vaccines": 4,
+  "infectious_diseases": 4,
+  "nutrition_guidelines": 4,
+  "mental_health": 4,
+  "maternal_and_child_health": 4,
+  "chronic_diseases": 5,
+  "occupational_safety": 4,
+  "toxicology": 4,
+  "emergency_medicine": 4,
+  "preventive_care": 5,
+  "healthcare_policy": 4,
+  "medical_research": 5,
+  "public_health_education": 4,
+  "unknown": 4
+}

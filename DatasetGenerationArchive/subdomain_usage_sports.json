@@ -1,0 +1,13 @@
+{
+  "olympics": 8,
+  "soccer": 8,
+  "basketball": 8,
+  "baseball": 8,
+  "tennis": 8,
+  "athletics": 9,
+  "sports_medicine": 9,
+  "sports_history": 8,
+  "doping_scandals": 8,
+  "football": 9,
+  "unknown": 6
+}

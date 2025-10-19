@@ -1,0 +1,11 @@
+{
+  "stock_markets": 8,
+  "banking": 9,
+  "cryptocurrency": 9,
+  "inflation_and_recession": 8,
+  "personal_finance": 8,
+  "global_trade": 12,
+  "housing_markets": 8,
+  "investment_strategies": 9,
+  "unknown": 3
+}

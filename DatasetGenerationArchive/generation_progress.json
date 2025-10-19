@@ -1,0 +1,210 @@
+{
+  "total_generated": 431,
+  "topic_progress": {
+    "public_health": 50,
+    "current_events": 43,
+    "history": 45,
+    "finance": 39,
+    "sports": 27,
+    "climate": 45,
+    "technology": 34,
+    "astronomy": 49,
+    "law": 50,
+    "psychology": 49
+  },
+  "failed_entries": [
+    {
+      "entry_id": "current_events_013",
+      "topic": "current_events",
+      "timestamp": "2025-08-23T09:46:27.620589",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "current_events_030",
+      "topic": "current_events",
+      "timestamp": "2025-08-23T11:42:27.501958",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "finance_004",
+      "topic": "finance",
+      "timestamp": "2025-08-23T17:30:27.177108",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "finance_007",
+      "topic": "finance",
+      "timestamp": "2025-08-23T17:53:49.712538",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "finance_015",
+      "topic": "finance",
+      "timestamp": "2025-08-23T20:01:09.428849",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "finance_028",
+      "topic": "finance",
+      "timestamp": "2025-08-23T21:35:35.646098",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "finance_040",
+      "topic": "finance",
+      "timestamp": "2025-08-23T23:07:22.768234",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_006",
+      "topic": "sports",
+      "timestamp": "2025-08-24T02:36:39.533728",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_011",
+      "topic": "sports",
+      "timestamp": "2025-08-24T04:31:18.814519",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_012",
+      "topic": "sports",
+      "timestamp": "2025-08-24T04:31:56.879835",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_014",
+      "topic": "sports",
+      "timestamp": "2025-08-24T04:34:10.247681",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_016",
+      "topic": "sports",
+      "timestamp": "2025-08-24T04:37:49.362614",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_019",
+      "topic": "sports",
+      "timestamp": "2025-08-24T04:39:55.355265",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_024",
+      "topic": "sports",
+      "timestamp": "2025-08-24T06:45:41.742862",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_030",
+      "topic": "sports",
+      "timestamp": "2025-08-24T08:04:20.460885",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_032",
+      "topic": "sports",
+      "timestamp": "2025-08-24T08:07:47.468009",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_037",
+      "topic": "sports",
+      "timestamp": "2025-08-24T08:16:06.478110",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_044",
+      "topic": "sports",
+      "timestamp": "2025-08-24T09:18:44.261493",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_045",
+      "topic": "sports",
+      "timestamp": "2025-08-24T09:19:28.100792",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_046",
+      "topic": "sports",
+      "timestamp": "2025-08-24T09:20:03.974469",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "sports_049",
+      "topic": "sports",
+      "timestamp": "2025-08-24T09:22:16.795909",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "climate_009",
+      "topic": "climate",
+      "timestamp": "2025-08-24T09:48:19.314302",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "climate_018",
+      "topic": "climate",
+      "timestamp": "2025-08-24T10:31:57.064851",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "technology_008",
+      "topic": "technology",
+      "timestamp": "2025-08-24T13:47:37.721383",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "technology_010",
+      "topic": "technology",
+      "timestamp": "2025-08-24T13:50:34.655943",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "technology_012",
+      "topic": "technology",
+      "timestamp": "2025-08-24T13:53:43.414744",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "technology_020",
+      "topic": "technology",
+      "timestamp": "2025-08-24T14:16:29.419772",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "technology_028",
+      "topic": "technology",
+      "timestamp": "2025-08-24T14:48:29.932031",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "technology_031",
+      "topic": "technology",
+      "timestamp": "2025-08-24T14:52:14.408937",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "technology_036",
+      "topic": "technology",
+      "timestamp": "2025-08-24T15:06:05.661415",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "technology_044",
+      "topic": "technology",
+      "timestamp": "2025-08-24T15:42:02.432725",
+      "error": "build() returned None"
+    },
+    {
+      "entry_id": "technology_045",
+      "topic": "technology",
+      "timestamp": "2025-08-24T15:42:45.163963",
+      "error": "build() returned None"
+    }
+  ],
+  "last_updated": "2025-08-31T18:12:34.662657"
+}
