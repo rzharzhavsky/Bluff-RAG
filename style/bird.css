@@ -142,7 +142,7 @@ span.line {
 }
 
 #bird-title {
-    color: #9de2dd
+    color: #ff5237;
 }
 
 #logo-img {
@@ -415,4 +415,8 @@ span.line {
 
 .counter-cell .badge {
     display: block;
+}
+
+.btn-ab{
+    background-color: #078e73;
 }
