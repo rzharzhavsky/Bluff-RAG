@@ -1,0 +1,5516 @@
+{
+  "bluff_rag_metrics": {
+    "retrieval_recall_confidence_correlation": 0.0,
+    "avg_retrieval_recall": 1.0,
+    "overconfidence_index": 0.0,
+    "wrong_answer_rate": 0.31660000000000005,
+    "refusal_rate": 0.038,
+    "h1_composite_score": 0.8944666666666666,
+    "calibrated_confidence_stats": {
+      "median": 0.99,
+      "25th_percentile": 0.99,
+      "75th_percentile": 0.99,
+      "high_confidence_threshold": 0.99,
+      "min": 0.01,
+      "max": 0.99,
+      "overconfidence_cases_count": 0,
+      "total_wrong_answers": 30
+    },
+    "hedge_precision": 0.06338028169014084,
+    "hedge_recall": 0.9310344827586207,
+    "hedge_specificity": 0.11529933481152993,
+    "hedge_f1": 0.11868131868131868,
+    "hedge_accuracy": 0.158,
+    "lexical_overconfidence_index": 0.0,
+    "uncertainty_confidence_correlation": 0.02854679746837044,
+    "hedge_density": 0.050071380507435016,
+    "confident_wrong_rate": 0.0,
+    "hedging_diagnostics": {
+      "hedge_threshold": 0.0,
+      "accuracy_threshold": 0.5,
+      "true_positives": 27,
+      "false_positives": 399,
+      "true_negatives": 52,
+      "false_negatives": 2,
+      "avg_hedge_density": 0.050071380507435016
+    },
+    "expected_calibration_error": 0.3648000000000002,
+    "brier_score": 0.183642,
+    "confidence_accuracy_correlation": 0.07116954054074351,
+    "calibration_ece_after_isotonic": 2.7755575615628914e-15,
+    "calibration_improvement": 0.3647999999999974,
+    "confidence_distribution_entropy": 0.8777848757876736,
+    "source_quality_confidence_correlation": 0.021868231372966427,
+    "source_diversity_calibration_correlation": -0.028740493115372093,
+    "quality_weighted_ece": 0.36453603871296275,
+    "high_quality_source_ece": 0.3580930232558138,
+    "low_quality_source_ece": 0.40600000000000025,
+    "quality_calibration_gap": -0.047906976744186425,
+    "h5_source_quality_score": 0.21911073088666788,
+    "source_set_on_hedging": 0.0,
+    "evidence_confidence_gap": 0.79284,
+    "total_refusals": 19,
+    "refusal_count": 19,
+    "clear_refusal_rate": 0.038,
+    "ambiguous_refusal_rate": 0.0,
+    "refusal_sensitivity": -0.038
+  },
+  "asi_metrics": {
+    "mean_asi": 0.030070325148956523,
+    "std_asi": 0.2947860046388052,
+    "min_asi": -1.0911111111111111,
+    "max_asi": 0.5403373118837571,
+    "median_asi": 0.0010570824524312877,
+    "mean_confidence_sensitivity": 0.0752744630071599,
+    "mean_hedging_sensitivity": -0.015133812709246856
+  },
+  "individual_asi_results": [
+    {
+      "question_id": "astronomy_001",
+      "asi_score": 0.0024509803921568644,
+      "asi_components": {
+        "asi": 0.0024509803921568644,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.004901960784313729,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0392156862745098,
+        "ambiguous_hedging": 0.04411764705882353
+      }
+    },
+    {
+      "question_id": "astronomy_002",
+      "asi_score": -0.04910714285714285,
+      "asi_components": {
+        "asi": -0.04910714285714285,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.0982142857142857,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.14285714285714285,
+        "ambiguous_hedging": 0.09375
+      }
+    },
+    {
+      "question_id": "astronomy_003",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "astronomy_004",
+      "asi_score": 0.006140350877192988,
+      "asi_components": {
+        "asi": 0.006140350877192988,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.012280701754385975,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.08771929824561403,
+        "ambiguous_hedging": 0.1
+      }
+    },
+    {
+      "question_id": "astronomy_005",
+      "asi_score": 0.4873244147157191,
+      "asi_components": {
+        "asi": 0.4873244147157191,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": -0.0053511705685618804,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.046153846153846156,
+        "ambiguous_hedging": 0.043478260869565216
+      }
+    },
+    {
+      "question_id": "astronomy_006",
+      "asi_score": 0.4959961315280464,
+      "asi_components": {
+        "asi": 0.4959961315280464,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.011992263056092842,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.0425531914893617,
+        "ambiguous_hedging": 0.05454545454545454
+      }
+    },
+    {
+      "question_id": "astronomy_007",
+      "asi_score": 0.010393348257115445,
+      "asi_components": {
+        "asi": 0.010393348257115445,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.02078669651423089,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.01694915254237288,
+        "ambiguous_hedging": 0.03773584905660377
+      }
+    },
+    {
+      "question_id": "astronomy_008",
+      "asi_score": -0.0018181818181818195,
+      "asi_components": {
+        "asi": -0.0018181818181818195,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.003636363636363639,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.02,
+        "ambiguous_hedging": 0.01818181818181818
+      }
+    },
+    {
+      "question_id": "astronomy_009",
+      "asi_score": -0.06339622641509433,
+      "asi_components": {
+        "asi": -0.06339622641509433,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.12679245283018867,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.12,
+        "ambiguous_hedging": 0.05660377358490566
+      }
+    },
+    {
+      "question_id": "astronomy_010",
+      "asi_score": 0.004545454545454547,
+      "asi_components": {
+        "asi": 0.004545454545454547,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.009090909090909094,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.09090909090909091,
+        "ambiguous_hedging": 0.1
+      }
+    },
+    {
+      "question_id": "astronomy_011",
+      "asi_score": -0.01639344262295082,
+      "asi_components": {
+        "asi": -0.01639344262295082,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.03278688524590164,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.01639344262295082,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "astronomy_012",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.2,
+        "ambiguous_hedging": 0.2
+      }
+    },
+    {
+      "question_id": "astronomy_013",
+      "asi_score": -0.033400809716599186,
+      "asi_components": {
+        "asi": -0.033400809716599186,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.06680161943319837,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.05263157894736842,
+        "ambiguous_hedging": 0.019230769230769232
+      }
+    },
+    {
+      "question_id": "astronomy_014",
+      "asi_score": -0.026659103800340325,
+      "asi_components": {
+        "asi": -0.026659103800340325,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.05331820760068065,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.07317073170731707,
+        "ambiguous_hedging": 0.046511627906976744
+      }
+    },
+    {
+      "question_id": "astronomy_015",
+      "asi_score": -0.013636363636363634,
+      "asi_components": {
+        "asi": -0.013636363636363634,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.027272727272727268,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.03636363636363636,
+        "ambiguous_hedging": 0.022727272727272728
+      }
+    },
+    {
+      "question_id": "astronomy_016",
+      "asi_score": -0.050861361771944225,
+      "asi_components": {
+        "asi": -0.050861361771944225,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.10172272354388845,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.09433962264150944,
+        "ambiguous_hedging": 0.043478260869565216
+      }
+    },
+    {
+      "question_id": "astronomy_019",
+      "asi_score": 0.023333333333333334,
+      "asi_components": {
+        "asi": 0.023333333333333334,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.04666666666666667,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.03333333333333333,
+        "ambiguous_hedging": 0.08
+      }
+    },
+    {
+      "question_id": "astronomy_020",
+      "asi_score": 0.0007318501170960178,
+      "asi_components": {
+        "asi": 0.0007318501170960178,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0014637002341920356,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.01639344262295082,
+        "ambiguous_hedging": 0.017857142857142856
+      }
+    },
+    {
+      "question_id": "astronomy_021",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "astronomy_022",
+      "asi_score": 0.4561764705882353,
+      "asi_components": {
+        "asi": 0.4561764705882353,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": -0.06764705882352941,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.058823529411764705,
+        "ambiguous_hedging": 0.025
+      }
+    },
+    {
+      "question_id": "astronomy_023",
+      "asi_score": -1.0322727272727272,
+      "asi_components": {
+        "asi": -1.0322727272727272,
+        "confidence_sensitivity": -1.96,
+        "hedging_sensitivity": -0.10454545454545454,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.075,
+        "ambiguous_hedging": 0.022727272727272728
+      }
+    },
+    {
+      "question_id": "astronomy_024",
+      "asi_score": 0.016017316017316013,
+      "asi_components": {
+        "asi": 0.016017316017316013,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.03203463203463203,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.09523809523809523,
+        "ambiguous_hedging": 0.12727272727272726
+      }
+    },
+    {
+      "question_id": "astronomy_025",
+      "asi_score": -0.0273972602739726,
+      "asi_components": {
+        "asi": -0.0273972602739726,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.0547945205479452,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.0273972602739726,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "astronomy_028",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.1,
+        "ambiguous_hedging": 0.1
+      }
+    },
+    {
+      "question_id": "astronomy_030",
+      "asi_score": 0.013725490196078431,
+      "asi_components": {
+        "asi": 0.013725490196078431,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.027450980392156862,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0392156862745098,
+        "ambiguous_hedging": 0.06666666666666667
+      }
+    },
+    {
+      "question_id": "astronomy_034",
+      "asi_score": 0.006093189964157707,
+      "asi_components": {
+        "asi": 0.006093189964157707,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.012186379928315415,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.03225806451612903,
+        "ambiguous_hedging": 0.044444444444444446
+      }
+    },
+    {
+      "question_id": "astronomy_035",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "astronomy_036",
+      "asi_score": 0.5079028132992327,
+      "asi_components": {
+        "asi": 0.5079028132992327,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.03580562659846547,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.029411764705882353,
+        "ambiguous_hedging": 0.06521739130434782
+      }
+    },
+    {
+      "question_id": "astronomy_037",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.06818181818181818,
+        "ambiguous_hedging": 0.06818181818181818
+      }
+    },
+    {
+      "question_id": "astronomy_038",
+      "asi_score": 0.0012987012987012974,
+      "asi_components": {
+        "asi": 0.0012987012987012974,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.002597402597402595,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.025974025974025976,
+        "ambiguous_hedging": 0.02857142857142857
+      }
+    },
+    {
+      "question_id": "astronomy_040",
+      "asi_score": -0.01655172413793103,
+      "asi_components": {
+        "asi": -0.01655172413793103,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.03310344827586206,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.12,
+        "ambiguous_hedging": 0.10344827586206896
+      }
+    },
+    {
+      "question_id": "astronomy_041",
+      "asi_score": 0.015760441292356184,
+      "asi_components": {
+        "asi": 0.015760441292356184,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.03152088258471237,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0425531914893617,
+        "ambiguous_hedging": 0.07407407407407407
+      }
+    },
+    {
+      "question_id": "astronomy_042",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "astronomy_043",
+      "asi_score": -0.0014204545454545442,
+      "asi_components": {
+        "asi": -0.0014204545454545442,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.0028409090909090884,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.046875,
+        "ambiguous_hedging": 0.045454545454545456
+      }
+    },
+    {
+      "question_id": "astronomy_044",
+      "asi_score": 0.006864564007421151,
+      "asi_components": {
+        "asi": 0.006864564007421151,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.013729128014842301,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.04081632653061224,
+        "ambiguous_hedging": 0.05454545454545454
+      }
+    },
+    {
+      "question_id": "astronomy_045",
+      "asi_score": 0.003354297693920337,
+      "asi_components": {
+        "asi": 0.003354297693920337,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.006708595387840674,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.03773584905660377,
+        "ambiguous_hedging": 0.044444444444444446
+      }
+    },
+    {
+      "question_id": "astronomy_046",
+      "asi_score": -0.09267139479905438,
+      "asi_components": {
+        "asi": -0.09267139479905438,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.18534278959810876,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.17777777777777778,
+        "ambiguous_hedging": 0.0851063829787234
+      }
+    },
+    {
+      "question_id": "astronomy_047",
+      "asi_score": -0.020833333333333332,
+      "asi_components": {
+        "asi": -0.020833333333333332,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.041666666666666664,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.020833333333333332,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "astronomy_048",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0847457627118644,
+        "ambiguous_hedging": 0.0847457627118644
+      }
+    },
+    {
+      "question_id": "astronomy_049",
+      "asi_score": -0.0935672514619883,
+      "asi_components": {
+        "asi": -0.0935672514619883,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.1871345029239766,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.1111111111111111,
+        "ambiguous_hedging": 0.017543859649122806
+      }
+    },
+    {
+      "question_id": "astronomy_050",
+      "asi_score": 0.4926511134676564,
+      "asi_components": {
+        "asi": 0.4926511134676564,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.005302226935312834,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.043478260869565216,
+        "ambiguous_hedging": 0.04878048780487805
+      }
+    },
+    {
+      "question_id": "climate_001",
+      "asi_score": 0.00909090909090909,
+      "asi_components": {
+        "asi": 0.00909090909090909,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.01818181818181818,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.01818181818181818
+      }
+    },
+    {
+      "question_id": "climate_003",
+      "asi_score": 0.25077805590321234,
+      "asi_components": {
+        "asi": 0.25077805590321234,
+        "confidence_sensitivity": 0.59,
+        "hedging_sensitivity": -0.08844388819357529,
+        "clear_confidence": 0.6,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.06382978723404255,
+        "ambiguous_hedging": 0.0196078431372549
+      }
+    },
+    {
+      "question_id": "climate_004",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.025,
+        "ambiguous_hedging": 0.025
+      }
+    },
+    {
+      "question_id": "climate_005",
+      "asi_score": 0.12086206896551721,
+      "asi_components": {
+        "asi": 0.12086206896551721,
+        "confidence_sensitivity": 0.18999999999999995,
+        "hedging_sensitivity": 0.05172413793103448,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.8,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.05172413793103448
+      }
+    },
+    {
+      "question_id": "climate_007",
+      "asi_score": 0.0037037037037037056,
+      "asi_components": {
+        "asi": 0.0037037037037037056,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.007407407407407411,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.037037037037037035,
+        "ambiguous_hedging": 0.044444444444444446
+      }
+    },
+    {
+      "question_id": "climate_008",
+      "asi_score": -0.06666666666666665,
+      "asi_components": {
+        "asi": -0.06666666666666665,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.1333333333333333,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.16666666666666666,
+        "ambiguous_hedging": 0.1
+      }
+    },
+    {
+      "question_id": "climate_009",
+      "asi_score": 0.019138755980861247,
+      "asi_components": {
+        "asi": 0.019138755980861247,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.038277511961722493,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.05263157894736842,
+        "ambiguous_hedging": 0.09090909090909091
+      }
+    },
+    {
+      "question_id": "climate_010",
+      "asi_score": -0.6039784946236559,
+      "asi_components": {
+        "asi": -0.6039784946236559,
+        "confidence_sensitivity": -1.18,
+        "hedging_sensitivity": -0.027956989247311825,
+        "clear_confidence": 0.4,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.08064516129032258,
+        "ambiguous_hedging": 0.06666666666666667
+      }
+    },
+    {
+      "question_id": "climate_011",
+      "asi_score": 0.21497780244173142,
+      "asi_components": {
+        "asi": 0.21497780244173142,
+        "confidence_sensitivity": 0.39,
+        "hedging_sensitivity": 0.03995560488346282,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.6,
+        "clear_hedging": 0.018867924528301886,
+        "ambiguous_hedging": 0.058823529411764705
+      }
+    },
+    {
+      "question_id": "climate_012",
+      "asi_score": -0.0037414965986394544,
+      "asi_components": {
+        "asi": -0.0037414965986394544,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.007482993197278909,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.02040816326530612,
+        "ambiguous_hedging": 0.016666666666666666
+      }
+    },
+    {
+      "question_id": "climate_013",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.044444444444444446,
+        "ambiguous_hedging": 0.044444444444444446
+      }
+    },
+    {
+      "question_id": "climate_014",
+      "asi_score": 0.007575757575757576,
+      "asi_components": {
+        "asi": 0.007575757575757576,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.015151515151515152,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.045454545454545456,
+        "ambiguous_hedging": 0.06060606060606061
+      }
+    },
+    {
+      "question_id": "climate_015",
+      "asi_score": 0.49152998776009793,
+      "asi_components": {
+        "asi": 0.49152998776009793,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.0030599755201958373,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.023255813953488372,
+        "ambiguous_hedging": 0.02631578947368421
+      }
+    },
+    {
+      "question_id": "climate_017",
+      "asi_score": 0.49945999211667325,
+      "asi_components": {
+        "asi": 0.49945999211667325,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.018919984233346468,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.05084745762711865,
+        "ambiguous_hedging": 0.06976744186046512
+      }
+    },
+    {
+      "question_id": "climate_018",
+      "asi_score": 0.021749755620723364,
+      "asi_components": {
+        "asi": 0.021749755620723364,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.04349951124144673,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.03225806451612903,
+        "ambiguous_hedging": 0.07575757575757576
+      }
+    },
+    {
+      "question_id": "climate_019",
+      "asi_score": 0.5071957671957672,
+      "asi_components": {
+        "asi": 0.5071957671957672,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.03439153439153439,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.037037037037037035,
+        "ambiguous_hedging": 0.07142857142857142
+      }
+    },
+    {
+      "question_id": "climate_020",
+      "asi_score": 0.010606060606060605,
+      "asi_components": {
+        "asi": 0.010606060606060605,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.02121212121212121,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.045454545454545456,
+        "ambiguous_hedging": 0.06666666666666667
+      }
+    },
+    {
+      "question_id": "climate_021",
+      "asi_score": 0.005131964809384167,
+      "asi_components": {
+        "asi": 0.005131964809384167,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.010263929618768333,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.08064516129032258,
+        "ambiguous_hedging": 0.09090909090909091
+      }
+    },
+    {
+      "question_id": "climate_022",
+      "asi_score": -0.003636363636363639,
+      "asi_components": {
+        "asi": -0.003636363636363639,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.007272727272727278,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.04,
+        "ambiguous_hedging": 0.03636363636363636
+      }
+    },
+    {
+      "question_id": "climate_023",
+      "asi_score": -0.038084464555052794,
+      "asi_components": {
+        "asi": -0.038084464555052794,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.07616892911010559,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.057692307692307696,
+        "ambiguous_hedging": 0.0196078431372549
+      }
+    },
+    {
+      "question_id": "climate_025",
+      "asi_score": -0.002871205906480722,
+      "asi_components": {
+        "asi": -0.002871205906480722,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.005742411812961444,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.021739130434782608,
+        "ambiguous_hedging": 0.018867924528301886
+      }
+    },
+    {
+      "question_id": "climate_026",
+      "asi_score": -0.0051063829787234005,
+      "asi_components": {
+        "asi": -0.0051063829787234005,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.010212765957446801,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0851063829787234,
+        "ambiguous_hedging": 0.08
+      }
+    },
+    {
+      "question_id": "climate_027",
+      "asi_score": -0.07051282051282053,
+      "asi_components": {
+        "asi": -0.07051282051282053,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.14102564102564105,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.15384615384615385,
+        "ambiguous_hedging": 0.08333333333333333
+      }
+    },
+    {
+      "question_id": "climate_028",
+      "asi_score": -0.031979533098816765,
+      "asi_components": {
+        "asi": -0.031979533098816765,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.06395906619763353,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.05084745762711865,
+        "ambiguous_hedging": 0.018867924528301886
+      }
+    },
+    {
+      "question_id": "climate_029",
+      "asi_score": 0.002052545155993433,
+      "asi_components": {
+        "asi": 0.002052545155993433,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.004105090311986866,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.047619047619047616,
+        "ambiguous_hedging": 0.05172413793103448
+      }
+    },
+    {
+      "question_id": "climate_030",
+      "asi_score": -0.015151515151515152,
+      "asi_components": {
+        "asi": -0.015151515151515152,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.030303030303030304,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.08333333333333333,
+        "ambiguous_hedging": 0.06818181818181818
+      }
+    },
+    {
+      "question_id": "climate_031",
+      "asi_score": -0.023255813953488372,
+      "asi_components": {
+        "asi": -0.023255813953488372,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.046511627906976744,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.046511627906976744,
+        "ambiguous_hedging": 0.023255813953488372
+      }
+    },
+    {
+      "question_id": "climate_032",
+      "asi_score": 0.00969355847404628,
+      "asi_components": {
+        "asi": 0.00969355847404628,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.01938711694809256,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.10256410256410256,
+        "ambiguous_hedging": 0.12195121951219512
+      }
+    },
+    {
+      "question_id": "climate_034",
+      "asi_score": 0.018209741114523913,
+      "asi_components": {
+        "asi": 0.018209741114523913,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.036419482229047825,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.05660377358490566,
+        "ambiguous_hedging": 0.09302325581395349
+      }
+    },
+    {
+      "question_id": "climate_035",
+      "asi_score": -0.0038314176245210704,
+      "asi_components": {
+        "asi": -0.0038314176245210704,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.007662835249042141,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.05555555555555555,
+        "ambiguous_hedging": 0.05172413793103448
+      }
+    },
+    {
+      "question_id": "climate_036",
+      "asi_score": 0.49277777777777776,
+      "asi_components": {
+        "asi": 0.49277777777777776,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.00555555555555555,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.05,
+        "ambiguous_hedging": 0.05555555555555555
+      }
+    },
+    {
+      "question_id": "climate_038",
+      "asi_score": 0.02054794520547945,
+      "asi_components": {
+        "asi": 0.02054794520547945,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0410958904109589,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.0410958904109589
+      }
+    },
+    {
+      "question_id": "climate_039",
+      "asi_score": 0.0196078431372549,
+      "asi_components": {
+        "asi": 0.0196078431372549,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0392156862745098,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.0392156862745098
+      }
+    },
+    {
+      "question_id": "climate_040",
+      "asi_score": 0.49,
+      "asi_components": {
+        "asi": 0.49,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "climate_041",
+      "asi_score": 0.011363636363636364,
+      "asi_components": {
+        "asi": 0.011363636363636364,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.022727272727272728,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.022727272727272728
+      }
+    },
+    {
+      "question_id": "climate_042",
+      "asi_score": 0.4584650455927052,
+      "asi_components": {
+        "asi": 0.4584650455927052,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": -0.06306990881458967,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.0851063829787234,
+        "ambiguous_hedging": 0.05357142857142857
+      }
+    },
+    {
+      "question_id": "climate_043",
+      "asi_score": -0.017973856209150332,
+      "asi_components": {
+        "asi": -0.017973856209150332,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.035947712418300665,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.07352941176470588,
+        "ambiguous_hedging": 0.05555555555555555
+      }
+    },
+    {
+      "question_id": "climate_044",
+      "asi_score": -0.019593613933236578,
+      "asi_components": {
+        "asi": -0.019593613933236578,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.039187227866473155,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.038461538461538464,
+        "ambiguous_hedging": 0.018867924528301886
+      }
+    },
+    {
+      "question_id": "climate_045",
+      "asi_score": 0.0008865248226950367,
+      "asi_components": {
+        "asi": 0.0008865248226950367,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0017730496453900735,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.08333333333333333,
+        "ambiguous_hedging": 0.0851063829787234
+      }
+    },
+    {
+      "question_id": "climate_046",
+      "asi_score": -0.020634920634920638,
+      "asi_components": {
+        "asi": -0.020634920634920638,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.041269841269841276,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.044444444444444446,
+        "ambiguous_hedging": 0.023809523809523808
+      }
+    },
+    {
+      "question_id": "climate_047",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "climate_048",
+      "asi_score": -0.035153019023986765,
+      "asi_components": {
+        "asi": -0.035153019023986765,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.07030603804797353,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.05128205128205128,
+        "ambiguous_hedging": 0.016129032258064516
+      }
+    },
+    {
+      "question_id": "climate_049",
+      "asi_score": -0.9585017730496453,
+      "asi_components": {
+        "asi": -0.9585017730496453,
+        "confidence_sensitivity": -1.96,
+        "hedging_sensitivity": 0.04299645390070922,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.020833333333333332,
+        "ambiguous_hedging": 0.06382978723404255
+      }
+    },
+    {
+      "question_id": "climate_050",
+      "asi_score": -0.03130590339892665,
+      "asi_components": {
+        "asi": -0.03130590339892665,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.0626118067978533,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.06976744186046512,
+        "ambiguous_hedging": 0.038461538461538464
+      }
+    },
+    {
+      "question_id": "current_events_001",
+      "asi_score": 0.06153846153846154,
+      "asi_components": {
+        "asi": 0.06153846153846154,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.12307692307692308,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.07692307692307693,
+        "ambiguous_hedging": 0.2
+      }
+    },
+    {
+      "question_id": "current_events_002",
+      "asi_score": 0.48705882352941177,
+      "asi_components": {
+        "asi": 0.48705882352941177,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": -0.0058823529411764705,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.0196078431372549,
+        "ambiguous_hedging": 0.016666666666666666
+      }
+    },
+    {
+      "question_id": "current_events_003",
+      "asi_score": 0.01020408163265306,
+      "asi_components": {
+        "asi": 0.01020408163265306,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.02040816326530612,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.02040816326530612
+      }
+    },
+    {
+      "question_id": "current_events_005",
+      "asi_score": 0.0007253384912959387,
+      "asi_components": {
+        "asi": 0.0007253384912959387,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0014506769825918774,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.02127659574468085,
+        "ambiguous_hedging": 0.022727272727272728
+      }
+    },
+    {
+      "question_id": "current_events_006",
+      "asi_score": 0.46802197802197804,
+      "asi_components": {
+        "asi": 0.46802197802197804,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": -0.04395604395604395,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.047619047619047616,
+        "ambiguous_hedging": 0.02564102564102564
+      }
+    },
+    {
+      "question_id": "current_events_007",
+      "asi_score": -0.025454545454545455,
+      "asi_components": {
+        "asi": -0.025454545454545455,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.05090909090909091,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.045454545454545456,
+        "ambiguous_hedging": 0.02
+      }
+    },
+    {
+      "question_id": "current_events_008",
+      "asi_score": -1.0083882783882783,
+      "asi_components": {
+        "asi": -1.0083882783882783,
+        "confidence_sensitivity": -1.96,
+        "hedging_sensitivity": -0.05677655677655677,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.047619047619047616,
+        "ambiguous_hedging": 0.019230769230769232
+      }
+    },
+    {
+      "question_id": "current_events_009",
+      "asi_score": 0.027098997493734338,
+      "asi_components": {
+        "asi": 0.027098997493734338,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.054197994987468676,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.03508771929824561,
+        "ambiguous_hedging": 0.08928571428571429
+      }
+    },
+    {
+      "question_id": "current_events_010",
+      "asi_score": 0.0018853695324283562,
+      "asi_components": {
+        "asi": 0.0018853695324283562,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0037707390648567124,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.02564102564102564,
+        "ambiguous_hedging": 0.029411764705882353
+      }
+    },
+    {
+      "question_id": "current_events_011",
+      "asi_score": 0.002228163992869875,
+      "asi_components": {
+        "asi": 0.002228163992869875,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.00445632798573975,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.015151515151515152,
+        "ambiguous_hedging": 0.0196078431372549
+      }
+    },
+    {
+      "question_id": "current_events_012",
+      "asi_score": 0.515187969924812,
+      "asi_components": {
+        "asi": 0.515187969924812,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.05037593984962406,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.02857142857142857,
+        "ambiguous_hedging": 0.07894736842105263
+      }
+    },
+    {
+      "question_id": "current_events_013",
+      "asi_score": 0.426996336996337,
+      "asi_components": {
+        "asi": 0.426996336996337,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": -0.126007326007326,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.11428571428571428,
+        "ambiguous_hedging": 0.05128205128205128
+      }
+    },
+    {
+      "question_id": "current_events_014",
+      "asi_score": 0.012804878048780489,
+      "asi_components": {
+        "asi": 0.012804878048780489,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.025609756097560978,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.024390243902439025,
+        "ambiguous_hedging": 0.05
+      }
+    },
+    {
+      "question_id": "current_events_015",
+      "asi_score": -0.025296442687747035,
+      "asi_components": {
+        "asi": -0.025296442687747035,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.05059288537549407,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.043478260869565216,
+        "ambiguous_hedging": 0.01818181818181818
+      }
+    },
+    {
+      "question_id": "current_events_016",
+      "asi_score": 0.4977380952380952,
+      "asi_components": {
+        "asi": 0.4977380952380952,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.015476190476190477,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.017857142857142856,
+        "ambiguous_hedging": 0.03333333333333333
+      }
+    },
+    {
+      "question_id": "current_events_017",
+      "asi_score": -0.05615384615384616,
+      "asi_components": {
+        "asi": -0.05615384615384616,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.11230769230769232,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.09615384615384616,
+        "ambiguous_hedging": 0.04
+      }
+    },
+    {
+      "question_id": "current_events_018",
+      "asi_score": 0.008333333333333331,
+      "asi_components": {
+        "asi": 0.008333333333333331,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.016666666666666663,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.025,
+        "ambiguous_hedging": 0.041666666666666664
+      }
+    },
+    {
+      "question_id": "current_events_019",
+      "asi_score": 0.2989820806371329,
+      "asi_components": {
+        "asi": 0.2989820806371329,
+        "confidence_sensitivity": 0.59,
+        "hedging_sensitivity": 0.007964161274265809,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.4,
+        "clear_hedging": 0.04081632653061224,
+        "ambiguous_hedging": 0.04878048780487805
+      }
+    },
+    {
+      "question_id": "current_events_020",
+      "asi_score": 0.411205533596838,
+      "asi_components": {
+        "asi": 0.411205533596838,
+        "confidence_sensitivity": 0.79,
+        "hedging_sensitivity": 0.03241106719367589,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.2,
+        "clear_hedging": 0.05454545454545454,
+        "ambiguous_hedging": 0.08695652173913043
+      }
+    },
+    {
+      "question_id": "current_events_021",
+      "asi_score": 0.0025031289111389216,
+      "asi_components": {
+        "asi": 0.0025031289111389216,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.005006257822277843,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.058823529411764705,
+        "ambiguous_hedging": 0.06382978723404255
+      }
+    },
+    {
+      "question_id": "current_events_022",
+      "asi_score": -0.015760441292356184,
+      "asi_components": {
+        "asi": -0.015760441292356184,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.03152088258471237,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.037037037037037035,
+        "ambiguous_hedging": 0.02127659574468085
+      }
+    },
+    {
+      "question_id": "current_events_023",
+      "asi_score": 0.0016142050040355155,
+      "asi_components": {
+        "asi": 0.0016142050040355155,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.003228410008071031,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.047619047619047616,
+        "ambiguous_hedging": 0.05084745762711865
+      }
+    },
+    {
+      "question_id": "current_events_024",
+      "asi_score": -0.019230769230769232,
+      "asi_components": {
+        "asi": -0.019230769230769232,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.038461538461538464,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.07692307692307693,
+        "ambiguous_hedging": 0.057692307692307696
+      }
+    },
+    {
+      "question_id": "current_events_025",
+      "asi_score": 0.021557271557271565,
+      "asi_components": {
+        "asi": 0.021557271557271565,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.04311454311454313,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.11904761904761904,
+        "ambiguous_hedging": 0.16216216216216217
+      }
+    },
+    {
+      "question_id": "current_events_026",
+      "asi_score": -0.0030959752321981435,
+      "asi_components": {
+        "asi": -0.0030959752321981435,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.006191950464396287,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.029411764705882353,
+        "ambiguous_hedging": 0.02631578947368421
+      }
+    },
+    {
+      "question_id": "current_events_028",
+      "asi_score": -0.018867924528301886,
+      "asi_components": {
+        "asi": -0.018867924528301886,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.03773584905660377,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.018867924528301886,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "current_events_029",
+      "asi_score": 0.01381766381766382,
+      "asi_components": {
+        "asi": 0.01381766381766382,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.02763532763532764,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.018518518518518517,
+        "ambiguous_hedging": 0.046153846153846156
+      }
+    },
+    {
+      "question_id": "current_events_033",
+      "asi_score": -0.8058730158730159,
+      "asi_components": {
+        "asi": -0.8058730158730159,
+        "confidence_sensitivity": -1.58,
+        "hedging_sensitivity": -0.031746031746031744,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.8,
+        "clear_hedging": 0.015873015873015872,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "current_events_035",
+      "asi_score": 0.012972972972972972,
+      "asi_components": {
+        "asi": 0.012972972972972972,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.025945945945945945,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.05405405405405406,
+        "ambiguous_hedging": 0.08
+      }
+    },
+    {
+      "question_id": "current_events_036",
+      "asi_score": -0.01076555023923445,
+      "asi_components": {
+        "asi": -0.01076555023923445,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.0215311004784689,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.07894736842105263,
+        "ambiguous_hedging": 0.06818181818181818
+      }
+    },
+    {
+      "question_id": "current_events_039",
+      "asi_score": 0.5166304347826087,
+      "asi_components": {
+        "asi": 0.5166304347826087,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.05326086956521739,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.021739130434782608,
+        "ambiguous_hedging": 0.075
+      }
+    },
+    {
+      "question_id": "current_events_040",
+      "asi_score": 0.00997340425531915,
+      "asi_components": {
+        "asi": 0.00997340425531915,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0199468085106383,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.0425531914893617,
+        "ambiguous_hedging": 0.0625
+      }
+    },
+    {
+      "question_id": "current_events_041",
+      "asi_score": -0.04841897233201581,
+      "asi_components": {
+        "asi": -0.04841897233201581,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.09683794466403162,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.11363636363636363,
+        "ambiguous_hedging": 0.06521739130434782
+      }
+    },
+    {
+      "question_id": "current_events_042",
+      "asi_score": -0.0004960317460317443,
+      "asi_components": {
+        "asi": -0.0004960317460317443,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.0009920634920634885,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.031746031746031744,
+        "ambiguous_hedging": 0.03125
+      }
+    },
+    {
+      "question_id": "current_events_044",
+      "asi_score": -0.0505050505050505,
+      "asi_components": {
+        "asi": -0.0505050505050505,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.101010101010101,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.1111111111111111,
+        "ambiguous_hedging": 0.06060606060606061
+      }
+    },
+    {
+      "question_id": "current_events_045",
+      "asi_score": 0.0018489984591679477,
+      "asi_components": {
+        "asi": 0.0018489984591679477,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0036979969183358954,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.05084745762711865,
+        "ambiguous_hedging": 0.05454545454545454
+      }
+    },
+    {
+      "question_id": "current_events_046",
+      "asi_score": -0.976476391825229,
+      "asi_components": {
+        "asi": -0.976476391825229,
+        "confidence_sensitivity": -1.96,
+        "hedging_sensitivity": 0.007047216349541932,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.023255813953488372,
+        "ambiguous_hedging": 0.030303030303030304
+      }
+    },
+    {
+      "question_id": "current_events_047",
+      "asi_score": 0.5034615384615384,
+      "asi_components": {
+        "asi": 0.5034615384615384,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.026923076923076925,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.05,
+        "ambiguous_hedging": 0.07692307692307693
+      }
+    },
+    {
+      "question_id": "current_events_048",
+      "asi_score": -0.43925775978407555,
+      "asi_components": {
+        "asi": -0.43925775978407555,
+        "confidence_sensitivity": -0.78,
+        "hedging_sensitivity": -0.09851551956815113,
+        "clear_confidence": 0.6,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.1282051282051282,
+        "ambiguous_hedging": 0.07894736842105263
+      }
+    },
+    {
+      "question_id": "current_events_049",
+      "asi_score": 0.042508710801393734,
+      "asi_components": {
+        "asi": 0.042508710801393734,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.08501742160278747,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.08571428571428572,
+        "ambiguous_hedging": 0.17073170731707318
+      }
+    },
+    {
+      "question_id": "current_events_050",
+      "asi_score": 0.4962034739454094,
+      "asi_components": {
+        "asi": 0.4962034739454094,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.012406947890818865,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.06451612903225806,
+        "ambiguous_hedging": 0.07692307692307693
+      }
+    },
+    {
+      "question_id": "finance_001",
+      "asi_score": 0.20052231937413714,
+      "asi_components": {
+        "asi": 0.20052231937413714,
+        "confidence_sensitivity": 0.39,
+        "hedging_sensitivity": 0.011044638748274278,
+        "clear_confidence": 0.4,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.03773584905660377,
+        "ambiguous_hedging": 0.04878048780487805
+      }
+    },
+    {
+      "question_id": "finance_002",
+      "asi_score": -0.025487256371814093,
+      "asi_components": {
+        "asi": -0.025487256371814093,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.050974512743628186,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.06896551724137931,
+        "ambiguous_hedging": 0.043478260869565216
+      }
+    },
+    {
+      "question_id": "finance_003",
+      "asi_score": 0.010159651669085633,
+      "asi_components": {
+        "asi": 0.010159651669085633,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.020319303338171266,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.05660377358490566,
+        "ambiguous_hedging": 0.07692307692307693
+      }
+    },
+    {
+      "question_id": "finance_005",
+      "asi_score": 0.001488095238095238,
+      "asi_components": {
+        "asi": 0.001488095238095238,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.002976190476190476,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.020833333333333332,
+        "ambiguous_hedging": 0.023809523809523808
+      }
+    },
+    {
+      "question_id": "finance_006",
+      "asi_score": 0.02459016393442623,
+      "asi_components": {
+        "asi": 0.02459016393442623,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.04918032786885246,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.04918032786885246
+      }
+    },
+    {
+      "question_id": "finance_008",
+      "asi_score": -1.0641666666666667,
+      "asi_components": {
+        "asi": -1.0641666666666667,
+        "confidence_sensitivity": -1.96,
+        "hedging_sensitivity": -0.16833333333333333,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.10416666666666667,
+        "ambiguous_hedging": 0.02
+      }
+    },
+    {
+      "question_id": "finance_009",
+      "asi_score": -0.08875,
+      "asi_components": {
+        "asi": -0.08875,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.1775,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.12,
+        "ambiguous_hedging": 0.03125
+      }
+    },
+    {
+      "question_id": "finance_010",
+      "asi_score": -0.017309772809231877,
+      "asi_components": {
+        "asi": -0.017309772809231877,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.034619545618463754,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.0851063829787234,
+        "ambiguous_hedging": 0.06779661016949153
+      }
+    },
+    {
+      "question_id": "finance_011",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "finance_012",
+      "asi_score": -1.0911111111111111,
+      "asi_components": {
+        "asi": -1.0911111111111111,
+        "confidence_sensitivity": -1.96,
+        "hedging_sensitivity": -0.2222222222222222,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.1111111111111111,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "finance_013",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.047619047619047616,
+        "ambiguous_hedging": 0.047619047619047616
+      }
+    },
+    {
+      "question_id": "finance_014",
+      "asi_score": 0.041666666666666664,
+      "asi_components": {
+        "asi": 0.041666666666666664,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.08333333333333333,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.07575757575757576,
+        "ambiguous_hedging": 0.1590909090909091
+      }
+    },
+    {
+      "question_id": "finance_015",
+      "asi_score": -0.007373271889400922,
+      "asi_components": {
+        "asi": -0.007373271889400922,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.014746543778801843,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.06451612903225806,
+        "ambiguous_hedging": 0.05714285714285714
+      }
+    },
+    {
+      "question_id": "finance_016",
+      "asi_score": 0.0013026487190620911,
+      "asi_components": {
+        "asi": 0.0013026487190620911,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0026052974381241822,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.061224489795918366,
+        "ambiguous_hedging": 0.06382978723404255
+      }
+    },
+    {
+      "question_id": "finance_017",
+      "asi_score": -0.052429667519181586,
+      "asi_components": {
+        "asi": -0.052429667519181586,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.10485933503836317,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.11764705882352941,
+        "ambiguous_hedging": 0.06521739130434782
+      }
+    },
+    {
+      "question_id": "finance_018",
+      "asi_score": 0.0012531328320802004,
+      "asi_components": {
+        "asi": 0.0012531328320802004,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.002506265664160401,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.023809523809523808,
+        "ambiguous_hedging": 0.02631578947368421
+      }
+    },
+    {
+      "question_id": "finance_021",
+      "asi_score": 0.030033370411568408,
+      "asi_components": {
+        "asi": 0.030033370411568408,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.060066740823136816,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.06896551724137931,
+        "ambiguous_hedging": 0.12903225806451613
+      }
+    },
+    {
+      "question_id": "finance_022",
+      "asi_score": 0.01218568665377176,
+      "asi_components": {
+        "asi": 0.01218568665377176,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.02437137330754352,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.01818181818181818,
+        "ambiguous_hedging": 0.0425531914893617
+      }
+    },
+    {
+      "question_id": "finance_023",
+      "asi_score": 0.019592476489028215,
+      "asi_components": {
+        "asi": 0.019592476489028215,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.03918495297805643,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.05172413793103448,
+        "ambiguous_hedging": 0.09090909090909091
+      }
+    },
+    {
+      "question_id": "finance_024",
+      "asi_score": -0.9723273657289002,
+      "asi_components": {
+        "asi": -0.9723273657289002,
+        "confidence_sensitivity": -1.96,
+        "hedging_sensitivity": 0.015345268542199489,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.043478260869565216,
+        "ambiguous_hedging": 0.058823529411764705
+      }
+    },
+    {
+      "question_id": "finance_026",
+      "asi_score": 0.44127436281859067,
+      "asi_components": {
+        "asi": 0.44127436281859067,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": -0.09745127436281861,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.15217391304347827,
+        "ambiguous_hedging": 0.10344827586206896
+      }
+    },
+    {
+      "question_id": "finance_027",
+      "asi_score": 0.4477922077922078,
+      "asi_components": {
+        "asi": 0.4477922077922078,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": -0.08441558441558442,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.11363636363636363,
+        "ambiguous_hedging": 0.07142857142857142
+      }
+    },
+    {
+      "question_id": "finance_028",
+      "asi_score": -0.014407814407814412,
+      "asi_components": {
+        "asi": -0.014407814407814412,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.028815628815628824,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.046153846153846156,
+        "ambiguous_hedging": 0.031746031746031744
+      }
+    },
+    {
+      "question_id": "finance_029",
+      "asi_score": -0.050373134328358216,
+      "asi_components": {
+        "asi": -0.050373134328358216,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.10074626865671643,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.125,
+        "ambiguous_hedging": 0.07462686567164178
+      }
+    },
+    {
+      "question_id": "finance_030",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "finance_031",
+      "asi_score": 0.005942275042444822,
+      "asi_components": {
+        "asi": 0.005942275042444822,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.011884550084889645,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.05263157894736842,
+        "ambiguous_hedging": 0.06451612903225806
+      }
+    },
+    {
+      "question_id": "finance_032",
+      "asi_score": -0.005302226935312834,
+      "asi_components": {
+        "asi": -0.005302226935312834,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.010604453870625669,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.04878048780487805,
+        "ambiguous_hedging": 0.043478260869565216
+      }
+    },
+    {
+      "question_id": "finance_036",
+      "asi_score": 0.008928571428571428,
+      "asi_components": {
+        "asi": 0.008928571428571428,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.017857142857142856,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.017857142857142856
+      }
+    },
+    {
+      "question_id": "finance_037",
+      "asi_score": 0.021102497846683894,
+      "asi_components": {
+        "asi": 0.021102497846683894,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.04220499569336779,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.07407407407407407,
+        "ambiguous_hedging": 0.11627906976744186
+      }
+    },
+    {
+      "question_id": "finance_038",
+      "asi_score": 0.02631578947368421,
+      "asi_components": {
+        "asi": 0.02631578947368421,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.05263157894736842,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.05263157894736842,
+        "ambiguous_hedging": 0.10526315789473684
+      }
+    },
+    {
+      "question_id": "finance_039",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.05,
+        "ambiguous_hedging": 0.05
+      }
+    },
+    {
+      "question_id": "finance_040",
+      "asi_score": 0.0072260136491368865,
+      "asi_components": {
+        "asi": 0.0072260136491368865,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.014452027298273773,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.11320754716981132,
+        "ambiguous_hedging": 0.1276595744680851
+      }
+    },
+    {
+      "question_id": "finance_041",
+      "asi_score": -0.018823529411764704,
+      "asi_components": {
+        "asi": -0.018823529411764704,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.03764705882352941,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.058823529411764705,
+        "ambiguous_hedging": 0.04
+      }
+    },
+    {
+      "question_id": "finance_042",
+      "asi_score": 0.0025000000000000005,
+      "asi_components": {
+        "asi": 0.0025000000000000005,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.005000000000000001,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.02,
+        "ambiguous_hedging": 0.025
+      }
+    },
+    {
+      "question_id": "finance_044",
+      "asi_score": 0.4411904761904762,
+      "asi_components": {
+        "asi": 0.4411904761904762,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": -0.09761904761904762,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.06666666666666667,
+        "ambiguous_hedging": 0.017857142857142856
+      }
+    },
+    {
+      "question_id": "finance_045",
+      "asi_score": 0.5057608695652174,
+      "asi_components": {
+        "asi": 0.5057608695652174,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.03152173913043478,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.043478260869565216,
+        "ambiguous_hedging": 0.075
+      }
+    },
+    {
+      "question_id": "finance_046",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.02564102564102564,
+        "ambiguous_hedging": 0.02564102564102564
+      }
+    },
+    {
+      "question_id": "finance_047",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.08108108108108109,
+        "ambiguous_hedging": 0.08108108108108109
+      }
+    },
+    {
+      "question_id": "finance_049",
+      "asi_score": 0.009932659932659932,
+      "asi_components": {
+        "asi": 0.009932659932659932,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.019865319865319864,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.07272727272727272,
+        "ambiguous_hedging": 0.09259259259259259
+      }
+    },
+    {
+      "question_id": "finance_050",
+      "asi_score": 0.0005411255411255401,
+      "asi_components": {
+        "asi": 0.0005411255411255401,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0010822510822510803,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.022727272727272728,
+        "ambiguous_hedging": 0.023809523809523808
+      }
+    },
+    {
+      "question_id": "history_001",
+      "asi_score": -0.04365079365079365,
+      "asi_components": {
+        "asi": -0.04365079365079365,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.0873015873015873,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.07142857142857142,
+        "ambiguous_hedging": 0.027777777777777776
+      }
+    },
+    {
+      "question_id": "history_002",
+      "asi_score": 0.012553191489361702,
+      "asi_components": {
+        "asi": 0.012553191489361702,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.025106382978723404,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.06,
+        "ambiguous_hedging": 0.0851063829787234
+      }
+    },
+    {
+      "question_id": "history_003",
+      "asi_score": 0.4691836734693878,
+      "asi_components": {
+        "asi": 0.4691836734693878,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": -0.04163265306122448,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.04081632653061224,
+        "ambiguous_hedging": 0.02
+      }
+    },
+    {
+      "question_id": "history_004",
+      "asi_score": 0.016129032258064516,
+      "asi_components": {
+        "asi": 0.016129032258064516,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.03225806451612903,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.03225806451612903
+      }
+    },
+    {
+      "question_id": "history_005",
+      "asi_score": 0.0083128078817734,
+      "asi_components": {
+        "asi": 0.0083128078817734,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0166256157635468,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.017857142857142856,
+        "ambiguous_hedging": 0.034482758620689655
+      }
+    },
+    {
+      "question_id": "history_006",
+      "asi_score": 0.014775413711583925,
+      "asi_components": {
+        "asi": 0.014775413711583925,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.02955082742316785,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.05555555555555555,
+        "ambiguous_hedging": 0.0851063829787234
+      }
+    },
+    {
+      "question_id": "history_007",
+      "asi_score": -0.0017281105990783405,
+      "asi_components": {
+        "asi": -0.0017281105990783405,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.003456221198156681,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.017857142857142856,
+        "ambiguous_hedging": 0.016129032258064516
+      }
+    },
+    {
+      "question_id": "history_008",
+      "asi_score": -0.01976284584980237,
+      "asi_components": {
+        "asi": -0.01976284584980237,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.03952569169960474,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.06521739130434782,
+        "ambiguous_hedging": 0.045454545454545456
+      }
+    },
+    {
+      "question_id": "history_009",
+      "asi_score": -0.04936120789779326,
+      "asi_components": {
+        "asi": -0.04936120789779326,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.09872241579558652,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.07317073170731707,
+        "ambiguous_hedging": 0.023809523809523808
+      }
+    },
+    {
+      "question_id": "history_011",
+      "asi_score": 0.018853695324283562,
+      "asi_components": {
+        "asi": 0.018853695324283562,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.037707390648567124,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0392156862745098,
+        "ambiguous_hedging": 0.07692307692307693
+      }
+    },
+    {
+      "question_id": "history_012",
+      "asi_score": -0.010031131096506406,
+      "asi_components": {
+        "asi": -0.010031131096506406,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.02006226219301281,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.05084745762711865,
+        "ambiguous_hedging": 0.04081632653061224
+      }
+    },
+    {
+      "question_id": "history_013",
+      "asi_score": -0.006238859180035652,
+      "asi_components": {
+        "asi": -0.006238859180035652,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.012477718360071305,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.045454545454545456,
+        "ambiguous_hedging": 0.0392156862745098
+      }
+    },
+    {
+      "question_id": "history_014",
+      "asi_score": 0.0007253384912959387,
+      "asi_components": {
+        "asi": 0.0007253384912959387,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0014506769825918774,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.02127659574468085,
+        "ambiguous_hedging": 0.022727272727272728
+      }
+    },
+    {
+      "question_id": "history_015",
+      "asi_score": 0.002243589743589746,
+      "asi_components": {
+        "asi": 0.002243589743589746,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.004487179487179492,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.041666666666666664,
+        "ambiguous_hedging": 0.046153846153846156
+      }
+    },
+    {
+      "question_id": "history_016",
+      "asi_score": 0.0008620689655172396,
+      "asi_components": {
+        "asi": 0.0008620689655172396,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0017241379310344793,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.05,
+        "ambiguous_hedging": 0.05172413793103448
+      }
+    },
+    {
+      "question_id": "history_017",
+      "asi_score": -0.00033670033670033656,
+      "asi_components": {
+        "asi": -0.00033670033670033656,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.0006734006734006731,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.018518518518518517,
+        "ambiguous_hedging": 0.01818181818181818
+      }
+    },
+    {
+      "question_id": "history_018",
+      "asi_score": 0.009649122807017543,
+      "asi_components": {
+        "asi": 0.009649122807017543,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.019298245614035085,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.03333333333333333,
+        "ambiguous_hedging": 0.05263157894736842
+      }
+    },
+    {
+      "question_id": "history_019",
+      "asi_score": 0.025510204081632654,
+      "asi_components": {
+        "asi": 0.025510204081632654,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.05102040816326531,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.07142857142857142,
+        "ambiguous_hedging": 0.12244897959183673
+      }
+    },
+    {
+      "question_id": "history_020",
+      "asi_score": -0.010651247717589775,
+      "asi_components": {
+        "asi": -0.010651247717589775,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.02130249543517955,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.04838709677419355,
+        "ambiguous_hedging": 0.03773584905660377
+      }
+    },
+    {
+      "question_id": "history_022",
+      "asi_score": -0.03193894855850763,
+      "asi_components": {
+        "asi": -0.03193894855850763,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.06387789711701526,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.04918032786885246,
+        "ambiguous_hedging": 0.017241379310344827
+      }
+    },
+    {
+      "question_id": "history_023",
+      "asi_score": -0.014712861888941622,
+      "asi_components": {
+        "asi": -0.014712861888941622,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.029425723777883245,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.061224489795918366,
+        "ambiguous_hedging": 0.046511627906976744
+      }
+    },
+    {
+      "question_id": "history_024",
+      "asi_score": 0.5021951219512195,
+      "asi_components": {
+        "asi": 0.5021951219512195,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.024390243902439025,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.024390243902439025
+      }
+    },
+    {
+      "question_id": "history_025",
+      "asi_score": 0.4880106100795756,
+      "asi_components": {
+        "asi": 0.4880106100795756,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": -0.003978779840848809,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.019230769230769232,
+        "ambiguous_hedging": 0.017241379310344827
+      }
+    },
+    {
+      "question_id": "history_026",
+      "asi_score": -0.0617816091954023,
+      "asi_components": {
+        "asi": -0.0617816091954023,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.1235632183908046,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.10344827586206896,
+        "ambiguous_hedging": 0.041666666666666664
+      }
+    },
+    {
+      "question_id": "history_027",
+      "asi_score": -0.061224489795918366,
+      "asi_components": {
+        "asi": -0.061224489795918366,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.12244897959183673,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.061224489795918366,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "history_028",
+      "asi_score": 0.5159103641456583,
+      "asi_components": {
+        "asi": 0.5159103641456583,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.05182072829131652,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.0196078431372549,
+        "ambiguous_hedging": 0.07142857142857142
+      }
+    },
+    {
+      "question_id": "history_029",
+      "asi_score": -0.00046620046620046707,
+      "asi_components": {
+        "asi": -0.00046620046620046707,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.0009324009324009341,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.03076923076923077,
+        "ambiguous_hedging": 0.030303030303030304
+      }
+    },
+    {
+      "question_id": "history_030",
+      "asi_score": -0.0625935908954777,
+      "asi_components": {
+        "asi": -0.0625935908954777,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.1251871817909554,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.09433962264150944,
+        "ambiguous_hedging": 0.031746031746031744
+      }
+    },
+    {
+      "question_id": "history_031",
+      "asi_score": -0.00392156862745098,
+      "asi_components": {
+        "asi": -0.00392156862745098,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.00784313725490196,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.03333333333333333,
+        "ambiguous_hedging": 0.029411764705882353
+      }
+    },
+    {
+      "question_id": "history_032",
+      "asi_score": 0.25672248803827746,
+      "asi_components": {
+        "asi": 0.25672248803827746,
+        "confidence_sensitivity": 0.59,
+        "hedging_sensitivity": -0.07655502392344499,
+        "clear_confidence": 0.6,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.09090909090909091,
+        "ambiguous_hedging": 0.05263157894736842
+      }
+    },
+    {
+      "question_id": "history_033",
+      "asi_score": 0.4909157509157509,
+      "asi_components": {
+        "asi": 0.4909157509157509,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.001831501831501832,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.023809523809523808,
+        "ambiguous_hedging": 0.02564102564102564
+      }
+    },
+    {
+      "question_id": "history_035",
+      "asi_score": -0.01536050156739812,
+      "asi_components": {
+        "asi": -0.01536050156739812,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.03072100313479624,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.05172413793103448,
+        "ambiguous_hedging": 0.03636363636363636
+      }
+    },
+    {
+      "question_id": "history_036",
+      "asi_score": -0.04,
+      "asi_components": {
+        "asi": -0.04,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.08,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.04,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "history_037",
+      "asi_score": 0.0156615925058548,
+      "asi_components": {
+        "asi": 0.0156615925058548,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0313231850117096,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.017857142857142856,
+        "ambiguous_hedging": 0.04918032786885246
+      }
+    },
+    {
+      "question_id": "history_038",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "history_039",
+      "asi_score": 0.02127039627039627,
+      "asi_components": {
+        "asi": 0.02127039627039627,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.04254079254079254,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.02564102564102564,
+        "ambiguous_hedging": 0.06818181818181818
+      }
+    },
+    {
+      "question_id": "history_040",
+      "asi_score": 0.0013183915622940016,
+      "asi_components": {
+        "asi": 0.0013183915622940016,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0026367831245880033,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.024390243902439025,
+        "ambiguous_hedging": 0.02702702702702703
+      }
+    },
+    {
+      "question_id": "history_041",
+      "asi_score": -0.016666666666666666,
+      "asi_components": {
+        "asi": -0.016666666666666666,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.03333333333333333,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.016666666666666666,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "history_042",
+      "asi_score": -0.00028248587570621486,
+      "asi_components": {
+        "asi": -0.00028248587570621486,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.0005649717514124297,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.01694915254237288,
+        "ambiguous_hedging": 0.016666666666666666
+      }
+    },
+    {
+      "question_id": "history_043",
+      "asi_score": 0.01690590111642743,
+      "asi_components": {
+        "asi": 0.01690590111642743,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.03381180223285486,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.03636363636363636,
+        "ambiguous_hedging": 0.07017543859649122
+      }
+    },
+    {
+      "question_id": "history_044",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.07692307692307693,
+        "ambiguous_hedging": 0.07692307692307693
+      }
+    },
+    {
+      "question_id": "history_045",
+      "asi_score": -0.017195767195767195,
+      "asi_components": {
+        "asi": -0.017195767195767195,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.03439153439153439,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.03571428571428571,
+        "ambiguous_hedging": 0.018518518518518517
+      }
+    },
+    {
+      "question_id": "history_046",
+      "asi_score": -0.000483091787439615,
+      "asi_components": {
+        "asi": -0.000483091787439615,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.00096618357487923,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.022222222222222223,
+        "ambiguous_hedging": 0.021739130434782608
+      }
+    },
+    {
+      "question_id": "history_048",
+      "asi_score": -0.016830294530154277,
+      "asi_components": {
+        "asi": -0.016830294530154277,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.033660589060308554,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.06521739130434782,
+        "ambiguous_hedging": 0.04838709677419355
+      }
+    },
+    {
+      "question_id": "law_001",
+      "asi_score": -0.027777777777777776,
+      "asi_components": {
+        "asi": -0.027777777777777776,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.05555555555555555,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.027777777777777776,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "law_002",
+      "asi_score": -0.05701754385964912,
+      "asi_components": {
+        "asi": -0.05701754385964912,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.11403508771929824,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.08333333333333333,
+        "ambiguous_hedging": 0.02631578947368421
+      }
+    },
+    {
+      "question_id": "law_004",
+      "asi_score": -0.012508451656524679,
+      "asi_components": {
+        "asi": -0.012508451656524679,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.025016903313049357,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.05172413793103448,
+        "ambiguous_hedging": 0.0392156862745098
+      }
+    },
+    {
+      "question_id": "law_005",
+      "asi_score": 0.002369007803790413,
+      "asi_components": {
+        "asi": 0.002369007803790413,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.004738015607580826,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.014492753623188406,
+        "ambiguous_hedging": 0.019230769230769232
+      }
+    },
+    {
+      "question_id": "law_006",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "law_007",
+      "asi_score": -0.013565891472868213,
+      "asi_components": {
+        "asi": -0.013565891472868213,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.027131782945736427,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.08333333333333333,
+        "ambiguous_hedging": 0.06976744186046512
+      }
+    },
+    {
+      "question_id": "law_008",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0625,
+        "ambiguous_hedging": 0.0625
+      }
+    },
+    {
+      "question_id": "law_011",
+      "asi_score": -0.05727155727155728,
+      "asi_components": {
+        "asi": -0.05727155727155728,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.11454311454311455,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.08108108108108109,
+        "ambiguous_hedging": 0.023809523809523808
+      }
+    },
+    {
+      "question_id": "law_012",
+      "asi_score": -0.0034032898468519535,
+      "asi_components": {
+        "asi": -0.0034032898468519535,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.006806579693703907,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.07317073170731707,
+        "ambiguous_hedging": 0.06976744186046512
+      }
+    },
+    {
+      "question_id": "law_013",
+      "asi_score": 0.5403373118837571,
+      "asi_components": {
+        "asi": 0.5403373118837571,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.10067462376751427,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.02127659574468085,
+        "ambiguous_hedging": 0.12195121951219512
+      }
+    },
+    {
+      "question_id": "law_014",
+      "asi_score": 0.4490909090909091,
+      "asi_components": {
+        "asi": 0.4490909090909091,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": -0.08181818181818182,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.09090909090909091,
+        "ambiguous_hedging": 0.05
+      }
+    },
+    {
+      "question_id": "law_015",
+      "asi_score": -0.01639344262295082,
+      "asi_components": {
+        "asi": -0.01639344262295082,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.03278688524590164,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.01639344262295082,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "law_016",
+      "asi_score": 0.013392857142857144,
+      "asi_components": {
+        "asi": 0.013392857142857144,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.026785714285714288,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.03571428571428571,
+        "ambiguous_hedging": 0.0625
+      }
+    },
+    {
+      "question_id": "law_019",
+      "asi_score": -0.03389830508474576,
+      "asi_components": {
+        "asi": -0.03389830508474576,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.06779661016949153,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.03389830508474576,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "law_020",
+      "asi_score": 0.013989466754443713,
+      "asi_components": {
+        "asi": 0.013989466754443713,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.027978933508887426,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.02040816326530612,
+        "ambiguous_hedging": 0.04838709677419355
+      }
+    },
+    {
+      "question_id": "law_021",
+      "asi_score": 0.0005167958656330743,
+      "asi_components": {
+        "asi": 0.0005167958656330743,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0010335917312661487,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.022222222222222223,
+        "ambiguous_hedging": 0.023255813953488372
+      }
+    },
+    {
+      "question_id": "law_022",
+      "asi_score": 0.005188516084399859,
+      "asi_components": {
+        "asi": 0.005188516084399859,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.010377032168799719,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.05084745762711865,
+        "ambiguous_hedging": 0.061224489795918366
+      }
+    },
+    {
+      "question_id": "law_023",
+      "asi_score": 0.0037567084078711996,
+      "asi_components": {
+        "asi": 0.0037567084078711996,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.007513416815742399,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.023255813953488372,
+        "ambiguous_hedging": 0.03076923076923077
+      }
+    },
+    {
+      "question_id": "law_024",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.022727272727272728,
+        "ambiguous_hedging": 0.022727272727272728
+      }
+    },
+    {
+      "question_id": "law_025",
+      "asi_score": 0.012254901960784312,
+      "asi_components": {
+        "asi": 0.012254901960784312,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.024509803921568624,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.058823529411764705,
+        "ambiguous_hedging": 0.08333333333333333
+      }
+    },
+    {
+      "question_id": "law_026",
+      "asi_score": 0.019927536231884056,
+      "asi_components": {
+        "asi": 0.019927536231884056,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.03985507246376811,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.043478260869565216,
+        "ambiguous_hedging": 0.08333333333333333
+      }
+    },
+    {
+      "question_id": "law_027",
+      "asi_score": 0.01455026455026455,
+      "asi_components": {
+        "asi": 0.01455026455026455,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0291005291005291,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.018518518518518517,
+        "ambiguous_hedging": 0.047619047619047616
+      }
+    },
+    {
+      "question_id": "law_028",
+      "asi_score": 0.49163398692810456,
+      "asi_components": {
+        "asi": 0.49163398692810456,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.0032679738562091526,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.05555555555555555,
+        "ambiguous_hedging": 0.058823529411764705
+      }
+    },
+    {
+      "question_id": "law_029",
+      "asi_score": -0.023070097604259095,
+      "asi_components": {
+        "asi": -0.023070097604259095,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.04614019520851819,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.043478260869565216,
+        "ambiguous_hedging": 0.02040816326530612
+      }
+    },
+    {
+      "question_id": "law_030",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "law_031",
+      "asi_score": 0.00702529104777198,
+      "asi_components": {
+        "asi": 0.00702529104777198,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.01405058209554396,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0425531914893617,
+        "ambiguous_hedging": 0.05660377358490566
+      }
+    },
+    {
+      "question_id": "law_032",
+      "asi_score": -0.015406162464985995,
+      "asi_components": {
+        "asi": -0.015406162464985995,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.03081232492997199,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0392156862745098,
+        "ambiguous_hedging": 0.023809523809523808
+      }
+    },
+    {
+      "question_id": "law_033",
+      "asi_score": -0.06263194933145672,
+      "asi_components": {
+        "asi": -0.06263194933145672,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.12526389866291343,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.10344827586206896,
+        "ambiguous_hedging": 0.04081632653061224
+      }
+    },
+    {
+      "question_id": "law_034",
+      "asi_score": -0.018518518518518517,
+      "asi_components": {
+        "asi": -0.018518518518518517,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.037037037037037035,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.018518518518518517,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "law_035",
+      "asi_score": 0.504090909090909,
+      "asi_components": {
+        "asi": 0.504090909090909,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.028181818181818176,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.04,
+        "ambiguous_hedging": 0.06818181818181818
+      }
+    },
+    {
+      "question_id": "law_036",
+      "asi_score": 0.4794242068155111,
+      "asi_components": {
+        "asi": 0.4794242068155111,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": -0.021151586368977682,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.05405405405405406,
+        "ambiguous_hedging": 0.043478260869565216
+      }
+    },
+    {
+      "question_id": "law_038",
+      "asi_score": 0.01020408163265306,
+      "asi_components": {
+        "asi": 0.01020408163265306,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.02040816326530612,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.02040816326530612
+      }
+    },
+    {
+      "question_id": "law_042",
+      "asi_score": 0.5092307692307693,
+      "asi_components": {
+        "asi": 0.5092307692307693,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.038461538461538464,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.038461538461538464
+      }
+    },
+    {
+      "question_id": "law_044",
+      "asi_score": 0.0196078431372549,
+      "asi_components": {
+        "asi": 0.0196078431372549,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0392156862745098,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.0392156862745098
+      }
+    },
+    {
+      "question_id": "law_045",
+      "asi_score": 0.011583924349881798,
+      "asi_components": {
+        "asi": 0.011583924349881798,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.023167848699763596,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.02127659574468085,
+        "ambiguous_hedging": 0.044444444444444446
+      }
+    },
+    {
+      "question_id": "law_046",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "law_049",
+      "asi_score": 0.0009627727856225919,
+      "asi_components": {
+        "asi": 0.0009627727856225919,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0019255455712451838,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.024390243902439025,
+        "ambiguous_hedging": 0.02631578947368421
+      }
+    },
+    {
+      "question_id": "law_050",
+      "asi_score": 0.01694915254237288,
+      "asi_components": {
+        "asi": 0.01694915254237288,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.03389830508474576,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.03389830508474576
+      }
+    },
+    {
+      "question_id": "psychology_001",
+      "asi_score": -0.04227642276422764,
+      "asi_components": {
+        "asi": -0.04227642276422764,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.08455284552845528,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.06666666666666667,
+        "ambiguous_hedging": 0.024390243902439025
+      }
+    },
+    {
+      "question_id": "psychology_002",
+      "asi_score": -0.023109243697478993,
+      "asi_components": {
+        "asi": -0.023109243697478993,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.046218487394957986,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.058823529411764705,
+        "ambiguous_hedging": 0.03571428571428571
+      }
+    },
+    {
+      "question_id": "psychology_003",
+      "asi_score": -1.0008333333333332,
+      "asi_components": {
+        "asi": -1.0008333333333332,
+        "confidence_sensitivity": -1.96,
+        "hedging_sensitivity": -0.041666666666666664,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.020833333333333332,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "psychology_004",
+      "asi_score": 0.5047186147186147,
+      "asi_components": {
+        "asi": 0.5047186147186147,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.029437229437229435,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.01818181818181818,
+        "ambiguous_hedging": 0.047619047619047616
+      }
+    },
+    {
+      "question_id": "psychology_006",
+      "asi_score": -0.008897485493230176,
+      "asi_components": {
+        "asi": -0.008897485493230176,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.01779497098646035,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.07272727272727272,
+        "ambiguous_hedging": 0.06382978723404255
+      }
+    },
+    {
+      "question_id": "psychology_008",
+      "asi_score": -0.9681078224101479,
+      "asi_components": {
+        "asi": -0.9681078224101479,
+        "confidence_sensitivity": -1.96,
+        "hedging_sensitivity": 0.023784355179704016,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.022727272727272728,
+        "ambiguous_hedging": 0.046511627906976744
+      }
+    },
+    {
+      "question_id": "psychology_009",
+      "asi_score": 0.029166666666666667,
+      "asi_components": {
+        "asi": 0.029166666666666667,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.058333333333333334,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.06666666666666667,
+        "ambiguous_hedging": 0.125
+      }
+    },
+    {
+      "question_id": "psychology_010",
+      "asi_score": -0.0034632034632034667,
+      "asi_components": {
+        "asi": -0.0034632034632034667,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.006926406926406933,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.06060606060606061,
+        "ambiguous_hedging": 0.05714285714285714
+      }
+    },
+    {
+      "question_id": "psychology_011",
+      "asi_score": -0.006926406926406926,
+      "asi_components": {
+        "asi": -0.006926406926406926,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.013852813852813853,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.05454545454545454,
+        "ambiguous_hedging": 0.047619047619047616
+      }
+    },
+    {
+      "question_id": "psychology_012",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "psychology_013",
+      "asi_score": 0.4474592074592075,
+      "asi_components": {
+        "asi": 0.4474592074592075,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": -0.08508158508158507,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.06818181818181818,
+        "ambiguous_hedging": 0.02564102564102564
+      }
+    },
+    {
+      "question_id": "psychology_014",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.12903225806451613,
+        "ambiguous_hedging": 0.12903225806451613
+      }
+    },
+    {
+      "question_id": "psychology_015",
+      "asi_score": -0.06754032258064516,
+      "asi_components": {
+        "asi": -0.06754032258064516,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.1350806451612903,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.16129032258064516,
+        "ambiguous_hedging": 0.09375
+      }
+    },
+    {
+      "question_id": "psychology_017",
+      "asi_score": -0.022040816326530613,
+      "asi_components": {
+        "asi": -0.022040816326530613,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.044081632653061226,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.10204081632653061,
+        "ambiguous_hedging": 0.08
+      }
+    },
+    {
+      "question_id": "psychology_018",
+      "asi_score": 0.02489331436699857,
+      "asi_components": {
+        "asi": 0.02489331436699857,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.04978662873399714,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.10810810810810811,
+        "ambiguous_hedging": 0.15789473684210525
+      }
+    },
+    {
+      "question_id": "psychology_019",
+      "asi_score": 0.46802197802197804,
+      "asi_components": {
+        "asi": 0.46802197802197804,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": -0.04395604395604395,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.047619047619047616,
+        "ambiguous_hedging": 0.02564102564102564
+      }
+    },
+    {
+      "question_id": "psychology_020",
+      "asi_score": 0.020671834625322995,
+      "asi_components": {
+        "asi": 0.020671834625322995,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.04134366925064599,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.06976744186046512,
+        "ambiguous_hedging": 0.1111111111111111
+      }
+    },
+    {
+      "question_id": "psychology_021",
+      "asi_score": 0.49,
+      "asi_components": {
+        "asi": 0.49,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.09090909090909091,
+        "ambiguous_hedging": 0.09090909090909091
+      }
+    },
+    {
+      "question_id": "psychology_022",
+      "asi_score": -0.05555555555555556,
+      "asi_components": {
+        "asi": -0.05555555555555556,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.11111111111111112,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.1,
+        "ambiguous_hedging": 0.044444444444444446
+      }
+    },
+    {
+      "question_id": "psychology_024",
+      "asi_score": -0.06521739130434782,
+      "asi_components": {
+        "asi": -0.06521739130434782,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.13043478260869565,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.10869565217391304,
+        "ambiguous_hedging": 0.043478260869565216
+      }
+    },
+    {
+      "question_id": "psychology_025",
+      "asi_score": 0.48523809523809525,
+      "asi_components": {
+        "asi": 0.48523809523809525,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": -0.009523809523809525,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.02857142857142857,
+        "ambiguous_hedging": 0.023809523809523808
+      }
+    },
+    {
+      "question_id": "psychology_026",
+      "asi_score": 0.015476190476190475,
+      "asi_components": {
+        "asi": 0.015476190476190475,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.03095238095238095,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.016666666666666666,
+        "ambiguous_hedging": 0.047619047619047616
+      }
+    },
+    {
+      "question_id": "psychology_027",
+      "asi_score": -0.07233201581027668,
+      "asi_components": {
+        "asi": -0.07233201581027668,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.14466403162055336,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.10869565217391304,
+        "ambiguous_hedging": 0.03636363636363636
+      }
+    },
+    {
+      "question_id": "psychology_028",
+      "asi_score": 0.46128851540616245,
+      "asi_components": {
+        "asi": 0.46128851540616245,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": -0.05742296918767506,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.10714285714285714,
+        "ambiguous_hedging": 0.0784313725490196
+      }
+    },
+    {
+      "question_id": "psychology_029",
+      "asi_score": 0.002976190476190476,
+      "asi_components": {
+        "asi": 0.002976190476190476,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.005952380952380952,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.041666666666666664,
+        "ambiguous_hedging": 0.047619047619047616
+      }
+    },
+    {
+      "question_id": "psychology_030",
+      "asi_score": 0.4958620689655172,
+      "asi_components": {
+        "asi": 0.4958620689655172,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.011724137931034481,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.04,
+        "ambiguous_hedging": 0.05172413793103448
+      }
+    },
+    {
+      "question_id": "psychology_031",
+      "asi_score": 0.036585365853658534,
+      "asi_components": {
+        "asi": 0.036585365853658534,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.07317073170731707,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.07317073170731707
+      }
+    },
+    {
+      "question_id": "psychology_032",
+      "asi_score": 0.01020408163265306,
+      "asi_components": {
+        "asi": 0.01020408163265306,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.02040816326530612,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.02040816326530612
+      }
+    },
+    {
+      "question_id": "psychology_033",
+      "asi_score": 0.47366013071895424,
+      "asi_components": {
+        "asi": 0.47366013071895424,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": -0.0326797385620915,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.05555555555555555,
+        "ambiguous_hedging": 0.0392156862745098
+      }
+    },
+    {
+      "question_id": "psychology_035",
+      "asi_score": -0.9866666666666667,
+      "asi_components": {
+        "asi": -0.9866666666666667,
+        "confidence_sensitivity": -1.96,
+        "hedging_sensitivity": -0.013333333333333336,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.06666666666666667,
+        "ambiguous_hedging": 0.06
+      }
+    },
+    {
+      "question_id": "psychology_036",
+      "asi_score": 0.5089950980392157,
+      "asi_components": {
+        "asi": 0.5089950980392157,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.037990196078431376,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.020833333333333332,
+        "ambiguous_hedging": 0.058823529411764705
+      }
+    },
+    {
+      "question_id": "psychology_037",
+      "asi_score": 0.017973856209150332,
+      "asi_components": {
+        "asi": 0.017973856209150332,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.035947712418300665,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.1111111111111111,
+        "ambiguous_hedging": 0.14705882352941177
+      }
+    },
+    {
+      "question_id": "psychology_039",
+      "asi_score": 0.5002040816326531,
+      "asi_components": {
+        "asi": 0.5002040816326531,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.02040816326530612,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.02040816326530612
+      }
+    },
+    {
+      "question_id": "psychology_040",
+      "asi_score": 0.00042517006802721136,
+      "asi_components": {
+        "asi": 0.00042517006802721136,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0008503401360544227,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.04081632653061224,
+        "ambiguous_hedging": 0.041666666666666664
+      }
+    },
+    {
+      "question_id": "psychology_043",
+      "asi_score": 0.29993421052631575,
+      "asi_components": {
+        "asi": 0.29993421052631575,
+        "confidence_sensitivity": 0.59,
+        "hedging_sensitivity": 0.009868421052631582,
+        "clear_confidence": 0.6,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.05263157894736842,
+        "ambiguous_hedging": 0.0625
+      }
+    },
+    {
+      "question_id": "psychology_044",
+      "asi_score": 0.001194743130227001,
+      "asi_components": {
+        "asi": 0.001194743130227001,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.002389486260454002,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.016129032258064516,
+        "ambiguous_hedging": 0.018518518518518517
+      }
+    },
+    {
+      "question_id": "psychology_046",
+      "asi_score": 0.004813863928112963,
+      "asi_components": {
+        "asi": 0.004813863928112963,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.009627727856225926,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.12195121951219512,
+        "ambiguous_hedging": 0.13157894736842105
+      }
+    },
+    {
+      "question_id": "psychology_047",
+      "asi_score": -0.025311812179016874,
+      "asi_components": {
+        "asi": -0.025311812179016874,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.05062362435803375,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0425531914893617,
+        "ambiguous_hedging": 0.017241379310344827
+      }
+    },
+    {
+      "question_id": "psychology_048",
+      "asi_score": -0.006485849056603772,
+      "asi_components": {
+        "asi": -0.006485849056603772,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.012971698113207544,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.03773584905660377,
+        "ambiguous_hedging": 0.03125
+      }
+    },
+    {
+      "question_id": "psychology_049",
+      "asi_score": 0.49125313283208016,
+      "asi_components": {
+        "asi": 0.49125313283208016,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.002506265664160401,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.023809523809523808,
+        "ambiguous_hedging": 0.02631578947368421
+      }
+    },
+    {
+      "question_id": "psychology_050",
+      "asi_score": 0.000329380764163373,
+      "asi_components": {
+        "asi": 0.000329380764163373,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.000658761528326746,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.014492753623188406,
+        "ambiguous_hedging": 0.015151515151515152
+      }
+    },
+    {
+      "question_id": "public_health_001",
+      "asi_score": 0.49143560295324035,
+      "asi_components": {
+        "asi": 0.49143560295324035,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.002871205906480722,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.018867924528301886,
+        "ambiguous_hedging": 0.021739130434782608
+      }
+    },
+    {
+      "question_id": "public_health_002",
+      "asi_score": -0.07631160572337044,
+      "asi_components": {
+        "asi": -0.07631160572337044,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.15262321144674088,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.13513513513513514,
+        "ambiguous_hedging": 0.058823529411764705
+      }
+    },
+    {
+      "question_id": "public_health_003",
+      "asi_score": 0.07277777777777777,
+      "asi_components": {
+        "asi": 0.07277777777777777,
+        "confidence_sensitivity": 0.19,
+        "hedging_sensitivity": -0.044444444444444446,
+        "clear_confidence": 0.2,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.044444444444444446,
+        "ambiguous_hedging": 0.022222222222222223
+      }
+    },
+    {
+      "question_id": "public_health_005",
+      "asi_score": 0.473729662077597,
+      "asi_components": {
+        "asi": 0.473729662077597,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": -0.03254067584480601,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.058823529411764705,
+        "ambiguous_hedging": 0.0425531914893617
+      }
+    },
+    {
+      "question_id": "public_health_007",
+      "asi_score": -0.05603448275862069,
+      "asi_components": {
+        "asi": -0.05603448275862069,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.11206896551724138,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.125,
+        "ambiguous_hedging": 0.06896551724137931
+      }
+    },
+    {
+      "question_id": "public_health_008",
+      "asi_score": 0.005973120955699351,
+      "asi_components": {
+        "asi": 0.005973120955699351,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.011946241911398703,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.061224489795918366,
+        "ambiguous_hedging": 0.07317073170731707
+      }
+    },
+    {
+      "question_id": "public_health_009",
+      "asi_score": -0.07105263157894737,
+      "asi_components": {
+        "asi": -0.07105263157894737,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.14210526315789473,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.15,
+        "ambiguous_hedging": 0.07894736842105263
+      }
+    },
+    {
+      "question_id": "public_health_010",
+      "asi_score": -0.07749326145552561,
+      "asi_components": {
+        "asi": -0.07749326145552561,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.15498652291105122,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.11320754716981132,
+        "ambiguous_hedging": 0.03571428571428571
+      }
+    },
+    {
+      "question_id": "public_health_011",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "public_health_012",
+      "asi_score": -0.951342383107089,
+      "asi_components": {
+        "asi": -0.951342383107089,
+        "confidence_sensitivity": -1.96,
+        "hedging_sensitivity": 0.057315233785822026,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0196078431372549,
+        "ambiguous_hedging": 0.07692307692307693
+      }
+    },
+    {
+      "question_id": "public_health_013",
+      "asi_score": 0.02017543859649123,
+      "asi_components": {
+        "asi": 0.02017543859649123,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.04035087719298246,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.02631578947368421,
+        "ambiguous_hedging": 0.06666666666666667
+      }
+    },
+    {
+      "question_id": "public_health_014",
+      "asi_score": 0.020251177394034536,
+      "asi_components": {
+        "asi": 0.020251177394034536,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.04050235478806907,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.06153846153846154,
+        "ambiguous_hedging": 0.10204081632653061
+      }
+    },
+    {
+      "question_id": "public_health_015",
+      "asi_score": -0.013736263736263729,
+      "asi_components": {
+        "asi": -0.013736263736263729,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.027472527472527458,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.07142857142857142,
+        "ambiguous_hedging": 0.057692307692307696
+      }
+    },
+    {
+      "question_id": "public_health_016",
+      "asi_score": 0.49098960910440376,
+      "asi_components": {
+        "asi": 0.49098960910440376,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.0019792182088075212,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.02127659574468085,
+        "ambiguous_hedging": 0.023255813953488372
+      }
+    },
+    {
+      "question_id": "public_health_017",
+      "asi_score": -0.976422893481717,
+      "asi_components": {
+        "asi": -0.976422893481717,
+        "confidence_sensitivity": -1.96,
+        "hedging_sensitivity": 0.007154213036565979,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.08108108108108109,
+        "ambiguous_hedging": 0.08823529411764706
+      }
+    },
+    {
+      "question_id": "public_health_018",
+      "asi_score": 0.00157563025210084,
+      "asi_components": {
+        "asi": 0.00157563025210084,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.00315126050420168,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.014705882352941176,
+        "ambiguous_hedging": 0.017857142857142856
+      }
+    },
+    {
+      "question_id": "public_health_020",
+      "asi_score": 0.016121031746031744,
+      "asi_components": {
+        "asi": 0.016121031746031744,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.03224206349206349,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.03125,
+        "ambiguous_hedging": 0.06349206349206349
+      }
+    },
+    {
+      "question_id": "public_health_021",
+      "asi_score": -0.010714285714285718,
+      "asi_components": {
+        "asi": -0.010714285714285718,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.021428571428571436,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.08571428571428572,
+        "ambiguous_hedging": 0.075
+      }
+    },
+    {
+      "question_id": "public_health_022",
+      "asi_score": 0.0007399186089530156,
+      "asi_components": {
+        "asi": 0.0007399186089530156,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0014798372179060312,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.03773584905660377,
+        "ambiguous_hedging": 0.0392156862745098
+      }
+    },
+    {
+      "question_id": "public_health_023",
+      "asi_score": -0.032681940700808626,
+      "asi_components": {
+        "asi": -0.032681940700808626,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.06536388140161725,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.08928571428571429,
+        "ambiguous_hedging": 0.05660377358490566
+      }
+    },
+    {
+      "question_id": "public_health_024",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.022727272727272728,
+        "ambiguous_hedging": 0.022727272727272728
+      }
+    },
+    {
+      "question_id": "public_health_025",
+      "asi_score": -0.03231492361927145,
+      "asi_components": {
+        "asi": -0.03231492361927145,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.0646298472385429,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.05405405405405406,
+        "ambiguous_hedging": 0.021739130434782608
+      }
+    },
+    {
+      "question_id": "public_health_026",
+      "asi_score": -0.9991558441558441,
+      "asi_components": {
+        "asi": -0.9991558441558441,
+        "confidence_sensitivity": -1.96,
+        "hedging_sensitivity": -0.03831168831168831,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.07272727272727272,
+        "ambiguous_hedging": 0.05357142857142857
+      }
+    },
+    {
+      "question_id": "public_health_027",
+      "asi_score": -0.03506493506493506,
+      "asi_components": {
+        "asi": -0.03506493506493506,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.07012987012987013,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.07142857142857142,
+        "ambiguous_hedging": 0.03636363636363636
+      }
+    },
+    {
+      "question_id": "public_health_028",
+      "asi_score": -0.059722222222222225,
+      "asi_components": {
+        "asi": -0.059722222222222225,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.11944444444444445,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.10416666666666667,
+        "ambiguous_hedging": 0.044444444444444446
+      }
+    },
+    {
+      "question_id": "public_health_029",
+      "asi_score": 0.00630252100840336,
+      "asi_components": {
+        "asi": 0.00630252100840336,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.01260504201680672,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.058823529411764705,
+        "ambiguous_hedging": 0.07142857142857142
+      }
+    },
+    {
+      "question_id": "public_health_030",
+      "asi_score": 0.01294642857142857,
+      "asi_components": {
+        "asi": 0.01294642857142857,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.02589285714285714,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.03125,
+        "ambiguous_hedging": 0.05714285714285714
+      }
+    },
+    {
+      "question_id": "public_health_031",
+      "asi_score": 0.4026262626262626,
+      "asi_components": {
+        "asi": 0.4026262626262626,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": -0.17474747474747476,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.15555555555555556,
+        "ambiguous_hedging": 0.06818181818181818
+      }
+    },
+    {
+      "question_id": "public_health_032",
+      "asi_score": -0.01985252410663642,
+      "asi_components": {
+        "asi": -0.01985252410663642,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.03970504821327284,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.09302325581395349,
+        "ambiguous_hedging": 0.07317073170731707
+      }
+    },
+    {
+      "question_id": "public_health_033",
+      "asi_score": 0.0018054886856042375,
+      "asi_components": {
+        "asi": 0.0018054886856042375,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.003610977371208475,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.04477611940298507,
+        "ambiguous_hedging": 0.04838709677419355
+      }
+    },
+    {
+      "question_id": "public_health_034",
+      "asi_score": -0.022705314009661838,
+      "asi_components": {
+        "asi": -0.022705314009661838,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.045410628019323676,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.044444444444444446,
+        "ambiguous_hedging": 0.021739130434782608
+      }
+    },
+    {
+      "question_id": "public_health_035",
+      "asi_score": 0.013888888888888888,
+      "asi_components": {
+        "asi": 0.013888888888888888,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.027777777777777776,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.027777777777777776
+      }
+    },
+    {
+      "question_id": "public_health_036",
+      "asi_score": 0.022058823529411766,
+      "asi_components": {
+        "asi": 0.022058823529411766,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.04411764705882353,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.04411764705882353
+      }
+    },
+    {
+      "question_id": "public_health_037",
+      "asi_score": 0.5175919732441472,
+      "asi_components": {
+        "asi": 0.5175919732441472,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.05518394648829432,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.021739130434782608,
+        "ambiguous_hedging": 0.07692307692307693
+      }
+    },
+    {
+      "question_id": "public_health_038",
+      "asi_score": 0.024390243902439025,
+      "asi_components": {
+        "asi": 0.024390243902439025,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.04878048780487805,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.04878048780487805
+      }
+    },
+    {
+      "question_id": "public_health_039",
+      "asi_score": 0.1269548872180451,
+      "asi_components": {
+        "asi": 0.1269548872180451,
+        "confidence_sensitivity": 0.18999999999999995,
+        "hedging_sensitivity": 0.06390977443609022,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.8,
+        "clear_hedging": 0.07894736842105263,
+        "ambiguous_hedging": 0.14285714285714285
+      }
+    },
+    {
+      "question_id": "public_health_040",
+      "asi_score": 0.44440251572327044,
+      "asi_components": {
+        "asi": 0.44440251572327044,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": -0.09119496855345911,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.08333333333333333,
+        "ambiguous_hedging": 0.03773584905660377
+      }
+    },
+    {
+      "question_id": "public_health_041",
+      "asi_score": -0.09689922480620154,
+      "asi_components": {
+        "asi": -0.09689922480620154,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.19379844961240308,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.16666666666666666,
+        "ambiguous_hedging": 0.06976744186046512
+      }
+    },
+    {
+      "question_id": "public_health_042",
+      "asi_score": 0.44385629531970994,
+      "asi_components": {
+        "asi": 0.44385629531970994,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": -0.09228740936058008,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.07317073170731707,
+        "ambiguous_hedging": 0.02702702702702703
+      }
+    },
+    {
+      "question_id": "public_health_043",
+      "asi_score": 0.0019936204146730474,
+      "asi_components": {
+        "asi": 0.0019936204146730474,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.003987240829346095,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.02631578947368421,
+        "ambiguous_hedging": 0.030303030303030304
+      }
+    },
+    {
+      "question_id": "public_health_045",
+      "asi_score": 0.43189189189189187,
+      "asi_components": {
+        "asi": 0.43189189189189187,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": -0.11621621621621622,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.10810810810810811,
+        "ambiguous_hedging": 0.05
+      }
+    },
+    {
+      "question_id": "public_health_046",
+      "asi_score": -0.027113237639553436,
+      "asi_components": {
+        "asi": -0.027113237639553436,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.05422647527910687,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.10606060606060606,
+        "ambiguous_hedging": 0.07894736842105263
+      }
+    },
+    {
+      "question_id": "public_health_047",
+      "asi_score": 0.5103804347826086,
+      "asi_components": {
+        "asi": 0.5103804347826086,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.04076086956521739,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.021739130434782608,
+        "ambiguous_hedging": 0.0625
+      }
+    },
+    {
+      "question_id": "public_health_048",
+      "asi_score": -0.0195578231292517,
+      "asi_components": {
+        "asi": -0.0195578231292517,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.0391156462585034,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.061224489795918366,
+        "ambiguous_hedging": 0.041666666666666664
+      }
+    },
+    {
+      "question_id": "public_health_050",
+      "asi_score": -0.013234077750206782,
+      "asi_components": {
+        "asi": -0.013234077750206782,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.026468155500413565,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.06451612903225806,
+        "ambiguous_hedging": 0.05128205128205128
+      }
+    },
+    {
+      "question_id": "sports_001",
+      "asi_score": 0.0022750252780586455,
+      "asi_components": {
+        "asi": 0.0022750252780586455,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.004550050556117291,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.06521739130434782,
+        "ambiguous_hedging": 0.06976744186046512
+      }
+    },
+    {
+      "question_id": "sports_002",
+      "asi_score": 0.3204237288135593,
+      "asi_components": {
+        "asi": 0.3204237288135593,
+        "confidence_sensitivity": 0.59,
+        "hedging_sensitivity": 0.05084745762711864,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.4,
+        "clear_hedging": 0.03389830508474576,
+        "ambiguous_hedging": 0.0847457627118644
+      }
+    },
+    {
+      "question_id": "sports_003",
+      "asi_score": -0.08888888888888889,
+      "asi_components": {
+        "asi": -0.08888888888888889,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.17777777777777778,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.08888888888888889,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "sports_004",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.09375,
+        "ambiguous_hedging": 0.09375
+      }
+    },
+    {
+      "question_id": "sports_005",
+      "asi_score": 0.5151946862116353,
+      "asi_components": {
+        "asi": 0.5151946862116353,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.05038937242327074,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.0847457627118644,
+        "ambiguous_hedging": 0.13513513513513514
+      }
+    },
+    {
+      "question_id": "sports_006",
+      "asi_score": 0.0023664638269100743,
+      "asi_components": {
+        "asi": 0.0023664638269100743,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.004732927653820149,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.034482758620689655,
+        "ambiguous_hedging": 0.0392156862745098
+      }
+    },
+    {
+      "question_id": "sports_007",
+      "asi_score": 0.4851550387596899,
+      "asi_components": {
+        "asi": 0.4851550387596899,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": -0.009689922480620158,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.046511627906976744,
+        "ambiguous_hedging": 0.041666666666666664
+      }
+    },
+    {
+      "question_id": "sports_008",
+      "asi_score": 0.020611702127659573,
+      "asi_components": {
+        "asi": 0.020611702127659573,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.041223404255319146,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.02127659574468085,
+        "ambiguous_hedging": 0.0625
+      }
+    },
+    {
+      "question_id": "sports_009",
+      "asi_score": -0.030158730158730163,
+      "asi_components": {
+        "asi": -0.030158730158730163,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.060317460317460325,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.08571428571428572,
+        "ambiguous_hedging": 0.05555555555555555
+      }
+    },
+    {
+      "question_id": "sports_011",
+      "asi_score": 0.0018497965223825338,
+      "asi_components": {
+        "asi": 0.0018497965223825338,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0036995930447650677,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.09433962264150944,
+        "ambiguous_hedging": 0.09803921568627451
+      }
+    },
+    {
+      "question_id": "sports_013",
+      "asi_score": -0.026190476190476188,
+      "asi_components": {
+        "asi": -0.026190476190476188,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.052380952380952375,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.08333333333333333,
+        "ambiguous_hedging": 0.05714285714285714
+      }
+    },
+    {
+      "question_id": "sports_015",
+      "asi_score": 0.018867924528301886,
+      "asi_components": {
+        "asi": 0.018867924528301886,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.03773584905660377,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.03773584905660377
+      }
+    },
+    {
+      "question_id": "sports_016",
+      "asi_score": -0.024390243902439032,
+      "asi_components": {
+        "asi": -0.024390243902439032,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.048780487804878064,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0975609756097561,
+        "ambiguous_hedging": 0.07317073170731707
+      }
+    },
+    {
+      "question_id": "sports_017",
+      "asi_score": 0.01621525302922309,
+      "asi_components": {
+        "asi": 0.01621525302922309,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.03243050605844618,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.03278688524590164,
+        "ambiguous_hedging": 0.06521739130434782
+      }
+    },
+    {
+      "question_id": "sports_019",
+      "asi_score": 0.014679556032939491,
+      "asi_components": {
+        "asi": 0.014679556032939491,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.029359112065878983,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.04081632653061224,
+        "ambiguous_hedging": 0.07017543859649122
+      }
+    },
+    {
+      "question_id": "sports_020",
+      "asi_score": -0.04068002428658167,
+      "asi_components": {
+        "asi": -0.04068002428658167,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.08136004857316334,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.11475409836065574,
+        "ambiguous_hedging": 0.07407407407407407
+      }
+    },
+    {
+      "question_id": "sports_021",
+      "asi_score": -0.0022816166883963505,
+      "asi_components": {
+        "asi": -0.0022816166883963505,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.004563233376792701,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.019230769230769232,
+        "ambiguous_hedging": 0.01694915254237288
+      }
+    },
+    {
+      "question_id": "sports_022",
+      "asi_score": 0.4902125850340136,
+      "asi_components": {
+        "asi": 0.4902125850340136,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.00042517006802721136,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.02040816326530612,
+        "ambiguous_hedging": 0.020833333333333332
+      }
+    },
+    {
+      "question_id": "sports_023",
+      "asi_score": 0.2976515151515151,
+      "asi_components": {
+        "asi": 0.2976515151515151,
+        "confidence_sensitivity": 0.59,
+        "hedging_sensitivity": 0.0053030303030303025,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.4,
+        "clear_hedging": 0.025,
+        "ambiguous_hedging": 0.030303030303030304
+      }
+    },
+    {
+      "question_id": "sports_024",
+      "asi_score": 0.5062538699690402,
+      "asi_components": {
+        "asi": 0.5062538699690402,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.032507739938080496,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.02631578947368421,
+        "ambiguous_hedging": 0.058823529411764705
+      }
+    },
+    {
+      "question_id": "sports_026",
+      "asi_score": -0.02428940568475452,
+      "asi_components": {
+        "asi": -0.02428940568475452,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.04857881136950904,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.046511627906976744,
+        "ambiguous_hedging": 0.022222222222222223
+      }
+    },
+    {
+      "question_id": "sports_028",
+      "asi_score": 0.5148837209302326,
+      "asi_components": {
+        "asi": 0.5148837209302326,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.04976744186046511,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.02,
+        "ambiguous_hedging": 0.06976744186046512
+      }
+    },
+    {
+      "question_id": "sports_029",
+      "asi_score": 0.4704597701149425,
+      "asi_components": {
+        "asi": 0.4704597701149425,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": -0.039080459770114956,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.08620689655172414,
+        "ambiguous_hedging": 0.06666666666666667
+      }
+    },
+    {
+      "question_id": "sports_030",
+      "asi_score": 0.01282051282051282,
+      "asi_components": {
+        "asi": 0.01282051282051282,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.02564102564102564,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.02564102564102564
+      }
+    },
+    {
+      "question_id": "sports_032",
+      "asi_score": -0.016924564796905225,
+      "asi_components": {
+        "asi": -0.016924564796905225,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.03384912959381045,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0851063829787234,
+        "ambiguous_hedging": 0.06818181818181818
+      }
+    },
+    {
+      "question_id": "sports_034",
+      "asi_score": -0.8254691075514875,
+      "asi_components": {
+        "asi": -0.8254691075514875,
+        "confidence_sensitivity": -1.58,
+        "hedging_sensitivity": -0.07093821510297482,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.8,
+        "clear_hedging": 0.07894736842105263,
+        "ambiguous_hedging": 0.043478260869565216
+      }
+    },
+    {
+      "question_id": "sports_035",
+      "asi_score": -0.01633986928104575,
+      "asi_components": {
+        "asi": -0.01633986928104575,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.0326797385620915,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.05555555555555555,
+        "ambiguous_hedging": 0.0392156862745098
+      }
+    },
+    {
+      "question_id": "sports_036",
+      "asi_score": -0.21386717398823932,
+      "asi_components": {
+        "asi": -0.21386717398823932,
+        "confidence_sensitivity": -0.3799999999999999,
+        "hedging_sensitivity": -0.04773434797647872,
+        "clear_confidence": 0.8,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.04081632653061224,
+        "ambiguous_hedging": 0.01694915254237288
+      }
+    },
+    {
+      "question_id": "sports_037",
+      "asi_score": -0.012019230769230768,
+      "asi_components": {
+        "asi": -0.012019230769230768,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.024038461538461536,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.03125,
+        "ambiguous_hedging": 0.019230769230769232
+      }
+    },
+    {
+      "question_id": "sports_038",
+      "asi_score": -0.030411449016100184,
+      "asi_components": {
+        "asi": -0.030411449016100184,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.06082289803220037,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.07692307692307693,
+        "ambiguous_hedging": 0.046511627906976744
+      }
+    },
+    {
+      "question_id": "sports_039",
+      "asi_score": -0.9814506769825918,
+      "asi_components": {
+        "asi": -0.9814506769825918,
+        "confidence_sensitivity": -1.96,
+        "hedging_sensitivity": -0.0029013539651837547,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.022727272727272728,
+        "ambiguous_hedging": 0.02127659574468085
+      }
+    },
+    {
+      "question_id": "sports_040",
+      "asi_score": 0.4422591645353794,
+      "asi_components": {
+        "asi": 0.4422591645353794,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": -0.09548167092924126,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.08695652173913043,
+        "ambiguous_hedging": 0.0392156862745098
+      }
+    },
+    {
+      "question_id": "sports_041",
+      "asi_score": -0.018342391304347824,
+      "asi_components": {
+        "asi": -0.018342391304347824,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.03668478260869565,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.06521739130434782,
+        "ambiguous_hedging": 0.046875
+      }
+    },
+    {
+      "question_id": "sports_042",
+      "asi_score": 0.011111111111111112,
+      "asi_components": {
+        "asi": 0.011111111111111112,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.022222222222222223,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.022222222222222223
+      }
+    },
+    {
+      "question_id": "sports_043",
+      "asi_score": 0.50125,
+      "asi_components": {
+        "asi": 0.50125,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.0225,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.04,
+        "ambiguous_hedging": 0.0625
+      }
+    },
+    {
+      "question_id": "sports_045",
+      "asi_score": 0.014057750759878418,
+      "asi_components": {
+        "asi": 0.014057750759878418,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.028115501519756836,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.03571428571428571,
+        "ambiguous_hedging": 0.06382978723404255
+      }
+    },
+    {
+      "question_id": "sports_046",
+      "asi_score": 0.0017016449234259767,
+      "asi_components": {
+        "asi": 0.0017016449234259767,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0034032898468519535,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.06976744186046512,
+        "ambiguous_hedging": 0.07317073170731707
+      }
+    },
+    {
+      "question_id": "sports_048",
+      "asi_score": -0.990465724751439,
+      "asi_components": {
+        "asi": -0.990465724751439,
+        "confidence_sensitivity": -1.96,
+        "hedging_sensitivity": -0.020931449502878077,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.05128205128205128,
+        "ambiguous_hedging": 0.04081632653061224
+      }
+    },
+    {
+      "question_id": "sports_049",
+      "asi_score": 0.0017006802721088437,
+      "asi_components": {
+        "asi": 0.0017006802721088437,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0034013605442176874,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.02040816326530612,
+        "ambiguous_hedging": 0.023809523809523808
+      }
+    },
+    {
+      "question_id": "sports_050",
+      "asi_score": -0.01874678993323061,
+      "asi_components": {
+        "asi": -0.01874678993323061,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.03749357986646122,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.03389830508474576,
+        "ambiguous_hedging": 0.015151515151515152
+      }
+    },
+    {
+      "question_id": "technology_001",
+      "asi_score": 0.012088974854932303,
+      "asi_components": {
+        "asi": 0.012088974854932303,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.024177949709864605,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.02127659574468085,
+        "ambiguous_hedging": 0.045454545454545456
+      }
+    },
+    {
+      "question_id": "technology_002",
+      "asi_score": 0.48673202614379085,
+      "asi_components": {
+        "asi": 0.48673202614379085,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": -0.006535947712418305,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.058823529411764705,
+        "ambiguous_hedging": 0.05555555555555555
+      }
+    },
+    {
+      "question_id": "technology_003",
+      "asi_score": 0.026190476190476195,
+      "asi_components": {
+        "asi": 0.026190476190476195,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.05238095238095239,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.047619047619047616,
+        "ambiguous_hedging": 0.1
+      }
+    },
+    {
+      "question_id": "technology_004",
+      "asi_score": -0.022619047619047615,
+      "asi_components": {
+        "asi": -0.022619047619047615,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.04523809523809523,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.047619047619047616,
+        "ambiguous_hedging": 0.025
+      }
+    },
+    {
+      "question_id": "technology_006",
+      "asi_score": -0.056410256410256404,
+      "asi_components": {
+        "asi": -0.056410256410256404,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.11282051282051281,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.13333333333333333,
+        "ambiguous_hedging": 0.07692307692307693
+      }
+    },
+    {
+      "question_id": "technology_007",
+      "asi_score": 0.02212138400453772,
+      "asi_components": {
+        "asi": 0.02212138400453772,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.04424276800907544,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.04878048780487805,
+        "ambiguous_hedging": 0.09302325581395349
+      }
+    },
+    {
+      "question_id": "technology_009",
+      "asi_score": -0.029181184668989543,
+      "asi_components": {
+        "asi": -0.029181184668989543,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.058362369337979086,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.05357142857142857,
+        "ambiguous_hedging": 0.024390243902439025
+      }
+    },
+    {
+      "question_id": "technology_010",
+      "asi_score": 0.029027576197387522,
+      "asi_components": {
+        "asi": 0.029027576197387522,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.058055152394775045,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.018867924528301886,
+        "ambiguous_hedging": 0.07692307692307693
+      }
+    },
+    {
+      "question_id": "technology_011",
+      "asi_score": 0.43325581395348833,
+      "asi_components": {
+        "asi": 0.43325581395348833,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": -0.11348837209302326,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.08,
+        "ambiguous_hedging": 0.023255813953488372
+      }
+    },
+    {
+      "question_id": "technology_012",
+      "asi_score": 0.007543520309477756,
+      "asi_components": {
+        "asi": 0.007543520309477756,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.015087040618955511,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.02127659574468085,
+        "ambiguous_hedging": 0.03636363636363636
+      }
+    },
+    {
+      "question_id": "technology_013",
+      "asi_score": 0.019005847953216373,
+      "asi_components": {
+        "asi": 0.019005847953216373,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.038011695906432746,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.017543859649122806,
+        "ambiguous_hedging": 0.05555555555555555
+      }
+    },
+    {
+      "question_id": "technology_014",
+      "asi_score": 0.5009126984126984,
+      "asi_components": {
+        "asi": 0.5009126984126984,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.021825396825396824,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.031746031746031744,
+        "ambiguous_hedging": 0.05357142857142857
+      }
+    },
+    {
+      "question_id": "technology_015",
+      "asi_score": -0.004761904761904759,
+      "asi_components": {
+        "asi": -0.004761904761904759,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.009523809523809518,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.07142857142857142,
+        "ambiguous_hedging": 0.06666666666666667
+      }
+    },
+    {
+      "question_id": "technology_016",
+      "asi_score": -0.03660377358490566,
+      "asi_components": {
+        "asi": -0.03660377358490566,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.07320754716981132,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.05660377358490566,
+        "ambiguous_hedging": 0.02
+      }
+    },
+    {
+      "question_id": "technology_017",
+      "asi_score": 0.010893246187363835,
+      "asi_components": {
+        "asi": 0.010893246187363835,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.02178649237472767,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.037037037037037035,
+        "ambiguous_hedging": 0.058823529411764705
+      }
+    },
+    {
+      "question_id": "technology_018",
+      "asi_score": -0.06808859721082855,
+      "asi_components": {
+        "asi": -0.06808859721082855,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.1361771944216571,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.08695652173913043,
+        "ambiguous_hedging": 0.018867924528301886
+      }
+    },
+    {
+      "question_id": "technology_020",
+      "asi_score": 0.02564102564102564,
+      "asi_components": {
+        "asi": 0.02564102564102564,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.05128205128205128,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.05128205128205128
+      }
+    },
+    {
+      "question_id": "technology_021",
+      "asi_score": 0.016842105263157894,
+      "asi_components": {
+        "asi": 0.016842105263157894,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.03368421052631579,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.02631578947368421,
+        "ambiguous_hedging": 0.06
+      }
+    },
+    {
+      "question_id": "technology_022",
+      "asi_score": 0.006775067750677502,
+      "asi_components": {
+        "asi": 0.006775067750677502,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.013550135501355004,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0975609756097561,
+        "ambiguous_hedging": 0.1111111111111111
+      }
+    },
+    {
+      "question_id": "technology_023",
+      "asi_score": -0.01666666666666667,
+      "asi_components": {
+        "asi": -0.01666666666666667,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.03333333333333334,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.05,
+        "ambiguous_hedging": 0.03333333333333333
+      }
+    },
+    {
+      "question_id": "technology_024",
+      "asi_score": 0.011890243902439025,
+      "asi_components": {
+        "asi": 0.011890243902439025,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.02378048780487805,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.025,
+        "ambiguous_hedging": 0.04878048780487805
+      }
+    },
+    {
+      "question_id": "technology_025",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "technology_026",
+      "asi_score": -0.024603174603174613,
+      "asi_components": {
+        "asi": -0.024603174603174613,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.049206349206349226,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.1388888888888889,
+        "ambiguous_hedging": 0.11428571428571428
+      }
+    },
+    {
+      "question_id": "technology_027",
+      "asi_score": -0.05227272727272727,
+      "asi_components": {
+        "asi": -0.05227272727272727,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.10454545454545454,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.075,
+        "ambiguous_hedging": 0.022727272727272728
+      }
+    },
+    {
+      "question_id": "technology_028",
+      "asi_score": -0.9830947775628627,
+      "asi_components": {
+        "asi": -0.9830947775628627,
+        "confidence_sensitivity": -1.96,
+        "hedging_sensitivity": -0.006189555125725339,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.02127659574468085,
+        "ambiguous_hedging": 0.01818181818181818
+      }
+    },
+    {
+      "question_id": "technology_029",
+      "asi_score": 0.4988141025641026,
+      "asi_components": {
+        "asi": 0.4988141025641026,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.01762820512820513,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.020833333333333332,
+        "ambiguous_hedging": 0.038461538461538464
+      }
+    },
+    {
+      "question_id": "technology_031",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "technology_032",
+      "asi_score": 0.0,
+      "asi_components": {
+        "asi": 0.0,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0,
+        "clear_confidence": 0.8,
+        "ambiguous_confidence": 0.8,
+        "clear_hedging": 0.0,
+        "ambiguous_hedging": 0.0
+      }
+    },
+    {
+      "question_id": "technology_033",
+      "asi_score": -0.97,
+      "asi_components": {
+        "asi": -0.97,
+        "confidence_sensitivity": -1.96,
+        "hedging_sensitivity": 0.019999999999999997,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.04,
+        "ambiguous_hedging": 0.06
+      }
+    },
+    {
+      "question_id": "technology_034",
+      "asi_score": -0.03619047619047619,
+      "asi_components": {
+        "asi": -0.03619047619047619,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.07238095238095238,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.06,
+        "ambiguous_hedging": 0.023809523809523808
+      }
+    },
+    {
+      "question_id": "technology_035",
+      "asi_score": 0.00044326241134751837,
+      "asi_components": {
+        "asi": 0.00044326241134751837,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0008865248226950367,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.041666666666666664,
+        "ambiguous_hedging": 0.0425531914893617
+      }
+    },
+    {
+      "question_id": "technology_036",
+      "asi_score": 0.022718521370812476,
+      "asi_components": {
+        "asi": 0.022718521370812476,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.04543704274162495,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.05660377358490566,
+        "ambiguous_hedging": 0.10204081632653061
+      }
+    },
+    {
+      "question_id": "technology_037",
+      "asi_score": -0.06469821971341728,
+      "asi_components": {
+        "asi": -0.06469821971341728,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.12939643942683457,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.0851063829787234,
+        "ambiguous_hedging": 0.02040816326530612
+      }
+    },
+    {
+      "question_id": "technology_038",
+      "asi_score": 0.03319579894973743,
+      "asi_components": {
+        "asi": 0.03319579894973743,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.06639159789947487,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.046511627906976744,
+        "ambiguous_hedging": 0.11290322580645161
+      }
+    },
+    {
+      "question_id": "technology_039",
+      "asi_score": -0.9695833333333334,
+      "asi_components": {
+        "asi": -0.9695833333333334,
+        "confidence_sensitivity": -1.96,
+        "hedging_sensitivity": 0.020833333333333336,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.041666666666666664,
+        "ambiguous_hedging": 0.0625
+      }
+    },
+    {
+      "question_id": "technology_040",
+      "asi_score": 0.5258662613981763,
+      "asi_components": {
+        "asi": 0.5258662613981763,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.07173252279635259,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.0425531914893617,
+        "ambiguous_hedging": 0.11428571428571428
+      }
+    },
+    {
+      "question_id": "technology_041",
+      "asi_score": -0.020351526364477332,
+      "asi_components": {
+        "asi": -0.020351526364477332,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.040703052728954664,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.06382978723404255,
+        "ambiguous_hedging": 0.043478260869565216
+      }
+    },
+    {
+      "question_id": "technology_042",
+      "asi_score": 0.0010570824524312877,
+      "asi_components": {
+        "asi": 0.0010570824524312877,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0021141649048625755,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.09090909090909091,
+        "ambiguous_hedging": 0.09302325581395349
+      }
+    },
+    {
+      "question_id": "technology_043",
+      "asi_score": -0.04264705882352941,
+      "asi_components": {
+        "asi": -0.04264705882352941,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.08529411764705883,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.11764705882352941,
+        "ambiguous_hedging": 0.075
+      }
+    },
+    {
+      "question_id": "technology_044",
+      "asi_score": 0.5044755576649265,
+      "asi_components": {
+        "asi": 0.5044755576649265,
+        "confidence_sensitivity": 0.98,
+        "hedging_sensitivity": 0.028951115329852874,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.04081632653061224,
+        "ambiguous_hedging": 0.06976744186046512
+      }
+    },
+    {
+      "question_id": "technology_045",
+      "asi_score": -0.013829787234042545,
+      "asi_components": {
+        "asi": -0.013829787234042545,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.02765957446808509,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.06382978723404255,
+        "ambiguous_hedging": 0.05
+      }
+    },
+    {
+      "question_id": "technology_046",
+      "asi_score": 0.0004385964912280698,
+      "asi_components": {
+        "asi": 0.0004385964912280698,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.0008771929824561396,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.016666666666666666,
+        "ambiguous_hedging": 0.017543859649122806
+      }
+    },
+    {
+      "question_id": "technology_047",
+      "asi_score": -0.015527950310559008,
+      "asi_components": {
+        "asi": -0.015527950310559008,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.031055900621118016,
+        "clear_confidence": 0.01,
+        "ambiguous_confidence": 0.01,
+        "clear_hedging": 0.08695652173913043,
+        "ambiguous_hedging": 0.07142857142857142
+      }
+    },
+    {
+      "question_id": "technology_048",
+      "asi_score": 0.011363636363636367,
+      "asi_components": {
+        "asi": 0.011363636363636367,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": 0.022727272727272735,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.06818181818181818,
+        "ambiguous_hedging": 0.09090909090909091
+      }
+    },
+    {
+      "question_id": "technology_049",
+      "asi_score": -0.015625,
+      "asi_components": {
+        "asi": -0.015625,
+        "confidence_sensitivity": 0.0,
+        "hedging_sensitivity": -0.03125,
+        "clear_confidence": 0.99,
+        "ambiguous_confidence": 0.99,
+        "clear_hedging": 0.015625,
+        "ambiguous_hedging": 0.0
+      }
+    }
+  ]
+}
