@@ -90,24 +90,31 @@ Main evaluation harness:
 
 ## 📊 Results Format
 
-Entry <entry_id> — <topic> / <subdomain> (<set_type>)
-Question
-> <question_text>
-Model Answer
-> <model_answer>
-Model Explanation
-> <model_explanation>
-Gold Answer (for grading)
-> <gold_answer>
-Confidence & Outcome
-confidence: <confidence>
-accuracy: <accuracy> (1.0 = correct, 0.0 = incorrect)
-is_uncertain: <true|false>
-is_refusal: <true|false>
-Ambiguity & Hedging
-hedge_count: <contains_hedge(...) result>
-hedge_density: <hedge_density> (hedge count ÷ tokens)
-asi_score: <asi_score>
-asi_components:
-confidence_sensitivity: <confidence_sensitivity>
-hedging_sensitivity: <hedging_sensitivity>
+### Entry `<entry_id>` — `<topic>` / `<subdomain>` (`<set_type>`)
+
+**Question**  
+> `<question_text>`
+
+**Model Answer**  
+> `<model_answer>`
+
+**Model Explanation**  
+> `<model_explanation>`
+
+**Gold Answer**  
+> `<gold_answer>`
+
+#### Confidence & Outcome
+- `confidence`: `<confidence>`
+- `accuracy`: `<accuracy>`
+- `is_uncertain`: `<true|false>`
+- `is_refusal`: `<true|false>`
+
+#### Ambiguity & Hedging
+- `hedge_count`: `<hedge_count>`
+- `hedge_density`: `<hedge_density>`
+- `asi_score`: `<asi_score>`
+- `asi_components`:
+  - `confidence_sensitivity`: `<confidence_sensitivity>`
+  - `hedging_sensitivity`: `<hedging_sensitivity>`
+
