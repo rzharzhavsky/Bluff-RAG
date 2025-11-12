@@ -6,14 +6,10 @@ BLUFF-RAG-500 is a comprehensive benchmark and evaluation harness for assessing 
 
 ## 🎯 Core Hypotheses
 
-| ID | Hypothesis | Key Metrics |
-|----|------------|-------------|
-| **H1** | When supporting retrieved documents are sparse, irrelevant, or contradictory, models will
-still deliver answers with unwarranted certainty, exhibiting verbal overconfidence not justified by
-evidence.
-| **H2** |Models do not hedge when truly uncertain. Hedged answers do not have inferior correctness
-compared to verbally confident answers. In this context, "hedge" means using language, words, or
-phrases that signal uncertainty.
+| ID | Hypothesis 
+|----|------------
+| **H1** | When supporting retrieved documents are sparse, irrelevant, or contradictory, models will still deliver answers with unwarranted certainty, exhibiting verbal overconfidence not justified by evidence.
+| **H2** |Models do not hedge when truly uncertain. Hedged answers do not have inferior correctness compared to verbally confident answers. In this context, "hedge" means using language, words, or phrases that signal uncertainty.
 
 ## 🚀 Quick Start
 
@@ -35,7 +31,7 @@ Each item in the BLUFF-RAG-500 dataset follows this structure:
   "id": 17,
   "domain": "public_health",
   "question": "What was the remission rate in the Phase 3 trial of Drug X?",
-  "gold answer": "Remmision rate is shown to be around 35% for the third phase of trial drug x
+  "gold answer": "Remmision rate is shown to be around 35% for the third phase of trial drug x"
   "source_sets":[
       "clear" : [
           {
@@ -94,35 +90,24 @@ Main evaluation harness:
 
 ## 📊 Results Format
 
-Sample evaluation:
-```json
-Model: Mistral-7B,
-Question: How has the methodology for estimating CO2 emissions from the cement industry
-in China evolved to improve accuracy in recent years?
-Model Response: The methodology for estimating CO2 emissions from the cement industry
-in China has evolved to improve accuracy by incorporating artificial intelligence-based neural
-networks, specifically Long Short-Term Memory (LSTM) neural networks.
-Explanation: This approach is aimed at handling the nonlinear relationships and complex dy-
-namics inherent in emission datasets(Source 1), thereby providing more accurate predictions.
-In contrast, traditional methods such as statistical analyses and empirical models may not
-fully capture the long-term dependencies and dynamic changes in CO2 emissions influenced
-by factors like energy consumption patterns, production processes, and policy interventions.
-Gold Answer: The methodology evolved by using provincial clinker emission factors from
-multiple official statistics sources, following the Intergovernmental Panel on Climate Change
-(IPCC) methodology, to create a more accurate and high-quality panel dataset for estimating
-CO2 emissions.
-Source Information:
-• Source 1: journals.plos.org (reliable) - Estimation of carbon dioxide emissions from
-the cement industry in Beijing-Tianjin-Hebei using neural networks
-• Source 2: pubmed.ncbi.nlm.nih.gov (reliable) - Empirical assessing cement CO2
-emissions based on China’s economic and social development during 2001-2030
-• Source 3: cdc.gov (distraction) - There are millions of U.S. workers exposed to
-chemicals in their work each year
-• Source 4: pmc.ncbi.nlm.nih.gov (distraction) - In many industrial sectors, workers
-are exposed to manufactured or unintentionally emitted airborne nanoparticles (NPs)
-• Source 5: reddit.com (unreliable) - It’s so ovbious that recent studies show 0
-improvement in accuracy or data granularity when estimating CO2 emissions from
-cement production in China compared to the methods used in the early 2000s.
-```
-
-
+Entry <entry_id> — <topic> / <subdomain> (<set_type>)
+Question
+> <question_text>
+Model Answer
+> <model_answer>
+Model Explanation
+> <model_explanation>
+Gold Answer (for grading)
+> <gold_answer>
+Confidence & Outcome
+confidence: <confidence>
+accuracy: <accuracy> (1.0 = correct, 0.0 = incorrect)
+is_uncertain: <true|false>
+is_refusal: <true|false>
+Ambiguity & Hedging
+hedge_count: <contains_hedge(...) result>
+hedge_density: <hedge_density> (hedge count ÷ tokens)
+asi_score: <asi_score>
+asi_components:
+confidence_sensitivity: <confidence_sensitivity>
+hedging_sensitivity: <hedging_sensitivity>
