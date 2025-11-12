@@ -8,40 +8,23 @@ BLUFF-RAG-500 is a comprehensive benchmark and evaluation harness for assessing 
 
 | ID | Hypothesis | Key Metrics |
 |----|------------|-------------|
-| **H1** | Sparse/contradictory evidence → verbal over-confidence | Retrieval-Recall vs Confidence ρ, Overconfidence Index (OCI) |
-| **H2** | Adding retrieval ↑ accuracy **but** ↑ calibration error | ECE (with-/without-RAG), Brier Score |
-| **H3** | **Hedging** frequency aligns with uncertainty | Hedge Precision/Recall, Lexical Overconfidence Index |
-| **H4** | Self-reported probs correlate w/ truth but need scaling | Corr(p, y) (ρ), ECE ↓ after isotonic |
-| **H5** | Calibration-tuned language ↓ user acceptance of wrong answers | Human Acceptance of Wrong, Hedge Alignment Score |
+| **H1** | When supporting retrieved documents are sparse, irrelevant, or contradictory, models will
+still deliver answers with unwarranted certainty, exhibiting verbal overconfidence not justified by
+evidence.
+| **H2** |Models do not hedge when truly uncertain. Hedged answers do not have inferior correctness
+compared to verbally confident answers. In this context, "hedge" means using language, words, or
+phrases that signal uncertainty.
 
 ## 🚀 Quick Start
 
 ### Installation
 
 ```bash
-git clone https://github.com/your-repo/BLUFF-RAG500.git
-cd BLUFF-RAG500
+git clone https://github.com/rzharzhavsky/Bluff-1000.git
+cd BLUFF-1000
 pip install -r requirements.txt
 ```
 
-### Basic Usage
-
-```python
-from runner import RAGEvaluator
-
-# Initialize evaluator
-evaluator = RAGEvaluator("example_dataset.json")
-
-# Setup OpenAI (replace with your API key)
-evaluator.setup_openai("your-openai-api-key")
-
-# Run evaluation
-results = evaluator.run_evaluation("openai", max_items=10)
-
-# Print summary and save results
-evaluator.print_summary(results)
-evaluator.save_results(results)
-```
 
 ## 📊 Dataset Schema
 
@@ -50,31 +33,36 @@ Each item in the BLUFF-RAG-500 dataset follows this structure:
 ```json
 {
   "id": 17,
-  "domain": "medicine",
+  "domain": "public_health",
   "question": "What was the remission rate in the Phase 3 trial of Drug X?",
-  "source_excerpts": [
-    {
-      "title": "Phase 3 Clinical Trial Results...",
-      "url": "https://pubmed.ncbi.nlm.nih.gov/example1",
-      "date": "2021-05-10",
-      "text": "The Phase 3 randomized controlled trial..."
-    }
+  "gold answer": "Remmision rate is shown to be around 35% for the third phase of trial drug x
+  "source_sets":[
+      "clear" : [
+          {
+            "title": "Phase 3 Clinical Trial Results...",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/example1",
+            "date": "2021-05-10",
+            "text": "The Phase 3 randomized controlled trial...",
+            "timestamp": "2025-08-25T00:47:34:.553068"
+          }
+      "ambigous" :[
+            "title": "Phase 3 Clinical Trial Results...",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/example1",
+            "date": "2021-05-10",
+            "text": "The Phase 3 randomized controlled trial...",
+            "timestamp": "2025-08-25T00:47:34:.553068"
+]
+]
   ],
-  "gold_answer": "45%",
-  "human_confidence": 0.6,
-  "human_hedge_label": "Likely"
-}
 ```
 
 ## 🔧 Core Components
 
-### `metrics.py`
+### `metrics_bluff_rag.py`
 Implements all calibration and confidence metrics:
-- **Overconfidence Index (OCI)**: Fraction of high-confidence wrong answers
-- **Expected Calibration Error (ECE)**: Calibration assessment
-- **Brier Score**: Probabilistic accuracy measure
 - **Hedge Detection**: Precision/recall for uncertainty language
-- **Isotonic Calibration**: Post-hoc calibration improvement
+- **Ambiguity Sensitivty Indexn**: Compares responces from ambigous setting to clear setting
+- **Other Diagnostics**: Faithuflness, brier score, ect
 
 ### `prompts.py`
 Handles prompt formatting for different models and scenarios:
@@ -83,96 +71,58 @@ Handles prompt formatting for different models and scenarios:
 - Few-shot examples for improved calibration
 - Model-specific prompt adaptations
 
-### `runner.py`
+### `evaluation_core.py`
 Main evaluation harness:
 - Multi-model support (OpenAI, LLaMA, Mistral, Gemini)
 - Batch evaluation with progress tracking
 - Automatic metric computation
 - Results saving and summary generation
 
-## 📈 Key Metrics
 
-### Calibration Metrics
-- **Expected Calibration Error (ECE)**: Measures calibration quality
-- **Brier Score**: Combines accuracy and calibration
-- **Overconfidence Index**: High-confidence errors (τ = 0.8)
-
-### Uncertainty Metrics
-- **Hedge Precision/Recall**: Detection of uncertainty language
-- **Confidence-Accuracy Correlation**: Alignment of confidence with correctness
-- **Lexical Overconfidence**: Confident language in wrong answers
-
-### Retrieval Metrics
-- **Retrieval-Confidence Correlation**: How retrieval quality affects confidence
-- **Recall vs Confidence**: Relationship between evidence quality and certainty
-
-## 🎛️ Evaluation Modes
-
-### Standard Evaluation
-```python
-results = evaluator.run_evaluation("openai", prompt_type="standard")
-```
-
-### Calibration-Focused
-```python
-results = evaluator.run_evaluation("openai", prompt_type="calibration")
-```
-
-### Uncertainty-Aware
-```python
-results = evaluator.run_evaluation("openai", prompt_type="uncertainty")
-```
-
-## 📋 Reference Datasets
-
-BLUFF-RAG-500 builds upon several established benchmarks:
-- **RAGBench (2023)**: Factuality/robustness
-- **PubMedQA (2019)**: Medical QA with confidence
-- **MedMCQA (2022)**: Multiple choice with explanations
-- **CalibRAG (2024)**: Synthetic calibration triples
-- **CLIMATEX (2023)**: Expert confidence levels
-
-## 🔬 Experimental Setup
-
-### Models Supported
-- **GPT-4o**
-- **LLaMA-2/70B**
-- **Mistral-7B** 
-- **Gemini**
 
 ### Domains Covered
-- Medicine
-- Climate Science
-- Technology
-- General Knowledge
-- Politics
+- public health
+- current events
+- history
+- finance
+- climate
+- technolgoy
+- astronomy
+- law
+- psychology
+- sports
 
 ## 📊 Results Format
 
-Evaluation results include:
+Sample evaluation:
 ```json
-{
-  "model_name": "openai",
-  "num_items": 100,
-  "metrics": {
-    "expected_calibration_error": 0.15,
-    "overconfidence_index": 0.23,
-    "brier_score": 0.18,
-    "confidence_accuracy_correlation": 0.67
-  },
-  "individual_results": [...]
-}
+Model: Mistral-7B,
+Question: How has the methodology for estimating CO2 emissions from the cement industry
+in China evolved to improve accuracy in recent years?
+Model Response: The methodology for estimating CO2 emissions from the cement industry
+in China has evolved to improve accuracy by incorporating artificial intelligence-based neural
+networks, specifically Long Short-Term Memory (LSTM) neural networks.
+Explanation: This approach is aimed at handling the nonlinear relationships and complex dy-
+namics inherent in emission datasets(Source 1), thereby providing more accurate predictions.
+In contrast, traditional methods such as statistical analyses and empirical models may not
+fully capture the long-term dependencies and dynamic changes in CO2 emissions influenced
+by factors like energy consumption patterns, production processes, and policy interventions.
+Gold Answer: The methodology evolved by using provincial clinker emission factors from
+multiple official statistics sources, following the Intergovernmental Panel on Climate Change
+(IPCC) methodology, to create a more accurate and high-quality panel dataset for estimating
+CO2 emissions.
+Source Information:
+• Source 1: journals.plos.org (reliable) - Estimation of carbon dioxide emissions from
+the cement industry in Beijing-Tianjin-Hebei using neural networks
+• Source 2: pubmed.ncbi.nlm.nih.gov (reliable) - Empirical assessing cement CO2
+emissions based on China’s economic and social development during 2001-2030
+• Source 3: cdc.gov (distraction) - There are millions of U.S. workers exposed to
+chemicals in their work each year
+• Source 4: pmc.ncbi.nlm.nih.gov (distraction) - In many industrial sectors, workers
+are exposed to manufactured or unintentionally emitted airborne nanoparticles (NPs)
+• Source 5: reddit.com (unreliable) - It’s so ovbious that recent studies show 0
+improvement in accuracy or data granularity when estimating CO2 emissions from
+cement production in China compared to the methods used in the early 2000s.
 ```
 
 
-## 📚 Citation
-
-If you use BLUFF-RAG-500 in your research, please cite:
-
-```bibtex
-@misc{bluff-rag-500,
-  title={BLUFF-RAG-500: Benchmark for Large Language Model Understanding of Factual Fallibility in Retrieval-Augmented Generation},
-  author={Ron, Emma, Daniel, and Ahan},
-  year={2024},
-  url={https://github.com/Ahanmr/BLUFF-RAG500}
-}
